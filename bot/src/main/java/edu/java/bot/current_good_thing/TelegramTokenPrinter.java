@@ -1,4 +1,4 @@
-package edu.java.bot;
+package edu.java.bot.current_good_thing;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ public class TelegramTokenPrinter {
     private String telegramToken;
 
     public void printToken() {
-        System.out.println("Telegram Token: " + telegramToken);
+        //System.out.println("Telegram Token: " + telegramToken);
     }
 
 }
