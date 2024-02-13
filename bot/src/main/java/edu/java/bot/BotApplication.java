@@ -2,7 +2,6 @@ package edu.java.bot;
 
 
 import edu.java.bot.configuration.ApplicationConfig;
-import edu.java.bot.current_good_thing.TelegramTokenPrinter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,12 +21,6 @@ public class BotApplication {
         SpringApplication application = new SpringApplication(BotApplication.class);
         application.addInitializers(new EnvConfig());
         ApplicationContext context = application.run(args);
-
-        // Получаем экземпляр класса TelegramTokenPrinter из контекста
-        TelegramTokenPrinter tokenPrinter = context.getBean(TelegramTokenPrinter.class);
-
-        // Выводим значение токена на консоль
-        tokenPrinter.printToken();
 
 
     }
