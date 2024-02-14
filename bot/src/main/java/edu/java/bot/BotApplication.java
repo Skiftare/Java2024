@@ -22,7 +22,6 @@ public class BotApplication {
         application.addInitializers(new EnvConfig());
         ApplicationContext context = application.run(args);
 
-
     }
 
     static class EnvConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {

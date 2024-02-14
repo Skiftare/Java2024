@@ -3,6 +3,10 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
+import org.springframework.stereotype.Component;
+import static edu.java.bot.utility.UtilityStatusClass.START_COMMAND_DESCRIPTION;
+
+@Component
 
 public class StartCommand implements Command {
     @Override
@@ -12,7 +16,7 @@ public class StartCommand implements Command {
 
     @Override
     public String description() {
-        return "Зарегистрировать пользователя";
+        return START_COMMAND_DESCRIPTION;
     }
 
 
