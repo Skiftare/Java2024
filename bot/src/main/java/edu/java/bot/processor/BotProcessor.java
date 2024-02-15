@@ -47,6 +47,10 @@ public class BotProcessor {
             case "/list":
                 msg = new SendMessage(update.message().chat().id(), "Здесь должен быть список.");
                 break;
+            case "/track":
+                DialogManager.markDialogForWaitngToTrack(update);
+            case "/untrack":
+                DialogManager.markDialogForWaitngToUntrack(update);
             default:
                 if (textInTheCommand.startsWith("/track")) {
                     String url = textInTheCommand.replace("/track", "").trim();
