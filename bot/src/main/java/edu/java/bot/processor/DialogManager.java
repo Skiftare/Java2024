@@ -3,6 +3,7 @@ package edu.java.bot.processor;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.HashMap;
+import edu.java.bot.database.WeakLinkChecker;
 import org.springframework.stereotype.Service;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
@@ -15,7 +16,7 @@ public class DialogManager {
     private static HashMap<Long, DialogState> activeDialogs = new HashMap<>();
 
     public static void setWaitForTrack(Long id) {
-        activeDialogs.put(id, DialogState.TRACK_URI);
+        activeDialogs.replace(id, DialogState.TRACK_URI);
     }
 
     public static void setWaitForUntrack(Long id) {
@@ -36,7 +37,7 @@ public class DialogManager {
 
     public static SendMessage resolveProblemCommandNotFound(Update update) {
         SendMessage msg;
-        if (activeDialogs.containsKey(update.message().chat().id())) {
+        if (activeDialogs.containsKey(update.message().chat().id()) && WeakLinkChecker.checkLinkWithoutConnecting(update.message().text())) {
             DialogState state = activeDialogs.get(update.message().chat().id());
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
