@@ -1,5 +1,7 @@
 package edu.java.bot.commands;
 
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -8,8 +10,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class CommandsLoader {
     private static final String PACKAGE_NAME = "edu.java.bot.commands.entities";
+    private static List<Class<?>> downloadedClasses;
 
     public static String getCommandsWithDescription(){
         List<Class<?>> classes = getClasses();
@@ -43,7 +47,15 @@ public class CommandsLoader {
     }
 
 
-    private static List<Class<?>> getClasses() {
+
+
+    public static List<Class<?>> getClasses() {
+        if(downloadedClasses.isEmpty()){
+            load();
+        }
+        return downloadedClasses;
+    }
+    private static void load() {
         List<Class<?>> classes = new ArrayList<>();
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -62,6 +74,8 @@ public class CommandsLoader {
             e.printStackTrace();
         }
 
-        return classes;
+       downloadedClasses = classes;
     }
+
+
 }

@@ -11,10 +11,12 @@ import edu.java.bot.commands.entities.StartCommand;
 import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.commands.entities.UntrackCommand;
 import jakarta.annotation.PostConstruct;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import static edu.java.bot.commands.CommandsLoader.getClasses;
 
 @Component
 public class BotProcessor {
@@ -37,34 +39,33 @@ public class BotProcessor {
 
     private static SendMessage recognizeCommand(Update update) {
         String textInTheCommand = update.message().text();
-        SendMessage msg;
-        switch (textInTheCommand) {
-            //Крч, тут надо CommandsLoader прикрутить, отдать всё на откуп ему. Чтоб он находил нужный класс
-            case "/help":
-                HelpCommand hc = new HelpCommand();
-                msg = hc.handle(update);
-                break;
-            case "/list":
-                msg = new SendMessage(update.message().chat().id(), "Здесь должен быть список.");
-                break;
-            case "/track":
-                DialogManager.markDialogForWaitngToTrack(update);
-            case "/untrack":
-                DialogManager.markDialogForWaitngToUntrack(update);
-            default:
-                if (textInTheCommand.startsWith("/track")) {
-                    String url = textInTheCommand.replace("/track", "").trim();
-                    msg = new SendMessage(update.message().chat().id(), "Вы выбрали трекинг ссылки: " + url);
-                } else if (textInTheCommand.startsWith("/untrack")) {
-                    String url = textInTheCommand.replace("/untrack", "").trim();
+        SendMessage msg = null;
+        boolean foundRightCommand = false;
 
-                    msg = new SendMessage(update.message().chat().id(), "Вы выбрали отмену трекинга ссылки: " + url);
-                } else {
-                    //Тут мы обращаемся к DialogManager-у, чтобы понять, а подходит ли нам эта ссылка для.. трекинга, антрекинга, или INVALID_MESSAGE
-                    msg = new SendMessage(update.message().chat().id(), "Неизвестная команда.");
+        List<Class<?>> classes = getClasses();
+        for (Class<?> clazz : classes) {
+            try {
+                if (Command.class.isAssignableFrom(clazz)) {
+                    Command command = (Command) clazz.getDeclaredConstructor().newInstance();
+                    String commandOutputs = command.command();
+                    if (textInTheCommand.startsWith(commandOutputs)) {
+                            // Активируем метод handle для данного Update
+                        Method handleMethod = clazz.getDeclaredMethod("handle", Update.class);
+                        msg = (SendMessage) handleMethod.invoke(command, update);
+                        foundRightCommand = true;
+                    }
+
                 }
-                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        if(!foundRightCommand){
+            msg = DialogManager.resolveProblemCommandNotFound(update);
+        }
+
+
         return msg;
     }
 }

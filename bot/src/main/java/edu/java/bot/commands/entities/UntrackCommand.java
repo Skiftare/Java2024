@@ -7,6 +7,7 @@ import edu.java.bot.processor.DialogManager;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import static edu.java.bot.database.WeakLinkChecker.checkLinkWithoutConnecting;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION;
@@ -24,7 +25,22 @@ public class UntrackCommand implements Command {
     }
 
     public boolean supports(Update update) {
-        return DialogManager.isValidUrlForUntracking(URI.create(update.message().text()));
+        String textMessage = update.message().text();
+        boolean result = false;
+        if(textMessage == this.command()){
+            DialogManager.setWaitForUntrack(update.message().chat().id());
+            result = true;
+        }
+        else{
+            String[] parts = textMessage.split(" ");
+            if (parts.length > 1) {
+                String link = parts[1];
+                if(checkLinkWithoutConnecting(link)){
+                    result = DialogManager.untrackURL(link);
+                }
+            }
+        }
+        return result;
     }
 
 
