@@ -26,11 +26,11 @@ public class DialogManager {
         activeDialogs.remove(id);
     }
 
-    public static boolean trackURL(String message) {
+    public static boolean trackURL(Update update) {
         return true;
     }
 
-    public static boolean untrackURL(String message) {
+    public static boolean untrackURL(Update update) {
         return true;
     }
 
@@ -41,13 +41,13 @@ public class DialogManager {
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
                     update.message().chat().id(),
-                    trackURL(update.message().text()) ?
+                    trackURL(update) ?
                         SUCCESS_TRACK_INFO : UNSUCCESSFUL_TRACK_INFO
                 );
             } else {
                 msg = new SendMessage(
                     update.message().chat().id(),
-                    untrackURL(update.message().text()) ?
+                    untrackURL(update) ?
                         SUCCESS_UNTRACK_INFO : UNSUCCESSFUL_UNTRACK_INFO
                 );
 
