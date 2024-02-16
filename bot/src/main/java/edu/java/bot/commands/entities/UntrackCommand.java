@@ -36,7 +36,7 @@ public class UntrackCommand implements Command {
             if (parts.length > 1) {
                 String link = parts[1];
                 if(checkLinkWithoutConnecting(link)){
-                    result = DialogManager.untrackURL(update);
+                    result = DialogManager.untrackURL(link);
                 }
             }
         }

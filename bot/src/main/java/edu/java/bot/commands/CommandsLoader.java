@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class CommandsLoader {
     private static final String PACKAGE_NAME = "edu.java.bot.commands.entities";
-    private static List<Class<?>> downloadedClasses;
+    private static List<Class<?>> downloadedClasses = new ArrayList<>();
 
     public static String getCommandsWithDescription(){
         List<Class<?>> classes = getClasses();
