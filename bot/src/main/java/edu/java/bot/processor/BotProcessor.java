@@ -45,7 +45,6 @@ public class BotProcessor {
                 if (Command.class.isAssignableFrom(clazz)) {
                     Command command = (Command) clazz.getDeclaredConstructor().newInstance();
                     String commandOutputs = command.command();
-                    System.out.println(textInTheCommand.startsWith(commandOutputs));
                     if (textInTheCommand.startsWith(commandOutputs)) {
                         Method handleMethod = clazz.getDeclaredMethod("handle", Update.class);
                         msg = (SendMessage) handleMethod.invoke(command, update);
