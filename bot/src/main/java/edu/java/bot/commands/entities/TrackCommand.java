@@ -35,7 +35,7 @@ public class TrackCommand implements Command {
            if (parts.length > 1) {
                String link = parts[1];
                if(checkLinkWithoutConnecting(link)){
-                   result = DialogManager.trackURL(link);
+                   result = DialogManager.trackURL(update);
                }
            }
        }
