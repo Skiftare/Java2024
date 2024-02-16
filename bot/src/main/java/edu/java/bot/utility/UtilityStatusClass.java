@@ -8,7 +8,7 @@ public class UtilityStatusClass {
     public static final String UNTRACK_COMMAND_DESCRIPTION = "Прекратить отслеживание ссылки";
 
     public static final String SUCCESS_TRACK_INFO = "Отслеживание ссылки начато!";
-    public static final String UNSUCCESSFUL_TRACK_INFO = "Ссылка невалидна или уже отслеживается";
+    public static final String UNSUCCESSFUL_TRACK_INFO = "Ссылка невалидна";
 
     public static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
     public static final String UNSUCCESSFUL_UNTRACK_INFO ="Ссылка невалидна или отсутсвует в отслеживаемых";

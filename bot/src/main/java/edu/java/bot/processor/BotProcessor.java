@@ -5,18 +5,15 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.commands.entities.HelpCommand;
-import edu.java.bot.commands.entities.ListCommand;
-import edu.java.bot.commands.entities.StartCommand;
-import edu.java.bot.commands.entities.TrackCommand;
-import edu.java.bot.commands.entities.UntrackCommand;
+import edu.java.bot.database.DialogManager;
+import edu.java.bot.utility.ErrorLogger;
 import jakarta.annotation.PostConstruct;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.commands.CommandsLoader.getClasses;
+import static edu.java.bot.utility.ErrorLogger.createLogError;
 
 @Component
 public class BotProcessor {
@@ -48,8 +45,8 @@ public class BotProcessor {
                 if (Command.class.isAssignableFrom(clazz)) {
                     Command command = (Command) clazz.getDeclaredConstructor().newInstance();
                     String commandOutputs = command.command();
+                    System.out.println(textInTheCommand.startsWith(commandOutputs));
                     if (textInTheCommand.startsWith(commandOutputs)) {
-                            // Активируем метод handle для данного Update
                         Method handleMethod = clazz.getDeclaredMethod("handle", Update.class);
                         msg = (SendMessage) handleMethod.invoke(command, update);
                         foundRightCommand = true;
@@ -57,7 +54,7 @@ public class BotProcessor {
 
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                createLogError(e.getMessage());
             }
         }
 

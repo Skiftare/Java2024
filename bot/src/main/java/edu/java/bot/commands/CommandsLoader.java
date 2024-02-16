@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import static edu.java.bot.utility.ErrorLogger.createLogError;
 
 @Component
 public class CommandsLoader {
@@ -26,7 +27,7 @@ public class CommandsLoader {
                 sb.append(clazz.getMethod("description").invoke(instance));
                 sb.append('\n');
             } catch (Exception e) {
-                e.printStackTrace();
+                createLogError(e.getMessage());
             }
         }
         return sb.toString();
@@ -40,7 +41,7 @@ public class CommandsLoader {
                 Object instance = clazz.getDeclaredConstructor().newInstance();
                 list.add((String) clazz.getMethod("command").invoke(instance));
             } catch (Exception e) {
-                e.printStackTrace();
+                createLogError(e.getMessage());
             }
         }
         return list;
@@ -70,8 +71,11 @@ public class CommandsLoader {
                     classes.add(clazz);
                 }
             }
+            catch (Exception e){
+                createLogError(e.getMessage());
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            createLogError(e.getMessage());
         }
 
        downloadedClasses = classes;

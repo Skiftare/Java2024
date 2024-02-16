@@ -3,9 +3,10 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.processor.DialogManager;
+import edu.java.bot.database.DialogManager;
 import org.springframework.stereotype.Component;
-import java.net.URI;
+import java.util.Objects;
+
 import static edu.java.bot.database.WeakLinkChecker.checkLinkWithoutConnecting;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.TRACK_COMMAND_DESCRIPTION;
@@ -27,10 +28,10 @@ public class TrackCommand implements Command {
     public String supports(Update update) {
        String textMessage = update.message().text();
        String result = UNSUCCESSFUL_TRACK_INFO;
-       if(textMessage == this.command()){
+       if(Objects.equals(textMessage, this.command())){
            DialogManager.setWaitForTrack(update.message().chat().id());
            result = WAIT_FOR_URL_TRACK_INFO;
-
+           //ErrorLogger.createLog(WAIT_FOR_URL_TRACK_INFO+" from "+update.message().chat().id().toString());
        }
        else{
            String[] parts = textMessage.split(" ");

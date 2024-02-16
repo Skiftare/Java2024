@@ -8,12 +8,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import static edu.java.bot.utility.ErrorLogger.createLogError;
 
 @Repository
 public class DataManager {
     private static final HashMap <Long, HashSet<URL>> trackCashedMap = new HashMap<>();
 
-     public static boolean addURl(Update update){
+     static boolean addURl(Update update){
          Long id = update.message().chat().id();
          String url = update.message().text();
          HashSet<URL> urls = trackCashedMap.get(id);
@@ -30,18 +31,15 @@ public class DataManager {
              trackCashedMap.put(id, urls);
              return true;
          } catch (MalformedURLException e) {
+             createLogError(e.getMessage());
              return false;
          }
      }
-     public static boolean deleteURl(Update update){
+     static boolean deleteURl(Update update){
          Long id = update.message().chat().id();
          String url = update.message().text();
          HashSet<URL> urls = trackCashedMap.get(id);
          boolean result = false;
-
-         if (urls == null) {
-             return false;
-         }
 
          try {
              URL urlToRemove = new URL(url);
@@ -51,10 +49,24 @@ public class DataManager {
                  result = true;
              }
          } catch (MalformedURLException e) {
-
+             createLogError(e.getMessage());
+             result = false;
          }
          return result;
      }
 
+
+     static String getListOFTrackedCommands(Long id){
+         HashSet<URL> urls = trackCashedMap.get(id);
+         StringBuilder sb = new StringBuilder();
+         for(URL url: urls){
+             sb.append(url.toString()).append('\n');
+         }
+         if(sb.isEmpty()){
+             sb.append("Никаких ссылок не отслеживается");
+         }
+         System.out.println("qw");
+         return sb.toString();
+     }
 
 }

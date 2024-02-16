@@ -1,10 +1,12 @@
-package edu.java.bot.processor;
+package edu.java.bot.database;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.database.DataManager;
 import java.util.HashMap;
+import edu.java.bot.processor.DialogState;
 import org.springframework.stereotype.Service;
+import static edu.java.bot.database.DataManager.getListOFTrackedCommands;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNKNOWN_COMMAND_INFO;
@@ -33,6 +35,9 @@ public class DialogManager {
 
     public static boolean untrackURL(Update update) {
         return DataManager.deleteURl(update);
+    }
+    public static String getListOfTracked(Update update){
+        return getListOFTrackedCommands(update.message().chat().id());
     }
 
     public static SendMessage resolveProblemCommandNotFound(Update update) {

@@ -4,8 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandsLoader;
-import edu.java.bot.processor.DialogManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.java.bot.database.DialogManager;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_DESCRIPTION;
 

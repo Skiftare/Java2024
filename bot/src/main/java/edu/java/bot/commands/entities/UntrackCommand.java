@@ -3,10 +3,11 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.processor.DialogManager;
+import edu.java.bot.database.DialogManager;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
+import java.util.Objects;
+
 import static edu.java.bot.database.WeakLinkChecker.checkLinkWithoutConnecting;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
@@ -28,7 +29,7 @@ public class UntrackCommand implements Command {
     public String supports(Update update) {
         String textMessage = update.message().text();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
-        if(textMessage == this.command()){
+        if(Objects.equals(textMessage, this.command())){
             DialogManager.setWaitForUntrack(update.message().chat().id());
             result = WAIT_FOR_URL_UNTRACK_INFO;
         }
