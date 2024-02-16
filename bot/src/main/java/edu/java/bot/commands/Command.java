@@ -10,9 +10,4 @@ public interface Command {
     String description();
 
     SendMessage handle(Update update);
-
-
-    default BotCommand toApiCommand() {
-        return new BotCommand(command(), description());
-    }
 }

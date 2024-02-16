@@ -13,4 +13,6 @@ public class UtilityStatusClass {
     public static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
     public static final String UNSUCCESSFUL_UNTRACK_INFO ="Ссылка невалидна или отсутсвует в отслеживаемых";
     public static final String UNKNOWN_COMMAND_INFO = "Команда неизвестна";
+    public static final String WAIT_FOR_URL_TRACK_INFO = "Жду ссылку на отслеживание";
+    public static final String WAIT_FOR_URL_UNTRACK_INFO = "Жду ссылку на удаление";
 }

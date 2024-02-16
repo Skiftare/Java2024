@@ -64,8 +64,6 @@ public class BotProcessor {
         if(!foundRightCommand){
             msg = DialogManager.resolveProblemCommandNotFound(update);
         }
-
-
         return msg;
     }
 }

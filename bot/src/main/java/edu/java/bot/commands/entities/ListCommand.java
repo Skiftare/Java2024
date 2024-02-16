@@ -22,7 +22,6 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         DialogManager.resetDialogState(update.message().chat().id());
-
         return new SendMessage(update.message().chat().id(), "Заглушка");
     }
 }

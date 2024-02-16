@@ -2,6 +2,7 @@ package edu.java.bot.processor;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.database.DataManager;
 import java.util.HashMap;
 import org.springframework.stereotype.Service;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
@@ -27,11 +28,11 @@ public class DialogManager {
     }
 
     public static boolean trackURL(Update update) {
-        return true;
+        return DataManager.addURl(update);
     }
 
     public static boolean untrackURL(Update update) {
-        return true;
+        return DataManager.deleteURl(update);
     }
 
     public static SendMessage resolveProblemCommandNotFound(Update update) {
@@ -52,10 +53,10 @@ public class DialogManager {
                 );
 
             }
+        } else {
+            msg = new SendMessage(update.message().chat().id(), UNKNOWN_COMMAND_INFO);
         }
-        else  msg = new SendMessage(update.message().chat().id(), UNKNOWN_COMMAND_INFO);
         return msg;
     }
-
 
 }

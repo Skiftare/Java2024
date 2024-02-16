@@ -24,7 +24,6 @@ public class StartCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
-        // Логика обработки команды "/start"
         DialogManager.resetDialogState(update.message().chat().id());
         return new SendMessage(update.message().chat().id(), "Вы зарегистрированы!");
     }

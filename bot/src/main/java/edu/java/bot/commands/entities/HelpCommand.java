@@ -14,9 +14,6 @@ public class HelpCommand implements Command {
 
     private static final String helpInfo = CommandsLoader.getCommandsWithDescription();
 
-
-
-
     @Override
     public String command() {
         return "/help";
