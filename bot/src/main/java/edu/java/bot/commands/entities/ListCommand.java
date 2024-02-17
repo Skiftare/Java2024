@@ -24,9 +24,10 @@ public class ListCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
-        DialogManager.resetDialogState(update.message().chat().id());
-        return new SendMessage(update.message().chat().id(), getListOfTracked(
-                new UserRequest(update.message().chat().id(), update.message().text()))
+        Long chatId = update.message().chat().id();
+
+        DialogManager.resetDialogState(chatId);
+        return new SendMessage(chatId, getListOfTracked(new UserRequest(chatId, update.message().text()))
         );
     }
 }

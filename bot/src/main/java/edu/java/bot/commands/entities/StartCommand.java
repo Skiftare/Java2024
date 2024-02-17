@@ -26,7 +26,9 @@ public class StartCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
-        DialogManager.resetDialogState(update.message().chat().id());
-        return new SendMessage(update.message().chat().id(), SUCCESS_START_INFO);
+        Long chatId = update.message().chat().id();
+
+        DialogManager.resetDialogState(chatId);
+        return new SendMessage(chatId, SUCCESS_START_INFO);
     }
 }

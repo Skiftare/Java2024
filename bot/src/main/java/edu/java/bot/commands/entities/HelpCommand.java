@@ -26,8 +26,9 @@ public class HelpCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
-        DialogManager.resetDialogState(update.message().chat().id());
+        Long chatId = update.message().chat().id();
 
-        return new SendMessage(update.message().chat().id(), helpInfo);
+        DialogManager.resetDialogState(chatId);
+        return new SendMessage(chatId, helpInfo);
     }
 }

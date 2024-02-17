@@ -2,8 +2,10 @@ package edu.java.bot.memory;
 
 import edu.java.bot.processor.UserRequest;
 import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DataManagerTest {
 

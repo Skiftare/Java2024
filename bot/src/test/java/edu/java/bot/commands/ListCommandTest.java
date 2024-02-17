@@ -1,9 +1,5 @@
 package edu.java.bot.commands;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
@@ -11,7 +7,12 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.ListCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.security.SecureRandom;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ListCommandTest {
 
@@ -40,7 +41,7 @@ public class ListCommandTest {
         Chat chat = mock(Chat.class);
 
         Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0,Long.MAX_VALUE);
+        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
 
         when(update.message()).thenReturn(message);
         when(message.chat()).thenReturn(chat);
@@ -49,7 +50,7 @@ public class ListCommandTest {
         SendMessage actualSendMessage = listCommand.handle(update);
 
         assertEquals(actualSendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(actualSendMessage.getParameters().get("text"),"Никаких ссылок не отслеживается");
+        assertEquals(actualSendMessage.getParameters().get("text"), "Никаких ссылок не отслеживается");
 
 
     }

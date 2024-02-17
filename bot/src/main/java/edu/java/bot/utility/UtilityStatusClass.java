@@ -31,4 +31,10 @@ public class UtilityStatusClass {
     public static final String SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION = " :\t";
     public static final String NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS = "command";
     public static final String NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS = "description";
+
+    public static final String FILE_EXTENSION_AS_CLASS = ".class";
+
+    public static final String POINT_CHAR_AS_STRING = ".";
+    public static final String SLASH_CHAR_AS_STRING = "/";
+    public static final String STAR_CHAR_AS_STRING = "*";
 }

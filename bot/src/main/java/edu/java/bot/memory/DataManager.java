@@ -19,7 +19,6 @@ public class DataManager {
     static boolean addURl(UserRequest update) {
         Long id = update.id();
         String url = update.message();
-
         HashSet<URI> urls = TRACK_CASHED_MAP.computeIfAbsent(id, k -> new HashSet<>());
 
         try {
@@ -41,7 +40,6 @@ public class DataManager {
 
         try {
             URI urlToRemove = new URI(url);
-
             if (urls.remove(urlToRemove)) {
                 if (urls.isEmpty()) {
                     TRACK_CASHED_MAP.remove(id);
@@ -53,6 +51,7 @@ public class DataManager {
         } catch (URISyntaxException e) {
             createLogError(e.getMessage());
         }
+
         return result;
     }
 
@@ -60,7 +59,6 @@ public class DataManager {
         String result = NO_LINKS_NOT_TRACKED;
 
         if (TRACK_CASHED_MAP.containsKey(id)) {
-
             HashSet<URI> urls = TRACK_CASHED_MAP.get(id);
             StringBuilder sb = new StringBuilder();
             for (URI url : urls) {

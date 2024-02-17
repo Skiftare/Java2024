@@ -38,7 +38,6 @@ public class HelpCommandTest {
     }
 
 
-
     @Test
     public void testHandle() {
         // Create a mock Update object
@@ -47,7 +46,7 @@ public class HelpCommandTest {
         Chat chat = mock(Chat.class);
 
         Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0,Long.MAX_VALUE);
+        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
 
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);

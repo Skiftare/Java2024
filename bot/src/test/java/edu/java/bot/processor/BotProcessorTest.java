@@ -1,4 +1,5 @@
 package edu.java.bot.processor;
+
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
@@ -7,19 +8,18 @@ import edu.java.bot.commands.CommandsLoader;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+
 import static edu.java.bot.utility.UtilityStatusClass.START_COMMAND_COMMAND;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_START_INFO;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
 
 public class BotProcessorTest {
 
 
-
     @Test
-    public void testRecognizeCommand_commandNotFound() throws Exception{
+    public void testRecognizeCommand_commandNotFound() throws Exception {
         // Given
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);

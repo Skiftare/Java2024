@@ -29,15 +29,16 @@ public class UntrackCommand implements Command {
 
     public String supports(Update update) {
         String textMessage = update.message().text();
+        Long chatId = update.message().chat().id();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
         if (Objects.equals(textMessage, this.command())) {
-            DialogManager.setWaitForUntrack(update.message().chat().id());
+            DialogManager.setWaitForUntrack(chatId);
             result = WAIT_FOR_URL_UNTRACK_INFO;
         } else {
             String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
             if (parts.length > 1) {
                 String link = parts[1];
-                UserRequest request = new UserRequest(update.message().chat().id(), parts[1]);
+                UserRequest request = new UserRequest(chatId, link);
                 if (checkLinkWithoutConnecting(link) && DialogManager.untrackURL(request)) {
                     result = SUCCESS_UNTRACK_INFO;
                 }

@@ -31,15 +31,18 @@ public class TrackCommand implements Command {
 
     public String supports(Update update) {
         String textMessage = update.message().text();
+        Long chatId = update.message().chat().id();
+
         String result = UNSUCCESSFUL_TRACK_INFO;
         if (Objects.equals(textMessage, this.command())) {
-            DialogManager.setWaitForTrack(update.message().chat().id());
+            DialogManager.setWaitForTrack(chatId);
             result = WAIT_FOR_URL_TRACK_INFO;
         } else {
             String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
             if (parts.length > 1) {
-                UserRequest request = new UserRequest(update.message().chat().id(), parts[1]);
-                if (checkLinkWithoutConnecting(parts[1]) && DialogManager.trackURL(request)) {
+                String link = parts[1];
+                UserRequest request = new UserRequest(chatId, link);
+                if (checkLinkWithoutConnecting(link) && DialogManager.trackURL(request)) {
                     result = SUCCESS_TRACK_INFO;
                 }
             }

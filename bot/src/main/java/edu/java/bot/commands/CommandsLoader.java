@@ -11,9 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
+import static edu.java.bot.utility.UtilityStatusClass.FILE_EXTENSION_AS_CLASS;
 import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS;
 import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.POINT_CHAR_AS_STRING;
 import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
+import static edu.java.bot.utility.UtilityStatusClass.SLASH_CHAR_AS_STRING;
+import static edu.java.bot.utility.UtilityStatusClass.STAR_CHAR_AS_STRING;
+
+
 
 @Component
 @SuppressWarnings("HideUtilityClassConstructor")
@@ -29,6 +35,7 @@ public class CommandsLoader {
         for (Class<?> clazz : classes) {
             try {
                 Object instance = clazz.getDeclaredConstructor().newInstance();
+
                 sb.append(clazz.getMethod(NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS).invoke(instance));
                 sb.append(SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION);
                 sb.append(clazz.getMethod(NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS).invoke(instance));
@@ -55,7 +62,6 @@ public class CommandsLoader {
     }
 
     public static List<Class<?>> getClasses() {
-        //System.out.println(downloadedClasses.size());
         if (downloadedClasses.isEmpty()) {
             load();
         }
@@ -67,13 +73,17 @@ public class CommandsLoader {
         List<Class<?>> classes = new ArrayList<>();
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String path = PACKAGE_NAME.replace('.', '/');
+            String path = PACKAGE_NAME.replace(POINT_CHAR_AS_STRING, SLASH_CHAR_AS_STRING);
             URL resource = classLoader.getResource(path);
             Path dirPath = Paths.get(resource.toURI());
 
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, "*.class")) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+                    dirPath, STAR_CHAR_AS_STRING + FILE_EXTENSION_AS_CLASS
+            )) {
                 for (Path entry : stream) {
-                    String className = PACKAGE_NAME + "." + entry.getFileName().toString().replace(".class", "");
+                    String className = PACKAGE_NAME
+                            + POINT_CHAR_AS_STRING
+                            + entry.getFileName().toString().replace(FILE_EXTENSION_AS_CLASS, "");
                     Class<?> clazz = Class.forName(className);
                     classes.add(clazz);
                 }

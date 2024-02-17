@@ -49,6 +49,7 @@ public class DialogManager {
 
     public static SendMessage resolveProblemCommandNotFound(UserRequest update) {
         SendMessage msg;
+
         if (activeDialogs.containsKey(update.id())) {
             DialogState state = activeDialogs.get(update.id());
             if (state == DialogState.TRACK_URI) {
@@ -66,6 +67,7 @@ public class DialogManager {
         } else {
             msg = new SendMessage(update.id(), UNKNOWN_COMMAND_INFO);
         }
+
         return msg;
     }
 
