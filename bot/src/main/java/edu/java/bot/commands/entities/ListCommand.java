@@ -3,16 +3,17 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.database.DialogManager;
+import edu.java.bot.memory.DialogManager;
 import org.springframework.stereotype.Component;
-import static edu.java.bot.database.DialogManager.getListOfTracked;
+import static edu.java.bot.memory.DialogManager.getListOfTracked;
+import static edu.java.bot.utility.UtilityStatusClass.LIST_COMMAND_COMMAND;
 import static edu.java.bot.utility.UtilityStatusClass.LIST_COMMAND_DESCRIPTION;
 
 @Component
 public class ListCommand implements Command {
     @Override
     public String command() {
-        return "/list";
+        return LIST_COMMAND_COMMAND;
     }
 
     @Override

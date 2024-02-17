@@ -1,7 +1,5 @@
 package edu.java.bot.commands;
 
-import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -9,11 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
+import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
 
 @Component
 public class CommandsLoader {
     private static final String PACKAGE_NAME = "edu.java.bot.commands.entities";
+
     private static List<Class<?>> downloadedClasses = new ArrayList<>();
 
     public static String getCommandsWithDescription(){
@@ -22,10 +26,10 @@ public class CommandsLoader {
         for(Class<?> clazz: classes){
             try {
                 Object instance = clazz.getDeclaredConstructor().newInstance();
-                sb.append(clazz.getMethod("command").invoke(instance));
-                sb.append("\s:\t");
-                sb.append(clazz.getMethod("description").invoke(instance));
-                sb.append('\n');
+                sb.append(clazz.getMethod(NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS).invoke(instance));
+                sb.append(SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION);
+                sb.append(clazz.getMethod(NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS).invoke(instance));
+                sb.append(ENDL_CHAR);
             } catch (Exception e) {
                 createLogError(e.getMessage());
             }
@@ -39,7 +43,7 @@ public class CommandsLoader {
         for(Class<?> clazz: classes){
             try {
                 Object instance = clazz.getDeclaredConstructor().newInstance();
-                list.add((String) clazz.getMethod("command").invoke(instance));
+                list.add((String) clazz.getMethod(NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS).invoke(instance));
             } catch (Exception e) {
                 createLogError(e.getMessage());
             }
@@ -62,6 +66,7 @@ public class CommandsLoader {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String path = PACKAGE_NAME.replace('.', '/');
             URL resource = classLoader.getResource(path);
+            assert resource != null;
             Path dirPath = Paths.get(resource.toURI());
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, "*.class")) {

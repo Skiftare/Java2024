@@ -5,15 +5,16 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.database.DialogManager;
-import edu.java.bot.utility.ErrorLogger;
+import edu.java.bot.memory.DialogManager;
 import jakarta.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.commands.CommandsLoader.getClasses;
+import static edu.java.bot.utility.ErrorLogger.createLog;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_HANDLE_METHOD_IN_CLASS_OF_BOT_COMMANDS;
 
 @Component
 public class BotProcessor {
@@ -28,7 +29,10 @@ public class BotProcessor {
 
     private int createUpdatesManager(List<Update> updates) {
         for (Update update : updates) {
+            createLog("Пришёл update от "+update.message().chat().id().toString()+", начинаю обработку");
             bot.execute(recognizeCommand(update));
+            createLog("Обработал update от "+update.message().chat().id().toString()+", начинаю обработку");
+
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -46,9 +50,12 @@ public class BotProcessor {
                     Command command = (Command) clazz.getDeclaredConstructor().newInstance();
                     String commandOutputs = command.command();
                     if (textInTheCommand.startsWith(commandOutputs)) {
-                        Method handleMethod = clazz.getDeclaredMethod("handle", Update.class);
+                        createLog("Нашли нужную команду в списке поддерживаемых");
+                        Method handleMethod = clazz.getDeclaredMethod(NAME_OF_HANDLE_METHOD_IN_CLASS_OF_BOT_COMMANDS, Update.class);
                         msg = (SendMessage) handleMethod.invoke(command, update);
+                        createLog("Ответ создан");
                         foundRightCommand = true;
+                        break;
                     }
 
                 }
@@ -58,7 +65,9 @@ public class BotProcessor {
         }
 
         if(!foundRightCommand){
+            createLog("Нужной команды нет, DialogManager начинает работу");
             msg = DialogManager.resolveProblemCommandNotFound(update);
+            createLog("Ответ создан");
         }
         return msg;
     }

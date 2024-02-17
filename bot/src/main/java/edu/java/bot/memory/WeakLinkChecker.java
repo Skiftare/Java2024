@@ -1,4 +1,4 @@
-package edu.java.bot.database;
+package edu.java.bot.memory;
 
 public class WeakLinkChecker {
     public static boolean checkLinkWithoutConnecting(String url) {

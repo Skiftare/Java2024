@@ -4,8 +4,9 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandsLoader;
-import edu.java.bot.database.DialogManager;
+import edu.java.bot.memory.DialogManager;
 import org.springframework.stereotype.Component;
+import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_COMMAND;
 import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_DESCRIPTION;
 
 @Component
@@ -15,7 +16,7 @@ public class HelpCommand implements Command {
 
     @Override
     public String command() {
-        return "/help";
+        return HELP_COMMAND_COMMAND;
     }
 
     @Override

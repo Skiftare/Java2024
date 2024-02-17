@@ -1,12 +1,11 @@
-package edu.java.bot.database;
+package edu.java.bot.memory;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.database.DataManager;
 import java.util.HashMap;
 import edu.java.bot.processor.DialogState;
 import org.springframework.stereotype.Service;
-import static edu.java.bot.database.DataManager.getListOFTrackedCommands;
+import static edu.java.bot.memory.DataManager.getListOFTrackedCommands;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNKNOWN_COMMAND_INFO;

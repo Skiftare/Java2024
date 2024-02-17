@@ -3,14 +3,16 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import edu.java.bot.database.DialogManager;
+import edu.java.bot.memory.DialogManager;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-import static edu.java.bot.database.WeakLinkChecker.checkLinkWithoutConnecting;
+import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
+import static edu.java.bot.utility.UtilityStatusClass.SPACE_AS_SPLIT_CHAR;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
+import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_COMMAND;
 import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION;
 import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
 
@@ -18,7 +20,7 @@ import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
 public class UntrackCommand implements Command {
     @Override
     public String command() {
-        return "/untrack";
+        return UNTRACK_COMMAND_COMMAND;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class UntrackCommand implements Command {
             result = WAIT_FOR_URL_UNTRACK_INFO;
         }
         else{
-            String[] parts = textMessage.split(" ");
+            String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
             if (parts.length > 1) {
                 String link = parts[1];
                 if(checkLinkWithoutConnecting(link) && DialogManager.untrackURL(update)){

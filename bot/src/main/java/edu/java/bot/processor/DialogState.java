@@ -9,7 +9,7 @@ import lombok.Getter;
 
     private String value;
 
-    private DialogState(String value) {
+    DialogState(String value) {
         this.value = value;
     }
 

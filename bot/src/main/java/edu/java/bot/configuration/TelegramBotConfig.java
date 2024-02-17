@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class TelegramBotConfig {
-
+    private static final String MESSAGE_TO_ADMIN_OF_STARTUP = "Bot has been activated";
     @Autowired
     private ApplicationConfig config;
 
@@ -21,7 +21,7 @@ public class TelegramBotConfig {
     public TelegramBot telegramBot() {
         TelegramBot bot = new TelegramBot(config.telegramToken());
         bot.execute(new SendMessage(
-            config.adminChatId(), "Bot has been activated").replyMarkup(defaultKeyboard())
+            config.adminChatId(), MESSAGE_TO_ADMIN_OF_STARTUP).replyMarkup(defaultKeyboard())
         );
         return bot;
     }
