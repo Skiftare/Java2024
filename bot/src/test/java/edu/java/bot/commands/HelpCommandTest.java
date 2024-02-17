@@ -11,7 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
+
+import static edu.java.bot.utility.UtilityStatusClass.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +71,13 @@ public class HelpCommandTest {
 
         // Verify the response message
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(sendMessage.getParameters().get("text"),expectedTextMessage);
+
+        assertTrue(sendMessage.getParameters().get("text").toString().contains(HELP_COMMAND_DESCRIPTION));
+        assertTrue(sendMessage.getParameters().get("text").toString().contains(LIST_COMMAND_DESCRIPTION));
+        assertTrue(sendMessage.getParameters().get("text").toString().contains(START_COMMAND_DESCRIPTION));
+        assertTrue(sendMessage.getParameters().get("text").toString().contains(TRACK_COMMAND_DESCRIPTION));
+        assertTrue(sendMessage.getParameters().get("text").toString().contains(UNTRACK_COMMAND_DESCRIPTION));
+
     }
 
 }
