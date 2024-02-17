@@ -7,10 +7,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import edu.java.bot.utility.ErrorLogger;
 import org.springframework.stereotype.Repository;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
 import static edu.java.bot.utility.UtilityStatusClass.NO_LINKS_NOT_TRACKED;
+import static edu.java.bot.utility.UtilityStatusClass.SPACE_AS_SPLIT_CHAR;
 
 @Repository
 public class DataManager {
@@ -18,24 +20,24 @@ public class DataManager {
 
     static boolean addURl(Update update) {
         Long id = update.message().chat().id();
-        String url = update.message().text();
+        String url = update.message().text().split(SPACE_AS_SPLIT_CHAR)[1];
+
         HashSet<URI> urls = trackCashedMap.computeIfAbsent(id, k -> new HashSet<>());
 
         try {
             URI newUrl = new URI(url);
-
             urls.add(newUrl);
             trackCashedMap.put(id, urls);
             return true;
         } catch (URISyntaxException e) {
-            createLogError(e.getMessage());
+            ErrorLogger.createLogError(e.getMessage());
             return false;
         }
     }
 
     static boolean deleteURl(Update update) {
         Long id = update.message().chat().id();
-        String url = update.message().text();
+        String url = update.message().text().split(SPACE_AS_SPLIT_CHAR)[1];
         HashSet<URI> urls = trackCashedMap.get(id);
         boolean result = false;
 

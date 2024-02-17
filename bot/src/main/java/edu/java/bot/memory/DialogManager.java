@@ -38,6 +38,11 @@ public class DialogManager {
     public static String getListOfTracked(Update update){
         return getListOFTrackedCommands(update.message().chat().id());
     }
+    public static DialogState getDialogState(Long id){
+
+        return activeDialogs.getOrDefault(id, DialogState.DEFAULT_SESSION);
+
+    }
 
     public static SendMessage resolveProblemCommandNotFound(Update update) {
         SendMessage msg;

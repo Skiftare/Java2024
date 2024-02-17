@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
+import edu.java.bot.utility.ErrorLogger;
 import org.springframework.stereotype.Component;
 import java.util.Objects;
 
@@ -33,13 +34,13 @@ public class TrackCommand implements Command {
        if(Objects.equals(textMessage, this.command())){
            DialogManager.setWaitForTrack(update.message().chat().id());
            result = WAIT_FOR_URL_TRACK_INFO;
-           //ErrorLogger.createLog(WAIT_FOR_URL_TRACK_INFO+" from "+update.message().chat().id().toString());
+           ErrorLogger.createLog(WAIT_FOR_URL_TRACK_INFO+" from "+update.message().chat().id().toString());
        }
        else{
            String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
            if (parts.length > 1) {
-               String link = parts[1];
-               if(checkLinkWithoutConnecting(link) && DialogManager.trackURL(update)){
+
+               if(checkLinkWithoutConnecting(parts[1]) && DialogManager.trackURL(update)){
                    result = SUCCESS_TRACK_INFO;
                }
            }
