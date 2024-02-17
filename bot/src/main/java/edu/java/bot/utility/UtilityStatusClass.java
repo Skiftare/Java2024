@@ -1,5 +1,6 @@
 package edu.java.bot.utility;
 
+@SuppressWarnings("HideUtilityClassConstructor")
 public class UtilityStatusClass {
     public static final String HELP_COMMAND_DESCRIPTION = "Вывести окно с командами";
     public static final String LIST_COMMAND_DESCRIPTION = "Показать список отслеживаемых ссылок";
@@ -21,7 +22,8 @@ public class UtilityStatusClass {
     public static final String LIST_COMMAND_COMMAND = "/list";
     public static final String HELP_COMMAND_COMMAND = "/help";
     public static final String START_COMMAND_COMMAND = "/start";
-    public static final String SUCCESS_START_INFO = "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка. Данные не собираем, историю диалога не храним, пишите что хотите.";
+    public static final String SUCCESS_START_INFO =
+            "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка";
     public static final String SPACE_AS_SPLIT_CHAR = " ";
     public static final String ENDL_CHAR = "\n";
     public static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";

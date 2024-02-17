@@ -12,19 +12,20 @@ import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
 import static edu.java.bot.utility.UtilityStatusClass.NO_LINKS_NOT_TRACKED;
 
 @Repository
+@SuppressWarnings("HideUtilityClassConstructor")
 public class DataManager {
-    private static final HashMap<Long, HashSet<URI>> trackCashedMap = new HashMap<>();
+    private static final HashMap<Long, HashSet<URI>> TRACK_CASHED_MAP = new HashMap<>();
 
     static boolean addURl(UserRequest update) {
         Long id = update.id();
         String url = update.message();
 
-        HashSet<URI> urls = trackCashedMap.computeIfAbsent(id, k -> new HashSet<>());
+        HashSet<URI> urls = TRACK_CASHED_MAP.computeIfAbsent(id, k -> new HashSet<>());
 
         try {
             URI newUrl = new URI(url);
             urls.add(newUrl);
-            trackCashedMap.put(id, urls);
+            TRACK_CASHED_MAP.put(id, urls);
             return true;
         } catch (URISyntaxException e) {
             ErrorLogger.createLogError(e.getMessage());
@@ -35,7 +36,7 @@ public class DataManager {
     static boolean deleteURl(UserRequest update) {
         Long id = update.id();
         String url = update.message();
-        HashSet<URI> urls = trackCashedMap.get(id);
+        HashSet<URI> urls = TRACK_CASHED_MAP.get(id);
         boolean result = false;
 
         try {
@@ -43,9 +44,9 @@ public class DataManager {
 
             if (urls.remove(urlToRemove)) {
                 if (urls.isEmpty()) {
-                    trackCashedMap.remove(id);
+                    TRACK_CASHED_MAP.remove(id);
                 } else {
-                    trackCashedMap.put(id, urls);
+                    TRACK_CASHED_MAP.put(id, urls);
                 }
                 result = true;
             }
@@ -58,9 +59,9 @@ public class DataManager {
     static String getListOFTrackedCommands(Long id) {
         String result = NO_LINKS_NOT_TRACKED;
 
-        if (trackCashedMap.containsKey(id)) {
+        if (TRACK_CASHED_MAP.containsKey(id)) {
 
-            HashSet<URI> urls = trackCashedMap.get(id);
+            HashSet<URI> urls = TRACK_CASHED_MAP.get(id);
             StringBuilder sb = new StringBuilder();
             for (URI url : urls) {
                 sb.append(url.toString()).append(ENDL_CHAR);

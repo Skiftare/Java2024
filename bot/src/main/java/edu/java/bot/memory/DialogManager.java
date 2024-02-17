@@ -13,6 +13,7 @@ import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_TRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
 
 @Service
+@SuppressWarnings("HideUtilityClassConstructor")
 public class DialogManager {
     private static HashMap<Long, DialogState> activeDialogs = new HashMap<>();
 
@@ -53,14 +54,12 @@ public class DialogManager {
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
                     update.id(),
-                    trackURL(update) ?
-                        SUCCESS_TRACK_INFO : UNSUCCESSFUL_TRACK_INFO
+                    trackURL(update) ? SUCCESS_TRACK_INFO : UNSUCCESSFUL_TRACK_INFO
                 );
             } else {
                 msg = new SendMessage(
                     update.id(),
-                    untrackURL(update) ?
-                        SUCCESS_UNTRACK_INFO : UNSUCCESSFUL_UNTRACK_INFO
+                    untrackURL(update) ? SUCCESS_UNTRACK_INFO : UNSUCCESSFUL_UNTRACK_INFO
                 );
 
             }

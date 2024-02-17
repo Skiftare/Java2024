@@ -7,12 +7,10 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.lang.reflect.Method;
 import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import static edu.java.bot.commands.CommandsLoader.getClasses;
 import static edu.java.bot.utility.ErrorLogger.createLog;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
@@ -31,10 +29,7 @@ public class BotProcessor {
 
     private int createUpdatesManager(List<Update> updates) {
         for (Update update : updates) {
-            createLog("Пришёл update от " + update.message().chat().id().toString() + ", начинаю обработку");
             bot.execute(recognizeCommand(update));
-            createLog("Обработал update от " + update.message().chat().id().toString() + ", начинаю обработку");
-
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -53,9 +48,10 @@ public class BotProcessor {
                     String commandOutputs = command.command();
                     if (textInTheCommand.startsWith(commandOutputs)) {
                         createLog("Нашли нужную команду в списке поддерживаемых");
-                        Method handleMethod = clazz.getDeclaredMethod(NAME_OF_HANDLE_METHOD_IN_CLASS_OF_BOT_COMMANDS, Update.class);
+                        Method handleMethod = clazz.getDeclaredMethod(
+                                NAME_OF_HANDLE_METHOD_IN_CLASS_OF_BOT_COMMANDS, Update.class
+                        );
                         msg = (SendMessage) handleMethod.invoke(command, update);
-                        createLog("Ответ создан");
                         foundRightCommand = true;
                         break;
                     }
@@ -71,7 +67,6 @@ public class BotProcessor {
             msg = DialogManager.resolveProblemCommandNotFound(
                     new UserRequest(update.message().chat().id(), update.message().text())
             );
-            createLog("Ответ создан");
         }
         return msg;
     }

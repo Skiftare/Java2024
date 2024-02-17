@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.UserRequest;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
 import static edu.java.bot.utility.UtilityStatusClass.SPACE_AS_SPLIT_CHAR;
@@ -13,8 +14,6 @@ import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
 import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_COMMAND;
 import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION;
 import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
-import java.util.Objects;
-
 
 @Component
 public class UntrackCommand implements Command {
@@ -38,7 +37,8 @@ public class UntrackCommand implements Command {
             String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
             if (parts.length > 1) {
                 String link = parts[1];
-                if (checkLinkWithoutConnecting(link) && DialogManager.untrackURL(new UserRequest(update.message().chat().id(), parts[1]))) {
+                UserRequest request = new UserRequest(update.message().chat().id(), parts[1]);
+                if (checkLinkWithoutConnecting(link) && DialogManager.untrackURL(request)) {
                     result = SUCCESS_UNTRACK_INFO;
                 }
             }

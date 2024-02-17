@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
-import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
-import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
 import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
 
 @Component
+@SuppressWarnings("HideUtilityClassConstructor")
 public class CommandsLoader {
     private static final String PACKAGE_NAME = "edu.java.bot.commands.entities";
 
