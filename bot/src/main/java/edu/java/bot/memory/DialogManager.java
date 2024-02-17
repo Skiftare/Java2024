@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.HashMap;
 import edu.java.bot.processor.DialogState;
+import edu.java.bot.processor.UserRequest;
 import org.springframework.stereotype.Service;
 import static edu.java.bot.memory.DataManager.getListOFTrackedCommands;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
@@ -28,15 +29,15 @@ public class DialogManager {
         activeDialogs.remove(id);
     }
 
-    public static boolean trackURL(Update update) {
+    public static boolean trackURL(UserRequest update) {
         return DataManager.addURl(update);
     }
 
-    public static boolean untrackURL(Update update) {
+    public static boolean untrackURL(UserRequest update) {
         return DataManager.deleteURl(update);
     }
-    public static String getListOfTracked(Update update){
-        return getListOFTrackedCommands(update.message().chat().id());
+    public static String getListOfTracked(UserRequest update){
+        return getListOFTrackedCommands(update.id());
     }
     public static DialogState getDialogState(Long id){
 
@@ -44,26 +45,26 @@ public class DialogManager {
 
     }
 
-    public static SendMessage resolveProblemCommandNotFound(Update update) {
+    public static SendMessage resolveProblemCommandNotFound(UserRequest update) {
         SendMessage msg;
-        if (activeDialogs.containsKey(update.message().chat().id())) {
-            DialogState state = activeDialogs.get(update.message().chat().id());
+        if (activeDialogs.containsKey(update.id())) {
+            DialogState state = activeDialogs.get(update.id());
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
-                    update.message().chat().id(),
+                    update.id(),
                     trackURL(update) ?
                         SUCCESS_TRACK_INFO : UNSUCCESSFUL_TRACK_INFO
                 );
             } else {
                 msg = new SendMessage(
-                    update.message().chat().id(),
+                    update.id(),
                     untrackURL(update) ?
                         SUCCESS_UNTRACK_INFO : UNSUCCESSFUL_UNTRACK_INFO
                 );
 
             }
         } else {
-            msg = new SendMessage(update.message().chat().id(), UNKNOWN_COMMAND_INFO);
+            msg = new SendMessage(update.id(), UNKNOWN_COMMAND_INFO);
         }
         return msg;
     }

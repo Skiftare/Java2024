@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
+import edu.java.bot.processor.UserRequest;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.DialogManager.getListOfTracked;
 import static edu.java.bot.utility.UtilityStatusClass.LIST_COMMAND_COMMAND;
@@ -24,6 +25,6 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         DialogManager.resetDialogState(update.message().chat().id());
-        return new SendMessage(update.message().chat().id(), getListOfTracked(update));
+        return new SendMessage(update.message().chat().id(), getListOfTracked(new UserRequest(update.message().chat().id(),update.message().text())));
     }
 }

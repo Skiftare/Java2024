@@ -6,6 +6,9 @@ import org.apache.logging.log4j.Logger;
 @SuppressWarnings("HideUtilityClassConstructor")
 public class ErrorLogger {
     private final static Logger LOGGER = LogManager.getLogger();
+    public ErrorLogger(){
+        return;
+    }
 
     public static void createLogError(String error) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();

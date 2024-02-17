@@ -23,7 +23,7 @@ public class BotProcessor {
     private TelegramBot bot;
 
     @PostConstruct
-    public void setUpdateEventProcessor() {
+    private void setUpdateEventProcessor() {
         bot.setUpdatesListener(this::createUpdatesManager);
     }
 
@@ -38,7 +38,7 @@ public class BotProcessor {
     }
 
 
-    private static SendMessage recognizeCommand(Update update) {
+    static SendMessage recognizeCommand(Update update) {
         String textInTheCommand = update.message().text();
         SendMessage msg = null;
         boolean foundRightCommand = false;
@@ -66,7 +66,9 @@ public class BotProcessor {
 
         if(!foundRightCommand){
             createLog("Нужной команды нет, DialogManager начинает работу");
-            msg = DialogManager.resolveProblemCommandNotFound(update);
+            msg = DialogManager.resolveProblemCommandNotFound(
+                new UserRequest(update.message().chat().id(), update.message().text())
+            );
             createLog("Ответ создан");
         }
         return msg;

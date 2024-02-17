@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.entities.HelpCommand;
 import edu.java.bot.commands.entities.StartCommand;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.DialogState;

@@ -11,8 +11,8 @@ import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_DESCRIPTION;
 
 @Component
 public class HelpCommand implements Command {
+    private static String helpInfo = CommandsLoader.getCommandsWithDescription();
 
-    private static final String helpInfo = CommandsLoader.getCommandsWithDescription();
 
     @Override
     public String command() {
@@ -27,6 +27,7 @@ public class HelpCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         DialogManager.resetDialogState(update.message().chat().id());
+
         return new SendMessage(update.message().chat().id(), helpInfo);
     }
 }
