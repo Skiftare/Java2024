@@ -46,10 +46,10 @@ public class HelpCommandTest {
         Message message = mock(Message.class);
         Long chatId = secureRandom.nextLong(0,Long.MAX_VALUE);
         String expectedTextMessage = "/start :\tЗарегистрировать пользователя\n" +
-            "/list :\tПоказать список отслеживаемых ссылок\n" +
-            "/help :\tВывести окно с командами\n" +
-            "/untrack :\tПрекратить отслеживание ссылки\n" +
-            "/track :\tНачать отслеживание ссылки\n";
+                "/list :\tПоказать список отслеживаемых ссылок\n" +
+                "/help :\tВывести окно с командами\n" +
+                "/untrack :\tПрекратить отслеживание ссылки\n" +
+                "/track :\tНачать отслеживание ссылки";
 
 
         when(message.chat()).thenReturn(chat);

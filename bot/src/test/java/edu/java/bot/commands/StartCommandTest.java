@@ -44,7 +44,7 @@ public class StartCommandTest {
         Message message = mock(Message.class);
         Long chatId = secureRandom.nextLong(0,Long.MAX_VALUE);
 
-        String expectedTextMessage = "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка. Данные не собираем, историю диалога не храним, пишите что хотите.";
+        String expectedTextMessage = "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка";
 
 
 
