@@ -7,7 +7,7 @@ import lombok.Getter;
     UNTRACK_URI("untrackURI"),
     DEFAULT_SESSION("defaultSession");
 
-    private String value;
+    private final String value;
 
     DialogState(String value) {
         this.value = value;

@@ -75,6 +75,7 @@ public class CommandsLoader {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String path = PACKAGE_NAME.replace(POINT_CHAR_AS_STRING, SLASH_CHAR_AS_STRING);
             URL resource = classLoader.getResource(path);
+            assert resource != null;
             Path dirPath = Paths.get(resource.toURI());
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(

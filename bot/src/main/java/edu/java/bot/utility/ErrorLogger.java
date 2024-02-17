@@ -8,7 +8,6 @@ public class ErrorLogger {
     private final static Logger LOGGER = LogManager.getLogger();
 
     public ErrorLogger() {
-        return;
     }
 
     public static void createLogError(String error) {

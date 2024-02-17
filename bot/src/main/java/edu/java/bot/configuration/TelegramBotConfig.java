@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TelegramBotConfig {
     private static final String MESSAGE_TO_ADMIN_OF_STARTUP = "Bot has been activated";
+
     @Autowired
     private ApplicationConfig config;
 
