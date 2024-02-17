@@ -7,10 +7,12 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
 import jakarta.annotation.PostConstruct;
-import java.lang.reflect.Method;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
 import static edu.java.bot.commands.CommandsLoader.getClasses;
 import static edu.java.bot.utility.ErrorLogger.createLog;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
@@ -29,9 +31,9 @@ public class BotProcessor {
 
     private int createUpdatesManager(List<Update> updates) {
         for (Update update : updates) {
-            createLog("Пришёл update от "+update.message().chat().id().toString()+", начинаю обработку");
+            createLog("Пришёл update от " + update.message().chat().id().toString() + ", начинаю обработку");
             bot.execute(recognizeCommand(update));
-            createLog("Обработал update от "+update.message().chat().id().toString()+", начинаю обработку");
+            createLog("Обработал update от " + update.message().chat().id().toString() + ", начинаю обработку");
 
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -64,10 +66,10 @@ public class BotProcessor {
             }
         }
 
-        if(!foundRightCommand){
+        if (!foundRightCommand) {
             createLog("Нужной команды нет, DialogManager начинает работу");
             msg = DialogManager.resolveProblemCommandNotFound(
-                new UserRequest(update.message().chat().id(), update.message().text())
+                    new UserRequest(update.message().chat().id(), update.message().text())
             );
             createLog("Ответ создан");
         }

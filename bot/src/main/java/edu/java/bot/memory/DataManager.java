@@ -1,19 +1,15 @@
 package edu.java.bot.memory;
 
-import com.pengrad.telegrambot.model.Update;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
 import edu.java.bot.processor.UserRequest;
 import edu.java.bot.utility.ErrorLogger;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
 import org.springframework.stereotype.Repository;
 import static edu.java.bot.utility.ErrorLogger.createLogError;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
 import static edu.java.bot.utility.UtilityStatusClass.NO_LINKS_NOT_TRACKED;
-import static edu.java.bot.utility.UtilityStatusClass.SPACE_AS_SPLIT_CHAR;
 
 @Repository
 public class DataManager {

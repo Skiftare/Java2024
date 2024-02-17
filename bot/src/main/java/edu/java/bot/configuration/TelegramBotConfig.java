@@ -5,17 +5,16 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.CommandsLoader;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @Component
 public class TelegramBotConfig {
     private static final String MESSAGE_TO_ADMIN_OF_STARTUP = "Bot has been activated";
     @Autowired
     private ApplicationConfig config;
-
 
     @Bean
     public TelegramBot telegramBot() {

@@ -1,6 +1,7 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.utility.ErrorLogger;
+import jakarta.annotation.PostConstruct;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -8,12 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
-import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS;
-import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
 import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_DESCRIPTION_METHOD_IN_CLASS_OF_BOT_COMMANDS;
+import static edu.java.bot.utility.UtilityStatusClass.NAME_OF_COMMAND_METHOD_IN_CLASS_OF_BOT_COMMANDS;
 
 @Component
 public class CommandsLoader {
@@ -67,9 +67,7 @@ public class CommandsLoader {
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String path = PACKAGE_NAME.replace('.', '/');
-            System.out.println(path);
             URL resource = classLoader.getResource(path);
-            System.out.println(resource);
             Path dirPath = Paths.get(resource.toURI());
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, "*.class")) {

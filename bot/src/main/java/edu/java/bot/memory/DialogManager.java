@@ -1,10 +1,9 @@
 package edu.java.bot.memory;
 
-import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import java.util.HashMap;
 import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
+import java.util.HashMap;
 import org.springframework.stereotype.Service;
 import static edu.java.bot.memory.DataManager.getListOFTrackedCommands;
 import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
@@ -36,10 +35,12 @@ public class DialogManager {
     public static boolean untrackURL(UserRequest update) {
         return DataManager.deleteURl(update);
     }
-    public static String getListOfTracked(UserRequest update){
+
+    public static String getListOfTracked(UserRequest update) {
         return getListOFTrackedCommands(update.id());
     }
-    public static DialogState getDialogState(Long id){
+
+    public static DialogState getDialogState(Long id) {
 
         return activeDialogs.getOrDefault(id, DialogState.DEFAULT_SESSION);
 

@@ -6,7 +6,8 @@ import org.apache.logging.log4j.Logger;
 @SuppressWarnings("HideUtilityClassConstructor")
 public class ErrorLogger {
     private final static Logger LOGGER = LogManager.getLogger();
-    public ErrorLogger(){
+
+    public ErrorLogger() {
         return;
     }
 
@@ -15,9 +16,9 @@ public class ErrorLogger {
 
         StackTraceElement element = stackTraceElements[2];
         String logBuilder = element.getClassName() + "->"
-            + element.getMethodName()
-            + "| "
-            + error;
+                + element.getMethodName()
+                + "| "
+                + error;
         LOGGER.info(logBuilder);
 
     }
