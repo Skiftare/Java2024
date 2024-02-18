@@ -10,49 +10,48 @@ import static org.mockito.Mockito.when;
 public class DialogManagerTest {
 
     @Test
-    public void testTrackURL() {
-        // Arrange
+    public void testThatGetLinkForTrackAndReturnedSuccessTrackingOfIt() {
+        // Given
         UserRequest userRequest = mock(UserRequest.class);
         when(userRequest.id()).thenReturn(1L);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // Act
+        // When
         boolean result = DialogManager.trackURL(userRequest);
 
-        // Assert
+        // Then
         assertThat(result).isTrue();
         assertThat(DialogManager.getListOfTracked(userRequest)).contains("https://www.example.com");
     }
 
     @Test
-    public void testUntrackURL() {
-        // Arrange
+    public void testThatGetLinkForUntrackAndReturnedSuccessUntrackingOfIt() {
+        // Given
         UserRequest userRequest = mock(UserRequest.class);
         when(userRequest.id()).thenReturn(1L);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // Add URL
+        // When
         DialogManager.trackURL(userRequest);
 
-        // Act
         boolean result = DialogManager.untrackURL(userRequest);
 
-        // Assert
+        // Then
         assertThat(result).isTrue();
         assertThat(DialogManager.getListOfTracked(userRequest)).isEqualTo("Никаких ссылок не отслеживается");
     }
 
     @Test
-    public void testResolveProblemCommandNotFound() {
-        // Arrange
+    public void testThatGetWrongCommandAndReturnedDefaultMessage() {
+        // Given
         UserRequest userRequest = mock(UserRequest.class);
         when(userRequest.id()).thenReturn(1L);
         when(userRequest.message()).thenReturn("wrong command");
 
-        // Act
+        // When
         SendMessage message = DialogManager.resolveProblemCommandNotFound(userRequest);
 
-        // Assert
+        // Then
         assertThat(message.getParameters().get("text")).isEqualTo("Команда неизвестна");
     }
 }

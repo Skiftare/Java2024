@@ -11,34 +11,34 @@ public class DataManagerTest {
 
 
     @Test
-    public void testAddURL() {
-        // Arrange
+    public void testThatGetLinkForTrackAndReturnedSuccessTrackingOfIt() {
+        // Given
         UserRequest userRequest = mock(UserRequest.class);
         when(userRequest.id()).thenReturn(1L);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // Act
+        // When
         boolean result = DataManager.addURl(userRequest);
 
-        // Assert
+        // Then
         assertThat(result).isTrue();
         assertThat(DataManager.getListOFTrackedCommands(1L)).contains("https://www.example.com");
     }
 
     @Test
-    public void testDeleteURL() {
-        // Arrange
+    public void testThatGetLinkForUntrackAndReturnedSuccessUntrackingOfIt() {
+        // Given
         UserRequest userRequest = mock(UserRequest.class);
         when(userRequest.id()).thenReturn(1L);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // Add URL
+        // When: add URL
         DataManager.addURl(userRequest);
 
         // Act
         boolean result = DataManager.deleteURl(userRequest);
 
-        // Assert
+        // Then
         assertThat(result).isTrue();
         assertThat(DataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
     }

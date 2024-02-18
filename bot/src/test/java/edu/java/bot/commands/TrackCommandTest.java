@@ -24,17 +24,17 @@ public class TrackCommandTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testThatGetCommandCommandAndReturnedThatThisIsTrackCommand() {
         assertEquals(UtilityStatusClass.TRACK_COMMAND_COMMAND, testingCommand.command());
     }
 
     @Test
-    public void testDescription() {
+    public void testThatGetCommandDescriptionAndReturnedThatThisIsTrackCommand() {
         assertEquals(UtilityStatusClass.TRACK_COMMAND_DESCRIPTION, testingCommand.description());
     }
 
     @Test
-    public void testSupports() {
+    public void testThatGetMessageAndReturnedResultOfSupportFunction() {
         Update update = mock(Update.class);
         Message message = mock(Message.class);
 
@@ -49,7 +49,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    public void testHandle() {
+    public void testThatGetInvalidCommandAndReturnedErrorMessage() {
         Long chatId = 123L;
         Update update = mock(Update.class);
         Message message = mock(Message.class);
@@ -68,7 +68,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    public void testHandleSucc() {
+    public void testThatGetCorrectCommandAndReturnedSuccsessMessage() {
         Long chatId = 123L;
         Update update = mock(Update.class);
         Message message = mock(Message.class);
@@ -87,7 +87,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    public void testHandleWait() {
+    public void testThatGetCommandAndReturnedWaitngMessage() {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);

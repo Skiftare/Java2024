@@ -23,17 +23,17 @@ public class StartCommandTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testThatGetCommandCommandAndReturnedThatThisIsStartCommand() {
         assertEquals("/start", testingCommand.command());
     }
 
     @Test
-    public void testDescription() {
+    public void testThatGetCommandDescriptionAndReturnedThatThisIsStartCommand() {
         assertEquals("Зарегистрировать пользователя", testingCommand.description());
     }
 
     @Test
-    public void testHandle() {
+    public void testThatGetCommandAndReturnedMessageForThatCommand() {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);

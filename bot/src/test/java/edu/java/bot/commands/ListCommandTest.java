@@ -25,17 +25,17 @@ public class ListCommandTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testThatGetCommandCommandAndReturnedThatThisIsListCommand() {
         assertEquals("/list", listCommand.command());
     }
 
     @Test
-    public void testDescription() {
+    public void testThatGetCommandDescriptionAndReturnedThatThisIsListCommand() {
         assertEquals("Показать список отслеживаемых ссылок", listCommand.description());
     }
 
     @Test
-    public void testHandle() {
+    public void testThatGetCommandAndReturnedMessageForThatCommand() {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);

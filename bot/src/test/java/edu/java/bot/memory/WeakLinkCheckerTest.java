@@ -6,26 +6,26 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class WeakLinkCheckerTest {
 
     @Test
-    public void testCheckLinkWithoutConnecting_ValidWeakLink() {
-        // Arrange
+    public void testThatGetCorrectLinkAndReturnedApprovalOfCorrect() {
+        // Given
         String weakLink = "https://stackoverflow.com";
 
-        // Act
+        // When
         boolean result = WeakLinkChecker.checkLinkWithoutConnecting(weakLink);
 
-        // Assert
+        // Then
         assertThat(result).isTrue();
     }
 
     @Test
-    public void testCheckLinkWithoutConnecting_InvalidWeakLink() {
-        // Arrange
+    public void testThatGetIncorrectLinkAndReturnedApprovalOfInvalid() {
+        // Given
         String strongLink = "https://www.google.com";
 
-        // Act
+        // When
         boolean result = WeakLinkChecker.checkLinkWithoutConnecting(strongLink);
 
-        // Assert
+        // Then
         assertThat(result).isFalse();
     }
 

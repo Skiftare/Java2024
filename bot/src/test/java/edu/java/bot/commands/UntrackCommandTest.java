@@ -27,17 +27,17 @@ public class UntrackCommandTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testThatGetCommandCommandAndReturnedThatThisIsUntrackCommand() {
         assertEquals(UtilityStatusClass.UNTRACK_COMMAND_COMMAND, testingCommand.command());
     }
 
     @Test
-    public void testDescription() {
+    public void testThatGetCommandDescriptionAndReturnedThatThisIsUntrackCommand() {
         assertEquals(UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION, testingCommand.description());
     }
 
     @Test
-    public void testSupports() {
+    public void testThatGetMessageAndReturnedResultOfSupportFunction() {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);
@@ -54,7 +54,7 @@ public class UntrackCommandTest {
     }
 
     @Test
-    public void testHandle() {
+    public void testThatGetInvalidCommandAndReturnedErrorMessage() {
         SecureRandom secureRandom = new SecureRandom();
 
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
@@ -73,7 +73,7 @@ public class UntrackCommandTest {
     }
 
     @Test
-    public void testHandleSucc() {
+    public void testThatGetCorrectCommandAndReturnedSuccsessMessage() {
         SecureRandom secureRandom = new SecureRandom();
 
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
@@ -95,7 +95,7 @@ public class UntrackCommandTest {
     }
 
     @Test
-    public void testHandleWait() {
+    public void testThatGetCommandAndReturnedWaitngMessage() {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);

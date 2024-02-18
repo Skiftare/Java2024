@@ -10,8 +10,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
-import static edu.java.bot.utility.UtilityStatusClass.START_COMMAND_COMMAND;
-import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_START_INFO;
+import static edu.java.bot.utility.UtilityStatusClass.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -19,13 +18,12 @@ public class BotProcessorTest {
 
 
     @Test
-    public void testRecognizeCommand_commandNotFound() throws Exception {
+    public void testThatGetUnknownCommandAndReturnedDefaultMessage() throws Exception {
         // Given
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
         Chat chat = Mockito.mock(Chat.class);
 
-// Устанавливаем зависимости между объектами
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(123L);
@@ -40,16 +38,17 @@ public class BotProcessorTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
+        assertEquals(response.getParameters().get("text"),UNKNOWN_COMMAND_INFO);
+
     }
 
     @Test
-    public void testRecognizeCommand_command() {
+    public void testThatGetWellKnownCommandAndReturnedDefaultMessageForThatCommand() {
         // Given
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
         Chat chat = Mockito.mock(Chat.class);
 
-// Устанавливаем зависимости между объектами
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(123L);

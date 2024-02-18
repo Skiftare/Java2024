@@ -28,18 +28,18 @@ public class HelpCommandTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testThatGetCommandCommandAndReturnedThatThisIsHelpCommand() {
         assertEquals("/help", helpCommand.command());
     }
 
     @Test
-    public void testDescription() {
+    public void testThatGetCommandDescriptionAndReturnedThatThisIsHelpCommand() {
         assertEquals("Вывести окно с командами", helpCommand.description());
     }
 
 
     @Test
-    public void testHandle() {
+    public void testThatGetCommandAndReturnedMessageForThatCommand() {
         // Create a mock Update object
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
