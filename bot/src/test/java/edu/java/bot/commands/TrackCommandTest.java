@@ -35,22 +35,33 @@ public class TrackCommandTest {
 
     @Test
     public void testThatGetMessageAndReturnedResultOfSupportFunction() {
+        //Given: setup
         Update update = mock(Update.class);
         Message message = mock(Message.class);
+        SecureRandom secureRandom = new SecureRandom();
 
         Chat chat = mock(Chat.class);
+        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
+
         when(message.text()).thenReturn(UtilityStatusClass.TRACK_COMMAND_COMMAND);
         when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(123L);
+        when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
-        String expectedTextMessage = UtilityStatusClass.WAIT_FOR_URL_TRACK_INFO;
 
-        assertEquals(expectedTextMessage, testingCommand.supports(update));
+        String expectedTextMessage = UtilityStatusClass.WAIT_FOR_URL_TRACK_INFO;
+        //When: we execute update with this Command
+        String result = testingCommand.supports(update);
+
+        //Then: we get right answer
+        assertEquals(expectedTextMessage, result);
     }
 
     @Test
     public void testThatGetInvalidCommandAndReturnedErrorMessage() {
-        Long chatId = 123L;
+        //Given: setup
+        SecureRandom secureRandom = new SecureRandom();
+        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
+
         Update update = mock(Update.class);
         Message message = mock(Message.class);
         Chat chat = mock(Chat.class);
@@ -61,15 +72,20 @@ public class TrackCommandTest {
         when(update.message()).thenReturn(message);
 
         String expectedTextMessage = UtilityStatusClass.UNSUCCESSFUL_TRACK_INFO;
+
+        //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
+        //Then: we get right answer
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
 
     @Test
     public void testThatGetCorrectCommandAndReturnedSuccsessMessage() {
-        Long chatId = 123L;
+        //Given: setup
+        SecureRandom secureRandom = new SecureRandom();
+        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
         Update update = mock(Update.class);
         Message message = mock(Message.class);
 
@@ -80,14 +96,18 @@ public class TrackCommandTest {
         when(update.message()).thenReturn(message);
 
         String expectedTextMessage = UtilityStatusClass.SUCCESS_TRACK_INFO;
+
+        //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
+        //Then: we get right answer
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
 
     @Test
     public void testThatGetCommandAndReturnedWaitngMessage() {
+        //Given: setup
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);
@@ -101,8 +121,11 @@ public class TrackCommandTest {
         when(update.message()).thenReturn(message);
 
         String expectedTextMessage = UtilityStatusClass.WAIT_FOR_URL_TRACK_INFO;
+
+        //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
+        //Then: we get right answer
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }

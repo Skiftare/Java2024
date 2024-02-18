@@ -47,6 +47,7 @@ public class ListCommandTest {
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
 
+        //When: we execute update with this Command
         SendMessage actualSendMessage = listCommand.handle(update);
 
         assertEquals(actualSendMessage.getParameters().get("chat_id"), chatId);

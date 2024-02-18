@@ -20,12 +20,8 @@ import static org.mockito.Mockito.when;
 
 public class HelpCommandTest {
 
-    private Command helpCommand;
+    private final Command helpCommand = new HelpCommand();
 
-    @BeforeEach
-    public void setUp() {
-        helpCommand = new HelpCommand();
-    }
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsHelpCommand() {
@@ -40,7 +36,7 @@ public class HelpCommandTest {
 
     @Test
     public void testThatGetCommandAndReturnedMessageForThatCommand() {
-        // Create a mock Update object
+        // Given: setup
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);
@@ -53,16 +49,13 @@ public class HelpCommandTest {
         when(update.message()).thenReturn(message);
 
 
-        // Create an instance of HelpCommand
-        HelpCommand helpCommand = new HelpCommand();
-
-        // Call handle method
+        //When: we execute update with this Command
         SendMessage sendMessage = helpCommand.handle(update);
 
-        // Verify that the dialog state is reset
+        // Then dialog state is reset
         assertEquals(DialogManager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
 
-        // Verify the response message
+        // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
 
         assertTrue(sendMessage.getParameters().get("text").toString().contains(HELP_COMMAND_DESCRIPTION));

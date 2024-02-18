@@ -14,37 +14,37 @@ public class DataManagerTest {
 
     @Test
     public void testThatGetLinkForTrackAndReturnedSuccessTrackingOfIt() {
-        // Given
+        // Given: DataManager & wrong link
         UserRequest userRequest = mock(UserRequest.class);
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
         when(userRequest.id()).thenReturn(chatId);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // When
+        // When: we try to add
         boolean result = DataManager.addURl(userRequest);
 
-        // Then
+        // Then we can add, because checker was earlier
         assertThat(result).isTrue();
         assertThat(DataManager.getListOFTrackedCommands(1L)).contains("https://www.example.com");
     }
 
     @Test
     public void testThatGetLinkForUntrackAndReturnedSuccessUntrackingOfIt() {
-        // Given
+        // Given: DataManager & wrong link
         UserRequest userRequest = mock(UserRequest.class);
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
         when(userRequest.id()).thenReturn(chatId);
         when(userRequest.message()).thenReturn("https://www.example.com");
 
-        // When: add URL
+
         DataManager.addURl(userRequest);
 
-        // Act
+        // When: we try to delete this URL
         boolean result = DataManager.deleteURl(userRequest);
 
-        // Then
+        // Then we can add, because we can add, because checker was earlier
         assertThat(result).isTrue();
         assertThat(DataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
     }

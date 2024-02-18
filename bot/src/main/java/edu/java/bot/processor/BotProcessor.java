@@ -3,6 +3,7 @@ package edu.java.bot.processor;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
@@ -22,6 +23,9 @@ public class BotProcessor {
     @Autowired
     private TelegramBot bot;
 
+    @Autowired
+    private ReplyKeyboardMarkup replyKeyboardMarkup;
+
     @PostConstruct
     private void setUpdateEventProcessor() {
         bot.setUpdatesListener(this::createUpdatesManager);
@@ -29,7 +33,7 @@ public class BotProcessor {
 
     private int createUpdatesManager(List<Update> updates) {
         for (Update update : updates) {
-            bot.execute(recognizeCommand(update));
+            bot.execute(recognizeCommand(update).replyMarkup(replyKeyboardMarkup));
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }

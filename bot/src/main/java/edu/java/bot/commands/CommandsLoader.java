@@ -1,7 +1,6 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.utility.ErrorLogger;
-import jakarta.annotation.PostConstruct;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;

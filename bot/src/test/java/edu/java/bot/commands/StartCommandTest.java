@@ -37,16 +37,15 @@ public class StartCommandTest {
         SecureRandom secureRandom = new SecureRandom();
         Update update = mock(Update.class);
         Chat chat = mock(Chat.class);
-
         Message message = mock(Message.class);
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-
         String expectedTextMessage = "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка";
 
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
 
+        //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
         assertEquals(DialogManager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
