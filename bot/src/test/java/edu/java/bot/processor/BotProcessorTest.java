@@ -26,7 +26,7 @@ public class BotProcessorTest {
 
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
-        Mockito.when(chat.id()).thenReturn(123L);
+        Mockito.when(chat.id()).thenReturn(124L);
         Mockito.when(message.text()).thenReturn("/unknown");
 
         Mockito.mockStatic(CommandsLoader.class);
