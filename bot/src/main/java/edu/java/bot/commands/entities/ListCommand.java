@@ -13,7 +13,7 @@ import static edu.java.bot.utility.UtilityStatusClass.LIST_COMMAND_DESCRIPTION;
 @Component
 public class ListCommand implements Command {
     @Override
-    public String command() {
+    public String getCommandName() {
         return LIST_COMMAND_COMMAND;
     }
 

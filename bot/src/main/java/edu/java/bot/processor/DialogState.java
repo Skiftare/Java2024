@@ -2,7 +2,8 @@ package edu.java.bot.processor;
 
 import lombok.Getter;
 
-@Getter public enum DialogState {
+@Getter
+public enum DialogState {
     TRACK_URI("trackURI"),
     UNTRACK_URI("untrackURI"),
     DEFAULT_SESSION("defaultSession");

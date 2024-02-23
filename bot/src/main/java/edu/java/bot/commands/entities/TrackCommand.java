@@ -20,7 +20,7 @@ import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_TRACK_INFO;
 
 public class TrackCommand implements Command {
     @Override
-    public String command() {
+    public String getCommandName() {
         return TRACK_COMMAND_COMMAND;
     }
 
@@ -34,7 +34,7 @@ public class TrackCommand implements Command {
         Long chatId = update.message().chat().id();
 
         String result = UNSUCCESSFUL_TRACK_INFO;
-        if (Objects.equals(textMessage, this.command())) {
+        if (Objects.equals(textMessage, this.getCommandName())) {
             DialogManager.setWaitForTrack(chatId);
             result = WAIT_FOR_URL_TRACK_INFO;
         } else {

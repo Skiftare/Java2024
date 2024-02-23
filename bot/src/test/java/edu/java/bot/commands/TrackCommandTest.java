@@ -25,7 +25,7 @@ public class TrackCommandTest {
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsTrackCommand() {
-        assertEquals(UtilityStatusClass.TRACK_COMMAND_COMMAND, testingCommand.command());
+        assertEquals(UtilityStatusClass.TRACK_COMMAND_COMMAND, testingCommand.getCommandName());
     }
 
     @Test

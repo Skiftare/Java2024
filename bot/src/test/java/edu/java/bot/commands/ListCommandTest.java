@@ -26,7 +26,7 @@ public class ListCommandTest {
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsListCommand() {
-        assertEquals("/list", listCommand.command());
+        assertEquals("/list", listCommand.getCommandName());
     }
 
     @Test

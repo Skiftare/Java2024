@@ -18,7 +18,7 @@ import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
 @Component
 public class UntrackCommand implements Command {
     @Override
-    public String command() {
+    public String getCommandName() {
         return UNTRACK_COMMAND_COMMAND;
     }
 
@@ -31,7 +31,7 @@ public class UntrackCommand implements Command {
         String textMessage = update.message().text();
         Long chatId = update.message().chat().id();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
-        if (Objects.equals(textMessage, this.command())) {
+        if (Objects.equals(textMessage, this.getCommandName())) {
             DialogManager.setWaitForUntrack(chatId);
             result = WAIT_FOR_URL_UNTRACK_INFO;
         } else {

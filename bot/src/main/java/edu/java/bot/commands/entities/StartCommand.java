@@ -13,7 +13,7 @@ import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_START_INFO;
 
 public class StartCommand implements Command {
     @Override
-    public String command() {
+    public String getCommandName() {
         return START_COMMAND_COMMAND;
     }
 

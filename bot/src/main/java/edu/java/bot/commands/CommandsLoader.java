@@ -1,6 +1,8 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.utility.ErrorLogger;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -8,6 +10,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
 import static edu.java.bot.utility.UtilityStatusClass.FILE_EXTENSION_AS_CLASS;
@@ -22,13 +41,22 @@ import static edu.java.bot.utility.UtilityStatusClass.STAR_CHAR_AS_STRING;
 
 @Component
 @SuppressWarnings("HideUtilityClassConstructor")
-public class CommandsLoader {
+
+public class CommandsLoader implements ApplicationContextAware {
+    private static ApplicationContext applicationContext;
+
+    @Autowired
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+
     private static final String PACKAGE_NAME = "edu.java.bot.commands.entities";
 
     private static List<Class<?>> downloadedClasses = new ArrayList<>();
 
     public static String getCommandsWithDescription() {
-
+        load();
         List<Class<?>> classes = getClasses();
         StringBuilder sb = new StringBuilder();
         for (Class<?> clazz : classes) {
@@ -47,6 +75,7 @@ public class CommandsLoader {
     }
 
     public static List<String> getCommandsList() {
+        load();
         List<Class<?>> classes = getClasses();
         List<String> list = new ArrayList<>();
         for (Class<?> clazz : classes) {
@@ -60,7 +89,7 @@ public class CommandsLoader {
         return list;
     }
 
-    public static List<Class<?>> getClasses() {
+    public static  List<Class<?>> getClasses() {
         if (downloadedClasses.isEmpty()) {
             load();
         }
@@ -69,27 +98,16 @@ public class CommandsLoader {
 
     private static void load() {
         List<Class<?>> classes = new ArrayList<>();
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String path = PACKAGE_NAME.replace(POINT_CHAR_AS_STRING, SLASH_CHAR_AS_STRING);
-            URL resource = classLoader.getResource(path);
-            Path dirPath = Paths.get(resource.toURI());
+        String packageName = "edu.java.bot.commands.entities";
 
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(
-                    dirPath, STAR_CHAR_AS_STRING + FILE_EXTENSION_AS_CLASS
-            )) {
-                for (Path entry : stream) {
-                    String className = PACKAGE_NAME
-                            + POINT_CHAR_AS_STRING
-                            + entry.getFileName().toString().replace(FILE_EXTENSION_AS_CLASS, "");
-                    Class<?> clazz = Class.forName(className);
-                    classes.add(clazz);
-                }
-            } catch (Exception e) {
-                ErrorLogger.createLogError(e.getMessage());
+        String[] beanNames = applicationContext.getBeanNamesForAnnotation(Component.class);
+        for (String beanName : beanNames) {
+            Object bean = applicationContext.getBean(beanName);
+            if (bean.getClass().getPackage().getName().startsWith(packageName)) {
+
+                System.out.println(beanName);
+                classes.add(bean.getClass());
             }
-        } catch (Exception e) {
-            ErrorLogger.createLogError(e.getMessage());
         }
 
         downloadedClasses = classes;

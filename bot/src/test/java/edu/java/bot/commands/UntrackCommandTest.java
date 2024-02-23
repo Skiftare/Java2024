@@ -28,7 +28,7 @@ public class UntrackCommandTest {
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsUntrackCommand() {
-        assertEquals(UtilityStatusClass.UNTRACK_COMMAND_COMMAND, testingCommand.command());
+        assertEquals(UtilityStatusClass.UNTRACK_COMMAND_COMMAND, testingCommand.getCommandName());
     }
 
     @Test

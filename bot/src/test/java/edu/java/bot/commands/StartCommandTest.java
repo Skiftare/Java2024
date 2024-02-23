@@ -24,7 +24,7 @@ public class StartCommandTest {
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsStartCommand() {
-        assertEquals("/start", testingCommand.command());
+        assertEquals("/start", testingCommand.getCommandName());
     }
 
     @Test
