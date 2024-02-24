@@ -2,8 +2,8 @@ package edu.java.bot.commands.entities;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
+import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,11 @@ public class UntrackCommand implements Command {
         return UNTRACK_COMMAND_DESCRIPTION;
     }
 
-    public String supports(Update update) {
+
+
+
+    @Override
+    public SendMessage handle(Update update) {
         String textMessage = update.message().text();
         Long chatId = update.message().chat().id();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
@@ -44,13 +48,13 @@ public class UntrackCommand implements Command {
                 }
             }
         }
-        return result;
+        return new SendMessage(update.message().chat().id(),result);
     }
 
 
     @Override
-    public SendMessage handle(Update update) {
-        return new SendMessage(update.message().chat().id(), supports(update));
+    public boolean supportsMessageProcessing(Update update) {
+        return update.message().text().startsWith(UNTRACK_COMMAND_COMMAND);
     }
 }
 

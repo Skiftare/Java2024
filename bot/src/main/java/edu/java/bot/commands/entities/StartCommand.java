@@ -2,7 +2,6 @@ package edu.java.bot.commands.entities;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.Command;
 import edu.java.bot.memory.DialogManager;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.utility.UtilityStatusClass.START_COMMAND_COMMAND;
@@ -30,5 +29,9 @@ public class StartCommand implements Command {
 
         DialogManager.resetDialogState(chatId);
         return new SendMessage(chatId, SUCCESS_START_INFO);
+    }
+    @Override
+    public boolean supportsMessageProcessing(Update update){
+        return update.message().text().startsWith(START_COMMAND_COMMAND);
     }
 }

@@ -3,16 +3,10 @@ package edu.java.bot.processor;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.CommandsLoader;
-import edu.java.bot.utility.ErrorLogger;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
 
 import static edu.java.bot.utility.UtilityStatusClass.*;
 import static org.assertj.core.api.Assertions.assertThat;

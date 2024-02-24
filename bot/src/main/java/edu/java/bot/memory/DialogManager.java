@@ -47,7 +47,7 @@ public class DialogManager {
 
     }
 
-    public static SendMessage resolveProblemCommandNotFound(UserRequest update) {
+    public static SendMessage resolveCommandNeedCookie(UserRequest update) {
         SendMessage msg;
 
         if (activeDialogs.containsKey(update.id())) {
