@@ -49,9 +49,8 @@ public class DialogManager {
     }
 
     public static SendMessage resolveCommandNeedCookie(UserRequest update) {
-        SendMessage msg;
-
-        if (ACTIVE_DIALOGS.containsKey(update.id())) {
+        SendMessage msg = new SendMessage(update.id(), UNKNOWN_COMMAND_INFO);
+        if (WeakLinkChecker.checkLinkWithoutConnecting(update.message()) && ACTIVE_DIALOGS.containsKey(update.id())) {
             DialogState state = ACTIVE_DIALOGS.get(update.id());
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
@@ -63,10 +62,7 @@ public class DialogManager {
                     update.id(),
                     untrackURL(update) ? SUCCESS_UNTRACK_INFO : UNSUCCESSFUL_UNTRACK_INFO
                 );
-
             }
-        } else {
-            msg = new SendMessage(update.id(), UNKNOWN_COMMAND_INFO);
         }
 
         return msg;
