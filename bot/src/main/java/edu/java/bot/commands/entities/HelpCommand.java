@@ -7,12 +7,12 @@ import edu.java.bot.memory.DialogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_COMMAND;
-import static edu.java.bot.utility.UtilityStatusClass.HELP_COMMAND_DESCRIPTION;
-
 @Component
 public class HelpCommand implements Command {
-    private CommandLoaderForHelpMessage loader;
+    private static final String HELP_COMMAND_NAME = "/help";
+    private static final String HELP_COMMAND_DESCRIPTION = "Вывести окно с командами";
+
+    private final CommandLoaderForHelpMessage loader;
 
     @Autowired
     public HelpCommand(CommandLoaderForHelpMessage loader) {
@@ -21,7 +21,7 @@ public class HelpCommand implements Command {
 
     @Override
     public String getCommandName() {
-        return HELP_COMMAND_COMMAND;
+        return HELP_COMMAND_NAME;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public boolean supportsMessageProcessing(Update update){
-        return update.message().text().startsWith(HELP_COMMAND_COMMAND);
+    public boolean supportsMessageProcessing(Update update) {
+        return update.message().text().startsWith(HELP_COMMAND_NAME);
     }
 }

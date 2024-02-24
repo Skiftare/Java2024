@@ -6,27 +6,28 @@ import edu.java.bot.processor.UserRequest;
 import java.util.HashMap;
 import org.springframework.stereotype.Service;
 import static edu.java.bot.memory.DataManager.getListOFTrackedCommands;
-import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_TRACK_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.UNKNOWN_COMMAND_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_TRACK_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
 
 @Service
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DialogManager {
-    private static HashMap<Long, DialogState> activeDialogs = new HashMap<>();
+    private static final HashMap<Long, DialogState> ACTIVE_DIALOGS = new HashMap<>();
+    private static final String SUCCESS_TRACK_INFO = "Отслеживание ссылки начато!";
+    private static final String UNSUCCESSFUL_TRACK_INFO = "Ссылка невалидна";
+
+    private static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
+    private static final String UNSUCCESSFUL_UNTRACK_INFO = "Ссылка невалидна или отсутсвует в отслеживаемых";
+    private static final String UNKNOWN_COMMAND_INFO = "Команда неизвестна";
 
     public static void setWaitForTrack(Long id) {
-        activeDialogs.put(id, DialogState.TRACK_URI);
+        ACTIVE_DIALOGS.put(id, DialogState.TRACK_URI);
     }
 
     public static void setWaitForUntrack(Long id) {
-        activeDialogs.put(id, DialogState.UNTRACK_URI);
+        ACTIVE_DIALOGS.put(id, DialogState.UNTRACK_URI);
     }
 
     public static void resetDialogState(Long id) {
-        activeDialogs.remove(id);
+        ACTIVE_DIALOGS.remove(id);
     }
 
     public static boolean trackURL(UserRequest update) {
@@ -43,15 +44,15 @@ public class DialogManager {
 
     public static DialogState getDialogState(Long id) {
 
-        return activeDialogs.getOrDefault(id, DialogState.DEFAULT_SESSION);
+        return ACTIVE_DIALOGS.getOrDefault(id, DialogState.DEFAULT_SESSION);
 
     }
 
     public static SendMessage resolveCommandNeedCookie(UserRequest update) {
         SendMessage msg;
 
-        if (activeDialogs.containsKey(update.id())) {
-            DialogState state = activeDialogs.get(update.id());
+        if (ACTIVE_DIALOGS.containsKey(update.id())) {
+            DialogState state = ACTIVE_DIALOGS.get(update.id());
             if (state == DialogState.TRACK_URI) {
                 msg = new SendMessage(
                     update.id(),

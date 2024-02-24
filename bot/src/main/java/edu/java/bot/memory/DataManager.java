@@ -1,20 +1,22 @@
 package edu.java.bot.memory;
 
 import edu.java.bot.processor.UserRequest;
-import edu.java.bot.utility.ErrorLogger;
+import edu.java.bot.utility.GlobalExceptionHandler;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import static edu.java.bot.utility.ErrorLogger.createLogError;
-import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
-import static edu.java.bot.utility.UtilityStatusClass.NO_LINKS_NOT_TRACKED;
 
 @Repository
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DataManager {
     private static final HashMap<Long, HashSet<URI>> TRACK_CASHED_MAP = new HashMap<>();
+
+    private static final String ENDL_CHAR = "\n";
+    private static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
 
     static boolean addURl(UserRequest update) {
         Long id = update.id();
@@ -27,7 +29,8 @@ public class DataManager {
             TRACK_CASHED_MAP.put(id, urls);
             return true;
         } catch (URISyntaxException e) {
-            ErrorLogger.createLogError(e.getMessage());
+            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+            logger.error("Ошибка при добавлении URL: {}", e.getMessage());
             return false;
         }
     }
@@ -49,7 +52,8 @@ public class DataManager {
                 result = true;
             }
         } catch (URISyntaxException e) {
-            createLogError(e.getMessage());
+            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+            logger.error("Ошибка при удалении URL: {}", e.getMessage());
         }
 
         return result;

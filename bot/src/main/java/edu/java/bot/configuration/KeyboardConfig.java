@@ -1,21 +1,21 @@
 package edu.java.bot.configuration;
 
-import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import edu.java.bot.commands.loaders.CommandsLoader;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.List;
 
 @Configuration
 public class KeyboardConfig {
     private final CommandsLoader loader;
-    @Autowired
-    KeyboardConfig(CommandsLoader loader){
+
+    @Autowired KeyboardConfig(CommandsLoader loader) {
         this.loader = loader;
     }
+
     @Bean
     public ReplyKeyboardMarkup createKeyboard() {
         List<String> listOfCommands = loader.getCommandsNames();

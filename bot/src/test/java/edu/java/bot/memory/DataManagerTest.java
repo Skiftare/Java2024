@@ -26,7 +26,7 @@ public class DataManagerTest {
 
         // Then we can add, because checker was earlier
         assertThat(result).isTrue();
-        assertThat(DataManager.getListOFTrackedCommands(1L)).contains("https://www.example.com");
+        assertThat(DataManager.getListOFTrackedCommands(chatId)).contains("https://www.example.com");
     }
 
     @Test

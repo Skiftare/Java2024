@@ -7,9 +7,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TelegramBotConfig {
+    private final ApplicationConfig config;
 
     @Autowired
-    private ApplicationConfig config;
+    public TelegramBotConfig(ApplicationConfig config) {
+        this.config = config;
+    }
 
     @Bean
     public TelegramBot telegramBot() {

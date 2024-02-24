@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.UserRequest;
-import edu.java.bot.utility.UtilityStatusClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,30 +27,14 @@ public class UntrackCommandTest {
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsUntrackCommand() {
-        assertEquals(UtilityStatusClass.UNTRACK_COMMAND_COMMAND, testingCommand.getCommandName());
+        assertEquals("/untrack", testingCommand.getCommandName());
     }
 
     @Test
     public void testThatGetCommandDescriptionAndReturnedThatThisIsUntrackCommand() {
-        assertEquals(UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION, testingCommand.description());
+        assertEquals("Прекратить отслеживание ссылки", testingCommand.description());
     }
 
-    @Test
-    public void testThatGetMessageAndReturnedResultOfSupportFunction() {
-        SecureRandom secureRandom = new SecureRandom();
-        Update update = mock(Update.class);
-        Chat chat = mock(Chat.class);
-
-        Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-        when(message.text()).thenReturn(UtilityStatusClass.UNTRACK_COMMAND_COMMAND);
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-        when(update.message()).thenReturn(message);
-
-        String expectedTextMessage = UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
-        //assertEquals(expectedTextMessage, testingCommand.supports(update));
-    }
 
     @Test
     public void testThatGetInvalidCommandAndReturnedErrorMessage() {
@@ -66,7 +49,7 @@ public class UntrackCommandTest {
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
 
-        String expectedTextMessage = UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
+        String expectedTextMessage = "Ссылка невалидна или отсутсвует в отслеживаемых";
         SendMessage sendMessage = testingCommand.handle(update);
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
@@ -88,7 +71,7 @@ public class UntrackCommandTest {
 
         DialogManager.trackURL(new UserRequest(chatId, update.message().text().split(" ")[1]));
 
-        String expectedTextMessage = UtilityStatusClass.SUCCESS_UNTRACK_INFO;
+        String expectedTextMessage = "Отслеживание ссылки прекращено!";
         SendMessage sendMessage = testingCommand.handle(update);
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
@@ -107,7 +90,7 @@ public class UntrackCommandTest {
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
 
-        String expectedTextMessage = UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
+        String expectedTextMessage = "Жду ссылку на удаление";
         SendMessage sendMessage = testingCommand.handle(update);
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);

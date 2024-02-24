@@ -3,32 +3,28 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.memory.DialogManager;
-import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
-import static edu.java.bot.utility.UtilityStatusClass.SPACE_AS_SPLIT_CHAR;
-import static edu.java.bot.utility.UtilityStatusClass.SUCCESS_UNTRACK_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.UNSUCCESSFUL_UNTRACK_INFO;
-import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_COMMAND;
-import static edu.java.bot.utility.UtilityStatusClass.UNTRACK_COMMAND_DESCRIPTION;
-import static edu.java.bot.utility.UtilityStatusClass.WAIT_FOR_URL_UNTRACK_INFO;
 
 @Component
 public class UntrackCommand implements Command {
+    private static final String UNTRACK_COMMAND_NAME = "/untrack";
+    private static final String UNTRACK_COMMAND_DESCRIPTION = "Прекратить отслеживание ссылки";
+    private static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
+    private static final String UNSUCCESSFUL_UNTRACK_INFO = "Ссылка невалидна или отсутсвует в отслеживаемых";
+    private static final String WAIT_FOR_URL_UNTRACK_INFO = "Жду ссылку на удаление";
+
     @Override
     public String getCommandName() {
-        return UNTRACK_COMMAND_COMMAND;
+        return UNTRACK_COMMAND_NAME;
     }
 
     @Override
     public String description() {
         return UNTRACK_COMMAND_DESCRIPTION;
     }
-
-
-
 
     @Override
     public SendMessage handle(Update update) {
@@ -39,7 +35,7 @@ public class UntrackCommand implements Command {
             DialogManager.setWaitForUntrack(chatId);
             result = WAIT_FOR_URL_UNTRACK_INFO;
         } else {
-            String[] parts = textMessage.split(SPACE_AS_SPLIT_CHAR);
+            String[] parts = textMessage.split(" ");
             if (parts.length > 1) {
                 String link = parts[1];
                 UserRequest request = new UserRequest(chatId, link);
@@ -48,13 +44,12 @@ public class UntrackCommand implements Command {
                 }
             }
         }
-        return new SendMessage(update.message().chat().id(),result);
+        return new SendMessage(update.message().chat().id(), result);
     }
-
 
     @Override
     public boolean supportsMessageProcessing(Update update) {
-        return update.message().text().startsWith(UNTRACK_COMMAND_COMMAND);
+        return update.message().text().startsWith(UNTRACK_COMMAND_NAME);
     }
 }
 

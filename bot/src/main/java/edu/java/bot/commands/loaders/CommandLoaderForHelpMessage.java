@@ -5,24 +5,24 @@ import edu.java.bot.commands.entities.ListCommand;
 import edu.java.bot.commands.entities.StartCommand;
 import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.commands.entities.UntrackCommand;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
-import static edu.java.bot.utility.UtilityStatusClass.ENDL_CHAR;
-import static edu.java.bot.utility.UtilityStatusClass.SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CommandLoaderForHelpMessage implements Loader {
+    private static final String ENDL_CHAR = "\n";
+    private static final String SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION = " :\t";
+
     private final List<Command> downloadedClasses = new ArrayList<>();
 
-    @Autowired
-    CommandLoaderForHelpMessage(
+    @Autowired public CommandLoaderForHelpMessage(
         StartCommand startCommand,
         ListCommand listCommand,
         TrackCommand trackCommand,
         UntrackCommand untrackCommand
-    ){
+    ) {
 
         downloadedClasses.add(startCommand);
         downloadedClasses.add(untrackCommand);
