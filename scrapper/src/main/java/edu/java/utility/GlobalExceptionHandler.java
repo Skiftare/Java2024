@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleURISyntaxException(JsonProcessingException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ошибка при обработке JSON" + ex.getMessage());
     }
+
 }
 
 

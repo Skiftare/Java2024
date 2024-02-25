@@ -7,14 +7,11 @@ import edu.java.stackoverflow.StackOverflowClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 public class ClientConfiguration {
-    private static final String GITHUB_COM = "https://api.github.com/";
-    private static final String STACKOVERFLOW = "https://api.stackexchange.com/";
+    // private static final String GITHUB_COM = "https://api.github.com/";
+//    private static final String STACKOVERFLOW = "https://api.stackexchange.com/";
 
     private final ApplicationConfig applicationConfig;
 
@@ -24,13 +21,13 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public StackOverflowClient WebStackOverflowClient () {
-        return new DefaultStackOverflowClient();
+    public StackOverflowClient webStackOverflowClient() {
+        return new DefaultStackOverflowClient(applicationConfig);
     }
 
     @Bean
-    public GitHubClient WebGitHubClient () {
-        return new DefaultGitHubClient();
+    public GitHubClient webGitHubClient() {
+        return new DefaultGitHubClient(applicationConfig);
 
     }
 }

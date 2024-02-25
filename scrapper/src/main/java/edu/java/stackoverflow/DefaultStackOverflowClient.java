@@ -4,19 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import edu.java.configuration.ApplicationConfig;
 import edu.java.utility.GlobalExceptionHandler;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.util.Optional;
 
+@Component
 public class DefaultStackOverflowClient implements StackOverflowClient {
-    @Value(value = "${api.stackoverflow.defaultUrl}")
-    private String defaultUrl;
     private final WebClient webClient;
 
-    public DefaultStackOverflowClient() {
+    @Autowired
+    public DefaultStackOverflowClient(ApplicationConfig config) {
+        String defaultUrl = config.stackOverflowUrl().defaultUrl();
         webClient = WebClient.builder().baseUrl(defaultUrl).build();
     }
 
@@ -25,18 +28,24 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
     }
 
     @Override
-    public Optional<StackOverflowResponse> fetchQuestionUpdates(long questionId) {
-        return Optional.ofNullable(webClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/questions/{id}/answers")
-                .queryParam("order", "desc")
-                .queryParam("sort", "activity")
-                .queryParam("site", "stackoverflow")
-                .build(questionId))
-            .retrieve()
-            .bodyToMono(String.class)
-            .mapNotNull(this::parseJson)
-            .block());
+    public Optional<StackOverflowResponse> processQuestionUpdates(long questionId) {
+        try {
+            return Optional.ofNullable(webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                    .path("/questions/{id}/answers")
+                    .queryParam("order", "desc")
+                    .queryParam("sort", "activity")
+                    .queryParam("site", "stackoverflow")
+                    .build(questionId))
+                .retrieve()
+                .bodyToMono(String.class)
+                .mapNotNull(this::parseJson)
+                .block());
+        } catch (Exception e) {
+            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     public StackOverflowResponse parseJson(String json) {
@@ -46,7 +55,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
             JsonNode root = objectMapper.readTree(json);
             JsonNode lastJsonAnswer = root.get("items").get(0);
             return objectMapper.treeToValue(lastJsonAnswer, StackOverflowResponse.class);
-        } catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
             logger.error(e.getMessage());
             return null;
