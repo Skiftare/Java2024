@@ -30,7 +30,7 @@ public class StackOverflowTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        stackOverflowClient = new DefaultStackOverflowClient("http://localhost:" + wireMockServer.port());
+        stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}");
     }
 
     @AfterEach
@@ -64,6 +64,7 @@ public class StackOverflowTest {
         StackOverflowResponse response = stackOverflowClient.processQuestionUpdates(questionId).orElse(null);
 
         assertThat(response).isNotNull();
+        assert response != null;
         assertThat(expectedQuestionId).isEqualTo(response.questionId());
         assertThat(expectedAnswerId).isEqualTo(response.answerId());
         assertThat(expectedLastActivityDate).isEqualTo(response.lastActivityDate());

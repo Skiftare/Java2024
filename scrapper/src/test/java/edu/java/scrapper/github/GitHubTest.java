@@ -66,6 +66,7 @@ public class GitHubTest {
         GitHubResponse response = gitHubClient.processRepositoryUpdates(ownerName, repoName).orElse(null);
 
         assertThat(response).isNotNull();
+        assert response != null;
         assertThat(expectedId).isEqualTo(response.id());
         assertThat(expectedType).isEqualTo(response.type());
         assertThat(expectedActorName).isEqualTo(response.actor().login());

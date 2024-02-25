@@ -20,9 +20,6 @@ public class DefaultGitHubClient implements GitHubClient {
 
     @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
-        /*
-    https://docs.github.com/en/rest/activity/events?apiVersion=2022-11-28#list-repository-events
-     */
         String defaultUrl = config.gitHubUrl().defaultUrl();
         webClient = WebClient.builder().baseUrl(defaultUrl).build();
     }
