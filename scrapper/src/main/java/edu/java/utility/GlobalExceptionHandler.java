@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity<Object> handleURISyntaxException(JsonProcessingException ex) {
+    public ResponseEntity<Object> handleJsonProcessingException(JsonProcessingException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(STR."Ошибка при обработке JSON\{ex.getMessage()}");
     }
 
