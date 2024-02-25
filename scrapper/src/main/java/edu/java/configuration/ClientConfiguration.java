@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ClientConfiguration {
+    // private static final String GITHUB_COM = "https://api.github.com/";
+//    private static final String STACKOVERFLOW = "https://api.stackexchange.com/";
 
     private final ApplicationConfig applicationConfig;
 
