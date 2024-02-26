@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity<Object> handleJsonProcessingException(JsonProcessingException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(STR."Ошибка при обработке JSON\{ex.getMessage()}");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ошибка при обработке JSON: " + ex.getMessage());
     }
 
 }
