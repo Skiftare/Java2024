@@ -19,7 +19,8 @@ public class BotProcessor {
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final CommandsLoader loader;
 
-    @Autowired BotProcessor(TelegramBot bot, CommandsLoader loader, ReplyKeyboardMarkup keyboard) {
+    @Autowired
+    BotProcessor(TelegramBot bot, CommandsLoader loader, ReplyKeyboardMarkup keyboard) {
         this.bot = bot;
         this.bot.setUpdatesListener(this::createUpdatesManager);
         this.loader = loader;

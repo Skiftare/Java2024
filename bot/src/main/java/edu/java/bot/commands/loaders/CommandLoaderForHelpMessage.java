@@ -15,7 +15,7 @@ public class CommandLoaderForHelpMessage implements Loader {
     private static final String ENDL_CHAR = "\n";
     private static final String SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION = " :\t";
 
-    private final List<Command> downloadedClasses = new ArrayList<>();
+    private final List<Command> commandList = new ArrayList<>();
 
     @Autowired public CommandLoaderForHelpMessage(
         StartCommand startCommand,
@@ -24,22 +24,22 @@ public class CommandLoaderForHelpMessage implements Loader {
         UntrackCommand untrackCommand
     ) {
 
-        downloadedClasses.add(startCommand);
-        downloadedClasses.add(untrackCommand);
-        downloadedClasses.add(listCommand);
-        downloadedClasses.add(trackCommand);
+        commandList.add(startCommand);
+        commandList.add(untrackCommand);
+        commandList.add(listCommand);
+        commandList.add(trackCommand);
 
     }
 
     @Override
     public List<Command> getCommandsList() {
-        return downloadedClasses;
+        return commandList;
     }
 
     public String getCommandsWithDescription() {
 
         StringBuilder sb = new StringBuilder();
-        for (Command command : downloadedClasses) {
+        for (Command command : commandList) {
             sb.append(command.getCommandName());
             sb.append(SEPARATOR_BETWEEN_COMMAND_AND_DESCRIPTION);
             sb.append(command.description());

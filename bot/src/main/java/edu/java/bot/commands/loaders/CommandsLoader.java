@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 
 public class CommandsLoader implements Loader {
 
-    private final List<Command> downloadedClasses;
+    private final List<Command> commandList;
 
     @Autowired public CommandsLoader(
         HelpCommand helpCommand,
         CommandLoaderForHelpMessage extraLoader
     ) {
-        downloadedClasses = extraLoader.getCommandsList();
-        downloadedClasses.add(helpCommand);
+        commandList = extraLoader.getCommandsList();
+        commandList.add(helpCommand);
     }
 
     public List<String> getCommandsNames() {
         List<String> commandsNames = new ArrayList<>();
-        for (Command command : downloadedClasses) {
+        for (Command command : commandList) {
             commandsNames.add(command.getCommandName());
         }
         return commandsNames;
@@ -32,7 +32,7 @@ public class CommandsLoader implements Loader {
 
     @Override
     public List<Command> getCommandsList() {
-        return downloadedClasses;
+        return commandList;
     }
 
 }
