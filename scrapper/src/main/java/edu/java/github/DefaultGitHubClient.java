@@ -10,18 +10,17 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
-@Component
 public class DefaultGitHubClient implements GitHubClient {
     private final WebClient webClient;
 
-    @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
-        String defaultUrl = config.gitHubUrl().defaultUrl();
-        webClient = WebClient.builder().baseUrl(defaultUrl).build();
+        String defaultUrl = config.gitHub().defaultUrl();
+        webClient = WebClient.builder()
+            .baseUrl(defaultUrl)
+            .build();
     }
 
     public DefaultGitHubClient(String baseUrl) {
@@ -31,7 +30,7 @@ public class DefaultGitHubClient implements GitHubClient {
     @Override
     public Optional<GitHubResponse> processRepositoryUpdates(String owner, String repo) {
         try {
-            return Optional.ofNullable(webClient.get()
+            return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .path("/repos/{owner}/{repo}/events")
                     .queryParam("per_page", 1)
@@ -39,25 +38,27 @@ public class DefaultGitHubClient implements GitHubClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .mapNotNull(this::parseJson)
-                .block());
-        } catch (Exception e) {
+                .block();
+        } catch (WebClientException | NullPointerException e) {
             Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
             logger.error(e.getMessage());
             return Optional.empty();
         }
     }
 
-    private GitHubResponse parseJson(String json) {
+    private Optional<GitHubResponse> parseJson(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
             List<GitHubResponse> responses = objectMapper.readValue(json, new TypeReference<>() {
             });
-            return responses.getFirst();
+            return Optional.ofNullable(responses)
+                .filter(list -> !list.isEmpty())
+                .map(List::getFirst);
         } catch (JsonProcessingException e) {
             Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
             logger.error(e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 }

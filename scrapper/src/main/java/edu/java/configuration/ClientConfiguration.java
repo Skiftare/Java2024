@@ -25,6 +25,5 @@ public class ClientConfiguration {
     @Bean
     public GitHubClient webGitHubClient() {
         return new DefaultGitHubClient(applicationConfig);
-
     }
 }

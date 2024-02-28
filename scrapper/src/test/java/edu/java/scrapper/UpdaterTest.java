@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 
 public class UpdaterTest {
         @Test
-        public void shouldCorrectUpdate() {
+        public void testThatGetLinkUpdaterAndReturnedException() {
             var linkUpdaterScheduler = Mockito.mock(LinkUpdaterManager.class);
             Mockito.doThrow(new RuntimeException()).when(linkUpdaterScheduler).update();
 

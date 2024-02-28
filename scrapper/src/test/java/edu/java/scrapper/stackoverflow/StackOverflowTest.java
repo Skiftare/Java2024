@@ -40,6 +40,8 @@ public class StackOverflowTest {
 
     @Test
     public void testThatGetRealStackOverflowDataAndReturnCorrectInfoAfterParsing() throws IOException {
+
+        //Given: real stackoverflow json data
         long questionId = 21295883L;
         String responseBody = new String(Files.readAllBytes(Path.of("src/test/resources/stackOverflowRawJson.json")));
 
@@ -61,8 +63,10 @@ public class StackOverflowTest {
             )
         );
 
+        //When: we process this data by StackOverflow client
         StackOverflowResponse response = stackOverflowClient.processQuestionUpdates(questionId).orElse(null);
 
+        //Then: we get real&expected data, not phantom-generated
         assertThat(response).isNotNull();
         assert response != null;
         assertThat(expectedQuestionId).isEqualTo(response.questionId());
@@ -74,6 +78,8 @@ public class StackOverflowTest {
 
     @Test
     public void testThatGetEmptyStackOverflowDataAndReturnNullObjectWithExceptionMessage() {
+
+        //Given: empty json data
         long questionId = 78056645L;
         String responseBody = "{}";
         var uri = UriComponentsBuilder
@@ -90,14 +96,18 @@ public class StackOverflowTest {
             )
         );
 
+        //When: we process this data by StackOverflow client
         Optional<StackOverflowResponse> response = stackOverflowClient.processQuestionUpdates(questionId);
 
+        //Then: we get some log errors and Optional.empty() as a result
         assertThat(response).isEmpty();
         assertThat(response).isNotPresent();
     }
 
     @Test
     public void testThatGetInvalidStackOverflowDataAndReturnNullObjectWithExceptionMessage() {
+
+        //Given: not json data
         long questionId = 78056645L;
         String responseBody = "this is not correct data at all too";
 
@@ -115,8 +125,10 @@ public class StackOverflowTest {
             )
         );
 
+        //When: we process this data StackOverflow client
         var response = stackOverflowClient.processQuestionUpdates(questionId);
 
+        //Then: we get some log errors and Optional.empty() as a result
         assertThat(response).isEmpty();
         assertThat(response).isNotPresent();
     }

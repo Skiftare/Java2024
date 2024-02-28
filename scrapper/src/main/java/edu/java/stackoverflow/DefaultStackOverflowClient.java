@@ -9,18 +9,17 @@ import edu.java.utility.GlobalExceptionHandler;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
-@Component
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final WebClient webClient;
 
-    @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
-        String defaultUrl = config.stackOverflowUrl().defaultUrl();
-        webClient = WebClient.builder().baseUrl(defaultUrl).build();
+        String defaultUrl = config.stackOverflow().defaultUrl();
+        webClient = WebClient.builder()
+            .baseUrl(defaultUrl)
+            .build();
     }
 
     public DefaultStackOverflowClient(String baseUrl) {
@@ -30,7 +29,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
     @Override
     public Optional<StackOverflowResponse> processQuestionUpdates(long questionId) {
         try {
-            return Optional.ofNullable(webClient.get()
+            return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .path("/questions/{id}/answers")
                     .queryParam("order", "desc")
@@ -40,25 +39,29 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .mapNotNull(this::parseJson)
-                .block());
-        } catch (Exception e) {
+                .block();
+        } catch (WebClientException | NullPointerException e) {
             Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
             logger.error(e.getMessage());
             return Optional.empty();
         }
     }
 
-    public StackOverflowResponse parseJson(String json) {
+    public Optional<StackOverflowResponse> parseJson(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
             JsonNode root = objectMapper.readTree(json);
-            JsonNode lastJsonAnswer = root.get("items").get(0);
-            return objectMapper.treeToValue(lastJsonAnswer, StackOverflowResponse.class);
-        } catch (JsonProcessingException e) {
+            JsonNode lastJsonAnswer = Optional.ofNullable(root.get("items"))
+                .filter(items -> items.isArray() && !items.isEmpty())
+                .map(items -> items.get(0))
+                .orElseThrow(() -> new RuntimeException("No items in JSON"));
+
+            return Optional.ofNullable(objectMapper.treeToValue(lastJsonAnswer, StackOverflowResponse.class));
+        } catch (RuntimeException | JsonProcessingException e) {
             Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
             logger.error(e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 }
