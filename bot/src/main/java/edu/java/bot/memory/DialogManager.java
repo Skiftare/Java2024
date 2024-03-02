@@ -5,7 +5,7 @@ import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
 import java.util.HashMap;
 import org.springframework.stereotype.Service;
-import static edu.java.bot.memory.DataManager.getListOFTrackedCommands;
+import static edu.java.bot.memory.CashedDataManager.getListOFTrackedCommands;
 
 @Service
 @SuppressWarnings("HideUtilityClassConstructor")
@@ -31,11 +31,11 @@ public class DialogManager {
     }
 
     public static boolean trackURL(UserRequest update) {
-        return DataManager.addURl(update);
+        return CashedDataManager.addURl(update);
     }
 
     public static boolean untrackURL(UserRequest update) {
-        return DataManager.deleteURl(update);
+        return CashedDataManager.deleteURl(update);
     }
 
     public static String getListOfTracked(UserRequest update) {

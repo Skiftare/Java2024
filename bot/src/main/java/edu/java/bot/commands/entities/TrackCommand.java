@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.UserRequest;
 import java.util.Objects;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
 
@@ -17,8 +18,12 @@ public class TrackCommand implements Command {
     private static final String UNSUCCESSFUL_TRACK_INFO = "Ссылка невалидна";
     private static final String SUCCESS_TRACK_INFO = "Отслеживание ссылки начато!";
     private static final String WAIT_FOR_URL_TRACK_INFO = "Жду ссылку на отслеживание";
+    private DialogManager dialogManager;
 
-
+    @Autowired
+    public TrackCommand(DialogManager incomeDialogManager){
+        dialogManager = incomeDialogManager;
+    }
 
     @Override
     public String getCommandName() {
@@ -39,14 +44,14 @@ public class TrackCommand implements Command {
 
         String result = UNSUCCESSFUL_TRACK_INFO;
         if (Objects.equals(textMessage, this.getCommandName())) {
-            DialogManager.setWaitForTrack(chatId);
+            dialogManager.setWaitForTrack(chatId);
             result = WAIT_FOR_URL_TRACK_INFO;
         } else {
             String[] parts = textMessage.split(" ");
             if (parts.length > 1) {
                 String link = parts[1];
                 UserRequest request = new UserRequest(chatId, link);
-                if (checkLinkWithoutConnecting(link) && DialogManager.trackURL(request)) {
+                if (checkLinkWithoutConnecting(link) && dialogManager.trackURL(request)) {
                     result = SUCCESS_TRACK_INFO;
                 }
             }

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DataManagerTest {
+public class CashedDataManagerTest {
 
 
     @Test
@@ -22,11 +22,11 @@ public class DataManagerTest {
         when(userRequest.message()).thenReturn("https://www.example.com");
 
         // When: we try to add
-        boolean result = DataManager.addURl(userRequest);
+        boolean result = CashedDataManager.addURl(userRequest);
 
         // Then we can add, because checker was earlier
         assertThat(result).isTrue();
-        assertThat(DataManager.getListOFTrackedCommands(chatId)).contains("https://www.example.com");
+        assertThat(CashedDataManager.getListOFTrackedCommands(chatId)).contains("https://www.example.com");
     }
 
     @Test
@@ -39,14 +39,14 @@ public class DataManagerTest {
         when(userRequest.message()).thenReturn("https://www.example.com");
 
 
-        DataManager.addURl(userRequest);
+        CashedDataManager.addURl(userRequest);
 
         // When: we try to delete this URL
-        boolean result = DataManager.deleteURl(userRequest);
+        boolean result = CashedDataManager.deleteURl(userRequest);
 
         // Then we can add, because we can add, because checker was earlier
         assertThat(result).isTrue();
-        assertThat(DataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
+        assertThat(CashedDataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
     }
 
 }
