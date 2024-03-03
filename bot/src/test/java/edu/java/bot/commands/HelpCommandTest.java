@@ -63,7 +63,7 @@ public class HelpCommandTest {
         SendMessage sendMessage = helpCommand.handle(update);
 
         // Then dialog state is reset
-        assertEquals(DialogManager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
+        assertEquals(DialogManager.getDialogState(chatId), DialogState.NOT_REGISTERED);
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);

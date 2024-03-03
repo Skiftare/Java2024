@@ -1,8 +1,9 @@
 package edu.java.api.entities.requests;
 
-import org.jetbrains.annotations.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.net.URI;
 
-public record AddLinkRequest(
-    @NotNull URI link
-) {}
+@Schema(description = "AddLinkRequest", required = true)
+public record AddLinkRequest(URI link) {
+
+}

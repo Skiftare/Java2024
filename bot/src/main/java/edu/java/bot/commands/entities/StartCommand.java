@@ -10,7 +10,9 @@ public class StartCommand implements Command {
     private static final String START_COMMAND_NAME = "/start";
     private static final String START_COMMAND_DESCRIPTION = "Зарегистрировать пользователя";
     private static final String SUCCESS_START_INFO =
-        "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка";
+        "Вы зарегистрированы!";
+    private static final String UNSUCCESS_START_INFO =
+        "Вы уже зарегистрированы, повторная регистрация не нужна";
 
     @Override
     public String getCommandName() {
@@ -25,9 +27,7 @@ public class StartCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-
-        DialogManager.resetDialogState(chatId);
-        return new SendMessage(chatId, SUCCESS_START_INFO);
+        return new SendMessage(chatId, DialogManager.registerUser(chatId) ? SUCCESS_START_INFO : UNSUCCESS_START_INFO);
     }
 
     @Override

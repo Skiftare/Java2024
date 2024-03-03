@@ -22,11 +22,11 @@ public class CashedDataManagerTest {
         when(userRequest.message()).thenReturn("https://www.example.com");
 
         // When: we try to add
-        boolean result = CashedDataManager.addURl(userRequest);
+        boolean result = DataManager.addURl(userRequest);
 
         // Then we can add, because checker was earlier
         assertThat(result).isTrue();
-        assertThat(CashedDataManager.getListOFTrackedCommands(chatId)).contains("https://www.example.com");
+        assertThat(DataManager.getListOFTrackedCommands(chatId)).contains("https://www.example.com");
     }
 
     @Test
@@ -39,14 +39,14 @@ public class CashedDataManagerTest {
         when(userRequest.message()).thenReturn("https://www.example.com");
 
 
-        CashedDataManager.addURl(userRequest);
+        DataManager.addURl(userRequest);
 
         // When: we try to delete this URL
-        boolean result = CashedDataManager.deleteURl(userRequest);
+        boolean result = DataManager.deleteURl(userRequest);
 
         // Then we can add, because we can add, because checker was earlier
         assertThat(result).isTrue();
-        assertThat(CashedDataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
+        assertThat(DataManager.getListOFTrackedCommands(1L)).isEqualTo("Никаких ссылок не отслеживается");
     }
 
 }
