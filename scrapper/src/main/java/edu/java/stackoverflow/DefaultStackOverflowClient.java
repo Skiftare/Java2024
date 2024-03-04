@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
-import edu.java.utility.GlobalExceptionHandler;
+import edu.java.utility.EmptyJsonException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +14,14 @@ import org.springframework.web.reactive.function.client.WebClientException;
 
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final WebClient webClient;
+    private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
 
     public DefaultStackOverflowClient(ApplicationConfig config) {
         String defaultUrl = config.stackOverflow().defaultUrl();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
+
     }
 
     public DefaultStackOverflowClient(String baseUrl) {
@@ -41,8 +43,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                 .mapNotNull(this::parseJson)
                 .block();
         } catch (WebClientException | NullPointerException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
     }
@@ -55,12 +56,10 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
             JsonNode lastJsonAnswer = Optional.ofNullable(root.get("items"))
                 .filter(items -> items.isArray() && !items.isEmpty())
                 .map(items -> items.get(0))
-                .orElseThrow(() -> new RuntimeException("No items in JSON"));
-
+                .orElseThrow(() -> new EmptyJsonException("No items in JSON"));
             return Optional.ofNullable(objectMapper.treeToValue(lastJsonAnswer, StackOverflowResponse.class));
-        } catch (RuntimeException | JsonProcessingException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error(e.getMessage());
+        } catch (JsonProcessingException | EmptyJsonException e) {
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
     }

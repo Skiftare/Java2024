@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
-import edu.java.utility.GlobalExceptionHandler;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClientException;
 
 public class DefaultGitHubClient implements GitHubClient {
     private final WebClient webClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubClient.class);
 
     public DefaultGitHubClient(ApplicationConfig config) {
         String defaultUrl = config.gitHub().defaultUrl();
@@ -40,8 +40,7 @@ public class DefaultGitHubClient implements GitHubClient {
                 .mapNotNull(this::parseJson)
                 .block();
         } catch (WebClientException | NullPointerException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
     }
@@ -56,8 +55,7 @@ public class DefaultGitHubClient implements GitHubClient {
                 .filter(list -> !list.isEmpty())
                 .map(List::getFirst);
         } catch (JsonProcessingException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
     }
