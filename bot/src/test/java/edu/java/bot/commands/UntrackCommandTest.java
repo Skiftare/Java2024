@@ -68,6 +68,8 @@ public class UntrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
+        DialogManager.resetDialogState(chatId);
+        DialogManager.registerUser(chatId);
 
         DialogManager.trackURL(new UserRequest(chatId, update.message().text().split(" ")[1]));
 

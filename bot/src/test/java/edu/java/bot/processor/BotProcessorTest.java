@@ -97,7 +97,7 @@ public class BotProcessorTest {
 
         // Then
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
-        assertThat(response.getParameters().get("text").toString()).isEqualTo("Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка");
+        assertThat(response.getParameters().get("text").toString()).isEqualTo("Вы зарегистрированы!");
     }
 
 }

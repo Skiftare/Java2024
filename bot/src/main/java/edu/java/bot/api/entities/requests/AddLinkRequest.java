@@ -1,15 +1,9 @@
 package edu.java.bot.api.entities.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 import java.net.URI;
+import org.jetbrains.annotations.NotNull;
 
-@Data
-@AllArgsConstructor
-public class AddLinkRequest {
-
+public record AddLinkRequest(
     @NotNull
-    private URI link;
-
+    URI link) {
 }

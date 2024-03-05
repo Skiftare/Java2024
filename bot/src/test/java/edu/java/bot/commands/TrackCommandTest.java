@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.TrackCommand;
+import edu.java.bot.memory.DialogManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -71,6 +72,7 @@ public class TrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
+        DialogManager.registerUser(chatId);
 
         String expectedTextMessage = "Отслеживание ссылки начато!";
 
@@ -96,6 +98,7 @@ public class TrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
+        DialogManager.registerUser(chatId);
 
         String expectedTextMessage = "Жду ссылку на отслеживание";
 
