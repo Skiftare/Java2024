@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-@Service
-public class DataOperationService {
+@Repository
+public class DatabaseOperations {
     private final Map<Long, List<LinkResponse>> chatLinks = new HashMap<>();
 
     public boolean checkExistingOfChat(long chatId) {

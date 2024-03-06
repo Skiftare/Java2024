@@ -3,14 +3,18 @@ package edu.java.api.web;
 import edu.java.api.entities.exceptions.BadRequestException;
 import edu.java.api.entities.exceptions.NotFoundException;
 import edu.java.api.entities.responses.LinkResponse;
+import edu.java.api.entities.responses.TgChatInteractionResponse;
+import edu.java.database.DatabaseOperations;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserClientService {
     private static final String CHAT_IS_ALREADY_REGISTRED = "Chat has been registred already";
     private static final String CANNOT_REPEAT_REGISTER_CHAT = "Cannot repeat register chat";
@@ -22,6 +26,7 @@ public class UserClientService {
     private static final String CANNOT_REMOVE_MISSING_LINK = "Cannot remove missing link";
     private static final String CHAT_IS_NOT_REGISTERED = "Chat is not registered";
     private final Map<Long, List<LinkResponse>> chatLinks = new HashMap<>();
+    private final DatabaseOperations dataService;
 
     public void registerChat(long chatId) {
         if (chatLinks.containsKey(chatId)) {
@@ -75,5 +80,47 @@ public class UserClientService {
         if (!chatLinks.containsKey(chatId)) {
             throw new NotFoundException(CHAT_IS_NOT_REGISTERED, message);
         }
+    }
+
+    ResultOfServiceOperation registerUser(Long id) {
+        ResultOfServiceOperation result;
+        if (!dataService.checkExistingOfChat(id)) {
+            dataService.registerChat(id);
+            result = new ResultOfServiceOperation(
+                id, true,
+                "Чат зарегистрирован"
+            );
+        } else {
+            result = new ResultOfServiceOperation(
+                id,
+                false,
+                "Чат уже зарегестрован, повторная регистрация ни к чему не приведёт"
+            );
+        }
+
+        return result;
+    }
+
+    ResultOfServiceOperation deleteUser(Long id) {
+        ResultOfServiceOperation result;
+        if (dataService.checkExistingOfChat(id)) {
+            dataService.deleteChat(id);
+            result =  new ResultOfServiceOperation(id, true, "Чат удален");
+        } else {
+            result =  new ResultOfServiceOperation(
+                id, false, "Чат не зарегистрован. Удалять то, чего нет, мы не умеем");
+        }
+        return result;
+    }
+
+    ResultOfServiceOperation checkIsUserRegistered(Long id) {
+        ResultOfServiceOperation result;
+        if (dataService.checkExistingOfChat(id)) {
+            result = new ResultOfServiceOperation(id, true, "Чат есть");
+        } else {
+            result = new ResultOfServiceOperation(id, false, "Чата нет");
+        }
+        return result;
+
     }
 }
