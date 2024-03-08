@@ -39,7 +39,7 @@ public class WebServerTest {
 
 
     @Test
-    @DisplayName("Correct POST to /updates - SUCCESS")
+    @DisplayName("/updates: POST; Correct result")
     public void testThatPostCorrectUpdatesResponseAndReturnedExpectedSuccessResult() throws URISyntaxException {
         String expectedResponseBody = "Обновление обработано";
         LinkUpdateRequest requestToClient = new LinkUpdateRequest(
@@ -62,7 +62,7 @@ public class WebServerTest {
     }
 
     @Test
-    @DisplayName("Incorrect POST to /updates - FAILURE")
+    @DisplayName("/updates: POST; Incorrect result")
     public void testThatPostIncorrectUpdatesResponseAndReturnedExpectedSuccessResult() throws URISyntaxException {
         String expectedResponseBody = """
                 {
@@ -84,6 +84,7 @@ public class WebServerTest {
             "1",
             List.of(1L)
         );
+
         String expectedDescription = "123";
         String expectedCode = "400";
         String expectedName = "123";
@@ -95,17 +96,12 @@ public class WebServerTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(expectedResponseBody)));
 
-        //Optional<String> actualResponse = client.sendUpdate(requestToClient);
-
-        /*assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get()).isEqualTo(expectedResponseBody);*/
         ApiErrorException thrownException = catchThrowableOfType(
             () -> client.sendUpdate(requestToClient),
             ApiErrorException.class
         );
         ApiErrorResponse actualResponse = thrownException.getErrorResponse();
 
-        // Assert
         assertThat(actualResponse.description()).isEqualTo(expectedDescription);
         assertThat(actualResponse.code()).isEqualTo(expectedCode);
         assertThat(actualResponse.exceptionName()).isEqualTo(expectedName);

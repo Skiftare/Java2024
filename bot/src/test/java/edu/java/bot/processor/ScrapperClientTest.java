@@ -11,9 +11,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.N;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -69,96 +72,180 @@ public class ScrapperClientTest {
         String baseUrl = "http://localhost:" + wireMockServer.port();
         scrapperWebClient = new WebClientForScrapperCommunication(baseUrl);
     }
+    @Nested
+    class TgChatTests{
+        @Nested
+        class PostRequests{
+            @Test
+            @DisplayName("/tg-chat/: POST; Correct result")
+            public void testThatGetCorrectPostRequestToRegisterChatForTheFirstTimeAndReturnedSuccessRegistration() {
 
-    @Test
-    public void testThatGetCorrectPostRequestToRegisterChatForTheFirstTimeAndReturnedSuccessRegistration() {
-        // Arrange
-        String responseBody = "Чат зарегистрирован";
-        wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(responseBody)));
+                String responseBody = "Чат зарегистрирован";
+                wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(responseBody)));
 
-        // Act
-        Optional<String> actualResponse = scrapperWebClient.registerChat(1L);
+                Optional<String> actualResponse = scrapperWebClient.registerChat(1L);
 
-        // Assert
-        assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get()).isEqualTo(responseBody);
+                assertThat(actualResponse).isPresent();
+                assertThat(actualResponse.get()).isEqualTo(responseBody);
+            }
+            @Test
+            @DisplayName("/tg-chat/: POST; Incorrect result - double registration")
+            public void testThatCorrectGetPostRequestToRegisterChatTwiceAndReturnedExceptionAtTheSecondRegistration() {
+                String responseBody = "Чат зарегистрирован";
+                wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(responseBody)));
+
+                scrapperWebClient.registerChat(1L);
+
+                wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
+
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.registerChat(1L),
+                    ApiErrorException.class
+                );
+
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
+        }
+        @Nested
+        class GetRequests{
+
+        }
+        @Nested
+        class DeleteRequests{
+            @Test
+            @DisplayName("/tg-chat/: DELETE; Correct result")
+            public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsRegisteredAndReturnedSuccessRemoving() {
+
+                String responseBody = "Чат успешно удалён";
+                wireMockServer.stubFor(delete(urlEqualTo("/tg-chat/1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(responseBody)));
+
+                Optional<String> actualResponse = scrapperWebClient.deleteChat(1L);
+
+                assertThat(actualResponse).isPresent();
+                assertThat(actualResponse.get()).isEqualTo(responseBody);
+            }
+            @Test
+            @DisplayName("/tg-chat/: DELETE; Incorrect result - user is not registered")
+            public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsNotRegisteredAndReturnedFailureExceptionChatNotFound() {
+                wireMockServer.stubFor(delete(urlEqualTo("/tg-chat/1"))
+                    .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(NOT_FOUND_BODY)));
+
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.deleteChat(1L),
+                    ApiErrorException.class
+                );
+
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
+        }
     }
+    @Nested
+    class LinksTests{
+        @Nested
+        class PostRequests{
+            @Test
+            @DisplayName("/links: POST; Correct result")
+            public void testThatGetCorrectPostRequestToRegisterNewLinkForUserAndReturnedSuccessRegistration() throws URISyntaxException {
+                wireMockServer.stubFor(post(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(LINK_BODY)));
 
-    @Test
-    public void testThatCorrectGetPostRequestToRegisterChatTwiceAndReturnedExceptionAtTheSecondRegistration() {
-        // Arrange
-        String responseBody = "Чат зарегистрирован";
-        wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(responseBody)));
+                Optional<LinkResponse> actualResponse = scrapperWebClient.addLink(
+                    1L, new AddLinkRequest(new URI("123"))
+                );
 
-        scrapperWebClient.registerChat(1L);
+                assertThat(actualResponse).isPresent();
+                assertThat(actualResponse.get().id()).isEqualTo(1);
+                assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
+            }
 
-        wireMockServer.stubFor(post(urlEqualTo("/tg-chat/1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
+            @Test
+            @DisplayName("/links: POST; Incorrect result - invalid id")
+            public void testTHatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfInvalidId() {
+                wireMockServer.stubFor(post(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("-1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.registerChat(1L),
-            ApiErrorException.class
-        );
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.addLink(-1L, new AddLinkRequest(new URI("123"))),
+                    ApiErrorException.class
+                );
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
 
-    @Test
-    public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsRegisteredAndReturnedSuccessRemoving() {
-        // Arrange
-        String responseBody = "Чат успешно удалён";
-        wireMockServer.stubFor(delete(urlEqualTo("/tg-chat/1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(responseBody)));
+            @Test
+            @DisplayName("/links: POST; Incorrect result - link is empty")
+            public void testThatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfEmptyLink() {
+                wireMockServer.stubFor(post(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
 
-        // Act
-        Optional<String> actualResponse = scrapperWebClient.deleteChat(1L);
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.addLink(1L, new AddLinkRequest(new URI(""))),
+                    ApiErrorException.class
+                );
 
-        // Assert
-        assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get()).isEqualTo(responseBody);
-    }
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
 
-    @Test
-    public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsNotRegisteredAndReturnedFailureExceptionChatNotFound() {
-        // Arrange
-        wireMockServer.stubFor(delete(urlEqualTo("/tg-chat/1"))
-            .willReturn(aResponse()
-                .withStatus(404)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(NOT_FOUND_BODY)));
+            @Test
+            @DisplayName("/links: POST; Incorrect result - body is not correct")
+            public void testThatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfWrongBody() {
+                wireMockServer.stubFor(post(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(NOT_FOUND_BODY)));
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.deleteChat(1L),
-            ApiErrorException.class
-        );
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.addLink(1L, new AddLinkRequest(new URI("123"))),
+                    ApiErrorException.class
+                );
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
-
-    @Test
-    public void testThatGetCorrectGetRequestToClaimLinksForUserFromTheDatabaseAndReturnedExpectedListOfLinks() {
-        // Arrange
-        String responseBody = """
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
+        }
+        @Nested
+        class GetRequests{
+            @Test
+            @DisplayName("/links: GET; Correct result")
+            public void testThatGetCorrectGetRequestToClaimLinksForUserFromTheDatabaseAndReturnedExpectedListOfLinks() {
+                String responseBody = """
             {
                 "links":[
                     {
@@ -169,232 +256,137 @@ public class ScrapperClientTest {
                 "size":1
             }
             """;
-        wireMockServer.stubFor(get(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(responseBody)));
+                wireMockServer.stubFor(get(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(responseBody)));
 
-        // Act
-        Optional<ListLinksResponse> actualResponse = scrapperWebClient.getLinks(1L);
+                Optional<ListLinksResponse> actualResponse = scrapperWebClient.getLinks(1L);
 
-        // Assert
-        assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get().size()).isEqualTo(1);
-        assertThat(actualResponse.get().links())
-            .hasSize(1)
-            .extracting(LinkResponse::id, link -> link.url().getPath())
-            .containsExactly(tuple(1L, "link"));
-    }
+                assertThat(actualResponse).isPresent();
+                assertThat(actualResponse.get().size()).isEqualTo(1);
+                assertThat(actualResponse.get().links())
+                    .hasSize(1)
+                    .extracting(LinkResponse::id, link -> link.url().getPath())
+                    .containsExactly(tuple(1L, "link"));
+            }
+            @Test
+            @DisplayName("/links: GET; Incorrect result - invalid id")
+            public void testThatGetIncorrectGetRequestToClaimLinksForUserFromDatabaseAndReturnedExceptionOfInvalidId() {
+                wireMockServer.stubFor(get(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("-1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
 
-    @Test
-    public void testThatGetIncorrectGetRequestToClaimLinksForUserFromDatabaseAndReturnedExceptionOfInvalidId() {
-        // Arrange
-        wireMockServer.stubFor(get(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("-1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.getLinks(-1L),
+                    ApiErrorException.class
+                );
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.getLinks(-1L),
-            ApiErrorException.class
-        );
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
+            @Test
+            @DisplayName("/links: GET; Incorrect result - wrong request")
+            public void testThatGetCorrectGetRequestToClaimLinksForUserFromTheEmptyDatabaseAndReturnedExceptionOfInvalidBody() {
+                wireMockServer.stubFor(get(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(NOT_FOUND_BODY)));
 
-    @Test
-    public void testThatGetCorrectGetRequestToClaimLinksForUserFromTheEmptyDatabaseAndReturnedExceptionOfNoLinksAreStored() {
-        // Arrange
-        wireMockServer.stubFor(get(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(404)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(NOT_FOUND_BODY)));
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.getLinks(1L),
+                    ApiErrorException.class
+                );
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.getLinks(1L),
-            ApiErrorException.class
-        );
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
+        }
+        @Nested
+        class DeleteRequests{
+            @Test
+            @DisplayName("/links: DELETE; Correct result")
+            public void testThatGetCorrectDeleteRequestToRemoveTheLinkAndReturnedSuccessDeleting() throws URISyntaxException {
+                wireMockServer.stubFor(delete(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(LINK_BODY)));
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
+                Optional<LinkResponse> actualResponse = scrapperWebClient.removeLink(
+                    1L, new RemoveLinkRequest(new URI("123"))
+                );
 
-    @Test
-    public void testTHatGetCorrectPostRequestToRegisterNewLinkForUserAndReturnedSuccessRegistration() throws URISyntaxException {
-        // Arrange
-        wireMockServer.stubFor(post(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(LINK_BODY)));
+                assertThat(actualResponse).isPresent();
+                assertThat(actualResponse.get().id()).isEqualTo(1);
+                assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
+            }
 
-        // Act
-        Optional<LinkResponse> actualResponse = scrapperWebClient.addLink(
-            1L, new AddLinkRequest(new URI("123"))
-        );
+            @Test
+            @DisplayName("/links: DELETE; Incorrect result - invalid id")
+            public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfInvalidId() {
+                wireMockServer.stubFor(delete(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("-1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
 
-        // Assert
-        assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get().id()).isEqualTo(1);
-        assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
-    }
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.removeLink(-1L, new RemoveLinkRequest(new URI("123"))),
+                    ApiErrorException.class
+                );
 
-    @Test
-    public void testTHatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfInvalidId() {
-        // Arrange
-        wireMockServer.stubFor(post(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("-1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.addLink(-1L, new AddLinkRequest(new URI("123"))),
-            ApiErrorException.class
-        );
+            @Test
+            @DisplayName("/links: DELETE; Incorrect result - empty link")
+            public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfEmptyLink() {
+                wireMockServer.stubFor(delete(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(INVALID_BODY)));
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.removeLink(1L, new RemoveLinkRequest(new URI(""))),
+                    ApiErrorException.class
+                );
 
-    @Test
-    public void testThatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfInvalidBody() {
-        // Arrange
-        wireMockServer.stubFor(post(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
 
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.addLink(1L, new AddLinkRequest(new URI(""))),
-            ApiErrorException.class
-        );
+            @Test
+            @DisplayName("/links: DELETE; Incorrect result - wrong body")
+            public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfWrongBody() {
+                wireMockServer.stubFor(delete(urlEqualTo("/links"))
+                    .withHeader("Tg-Chat-Id", equalTo("1"))
+                    .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(NOT_FOUND_BODY)));
 
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
+                Throwable actualException = catchThrowableOfType(
+                    () -> scrapperWebClient.removeLink(1L, new RemoveLinkRequest(new URI("123"))),
+                    ApiErrorException.class
+                );
 
-    @Test
-    public void testThatGetIncorrectPostRequestToRegisterNewLinkForUserAndReturnedExceptionOfNotFoundBody() {
-        // Arrange
-        wireMockServer.stubFor(post(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(404)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(NOT_FOUND_BODY)));
-
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.addLink(1L, new AddLinkRequest(new URI("123"))),
-            ApiErrorException.class
-        );
-
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
-
-    @Test
-    public void testThatGetCorrectDeleteRequestToRemoveTheLinkAndReturnedSuccessDeleting() throws URISyntaxException {
-        // Arrange
-        wireMockServer.stubFor(delete(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(LINK_BODY)));
-
-        // Act
-        Optional<LinkResponse> actualResponse = scrapperWebClient.removeLink(
-            1L, new RemoveLinkRequest(new URI("123"))
-        );
-
-        // Assert
-        assertThat(actualResponse).isPresent();
-        assertThat(actualResponse.get().id()).isEqualTo(1);
-        assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
-    }
-
-    @Test
-    public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfInvalidId() {
-        // Arrange
-        wireMockServer.stubFor(delete(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("-1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
-
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.removeLink(-1L, new RemoveLinkRequest(new URI("123"))),
-            ApiErrorException.class
-        );
-
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
-
-    @Test
-    public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfInvalidBody() {
-        // Arrange
-        wireMockServer.stubFor(delete(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(INVALID_BODY)));
-
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.removeLink(1L, new RemoveLinkRequest(new URI(""))),
-            ApiErrorException.class
-        );
-
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
-    }
-
-    @Test
-    public void testThatGetIncorrectDeleteRequestToRemoveTheLinkAndReturnedExceptionOfLinkWasNotFound() {
-        // Arrange
-        wireMockServer.stubFor(delete(urlEqualTo("/links"))
-            .withHeader("Tg-Chat-Id", equalTo("1"))
-            .willReturn(aResponse()
-                .withStatus(404)
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(NOT_FOUND_BODY)));
-
-        // Act
-        Throwable actualException = catchThrowableOfType(
-            () -> scrapperWebClient.removeLink(1L, new RemoveLinkRequest(new URI("123"))),
-            ApiErrorException.class
-        );
-
-        // Assert
-        assertThat(actualException)
-            .isInstanceOf(ApiErrorException.class);
+                assertThat(actualException)
+                    .isInstanceOf(ApiErrorException.class);
+            }
+        }
     }
 }
