@@ -2,6 +2,7 @@ package edu.java.api.handler;
 
 import edu.java.api.entities.exceptions.BadRequestException;
 import edu.java.api.entities.exceptions.NotFoundException;
+import edu.java.api.entities.exceptions.RequestProcessingException;
 import edu.java.api.entities.responses.ApiErrorResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,18 @@ public class ApiExceptionHandler {
         return new ApiErrorResponse(
             exception.getDescription(),
             HttpStatus.NOT_FOUND.getReasonPhrase(),
+            exception.getClass().getSimpleName(),
+            exception.getMessage(),
+            getListStringStackTrace(exception)
+        );
+    }
+
+    @ExceptionHandler(RequestProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleException(RequestProcessingException exception) {
+        return new ApiErrorResponse(
+            exception.getMessage(),
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
             exception.getClass().getSimpleName(),
             exception.getMessage(),
             getListStringStackTrace(exception)

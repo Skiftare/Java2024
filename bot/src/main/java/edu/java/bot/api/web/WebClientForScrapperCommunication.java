@@ -13,13 +13,13 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class WebClientInBot {
+public class WebClientForScrapperCommunication {
     private final WebClient webClient;
     private final static String PATH_TO_CHAT = "tg-chat/{id}";
     private final static String PATH_TO_LINK = "/links";
     private final static String HEADER_NAME = "Tg-Chat-Id";
 
-    public WebClientInBot(String incomeUrlAsBase) {
+    public WebClientForScrapperCommunication(String incomeUrlAsBase) {
         this.webClient = WebClient.builder().baseUrl(incomeUrlAsBase).build();
     }
 

@@ -1,6 +1,7 @@
 package edu.java.scrapper.api;
 
 
+import edu.java.api.entities.requests.RemoveLinkRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -80,6 +83,9 @@ public class ScrapperControllerTest {
     @Test
     @DisplayName("Link: POST; Correct request")
     public void postLinksCorrect() throws Exception {
+        long id = 2;
+        mockMvc.perform(MockMvcRequestBuilders.post("/tg-chat/{id}", id));
+
         mockMvc.perform(MockMvcRequestBuilders.post("/links")
                 .header("Tg-Chat-Id", "1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -100,10 +106,23 @@ public class ScrapperControllerTest {
     @Test
     @DisplayName("Link: DELETE; Correct request")
     public void deleteLinksCorrect() throws Exception {
+        long id = 3;
+        mockMvc.perform(MockMvcRequestBuilders.post("/tg-chat/{id}", id));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/links")
+            .header("Tg-Chat-Id", "3")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TEST_LINK));
+
+        RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(URI.create("https://example.com"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonRequest = objectMapper.writeValueAsString(removeLinkRequest);
+
         mockMvc.perform(MockMvcRequestBuilders.delete("/links")
-                .header("Tg-Chat-Id", "1")
+                .header("Tg-Chat-Id", "3")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TEST_LINK))
+                .content(jsonRequest))
             .andExpect(MockMvcResultMatchers.status().isOk());
     }
 

@@ -57,6 +57,13 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-bom</artifactId>
+            <version>11.0.18</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -96,7 +103,8 @@
         </dependency>
         <dependency>
             <groupId>org.wiremock</groupId>
-            <artifactId>wiremock</artifactId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

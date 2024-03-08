@@ -1,126 +1,88 @@
 package edu.java.api.web;
 
-import edu.java.api.entities.exceptions.BadRequestException;
-import edu.java.api.entities.exceptions.NotFoundException;
+import edu.java.api.entities.exceptions.RequestProcessingException;
 import edu.java.api.entities.responses.LinkResponse;
-import edu.java.api.entities.responses.TgChatInteractionResponse;
+import edu.java.api.web.entities.LinkOperationResponse;
+import edu.java.api.web.entities.ListOfLinksResponse;
+import edu.java.api.web.entities.ResultOfServiceOperation;
 import edu.java.database.DatabaseOperations;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserClientService {
-    private static final String CHAT_IS_ALREADY_REGISTRED = "Chat has been registred already";
-    private static final String CANNOT_REPEAT_REGISTER_CHAT = "Cannot repeat register chat";
-    private static final String CANNOT_DELETE_UNREGISTERED_CHAT = "Cannot delete unregistered chat";
-    private static final String CANNOT_GET_LINKS_UNREGISTERED_CHAT = "Cannot get links for unregistered chat";
-    private static final String LINK_ALREADY_TRACKED = "Link is already being tracked";
-    private static final String CANNOT_ADD_DUPLICATE_LINK = "Cannot add duplicate link";
-    private static final String LINK_NOT_FOUND = "Link not found";
-    private static final String CANNOT_REMOVE_MISSING_LINK = "Cannot remove missing link";
-    private static final String CHAT_IS_NOT_REGISTERED = "Chat is not registered";
-    private final Map<Long, List<LinkResponse>> chatLinks = new HashMap<>();
     private final DatabaseOperations dataService;
 
-    public void registerChat(long chatId) {
-        if (chatLinks.containsKey(chatId)) {
-            throw new BadRequestException(CHAT_IS_ALREADY_REGISTRED, CANNOT_REPEAT_REGISTER_CHAT);
+    private void isChatExist(Long chatId) throws RequestProcessingException {
+        if (!dataService.checkExistingOfChat(chatId)) {
+            throw new RequestProcessingException("Пользователь не зарегистрирован");
         }
-
-        chatLinks.put(chatId, new ArrayList<>());
     }
 
-    public void deleteChat(Long chatId) {
-        checkChatNotFound(chatId, CANNOT_DELETE_UNREGISTERED_CHAT);
-        chatLinks.remove(chatId);
+    public ListOfLinksResponse getLinks(Long chatId) throws RequestProcessingException {
+        isChatExist(chatId);
+        return new ListOfLinksResponse(chatId, dataService.getLinks(chatId));
+
     }
 
-    public List<LinkResponse> getLinks(Long chatId) {
-        checkChatNotFound(chatId, CANNOT_GET_LINKS_UNREGISTERED_CHAT);
-        return chatLinks.get(chatId);
-    }
+    public LinkOperationResponse addLink(Long chatId, URI link) throws RequestProcessingException {
+        isChatExist(chatId);
 
-    public LinkResponse addLink(Long chatId, URI link) {
-        checkChatNotFound(chatId, CANNOT_ADD_DUPLICATE_LINK);
-
-        List<LinkResponse> linkResponses = chatLinks.get(chatId);
+        List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
             if (linkResponse.url().getPath().equals(link.getPath())) {
-                throw new BadRequestException(LINK_ALREADY_TRACKED, CANNOT_ADD_DUPLICATE_LINK);
+                throw new RequestProcessingException("Эта ссылка уже отслеживается");
+
             }
         }
 
-        LinkResponse linkResponse = new LinkResponse((long) (linkResponses.size() + 1), link);
-        linkResponses.add(linkResponse);
-
-        return linkResponse;
+        dataService.addLink(chatId, link);
+        return new LinkOperationResponse(chatId, link);
     }
 
-    public LinkResponse removeLink(Long chatId, URI link) {
-        checkChatNotFound(chatId, CANNOT_REMOVE_MISSING_LINK);
+    public LinkOperationResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
+        isChatExist(chatId);
 
-        List<LinkResponse> linkResponses = chatLinks.get(chatId);
+        List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
             if (linkResponse.url().getPath().equals(link.getPath())) {
-                linkResponses.remove(linkResponse);
-                return linkResponse;
+                dataService.removeLink(chatId, link);
+                return new LinkOperationResponse(chatId, link);
             }
-        }
 
-        throw new NotFoundException(LINK_NOT_FOUND, CANNOT_REMOVE_MISSING_LINK);
+        }
+        throw new RequestProcessingException("Данной ссылки нет в отслеживаемых");
+
     }
 
-    private void checkChatNotFound(Long chatId, String message) {
-        if (!chatLinks.containsKey(chatId)) {
-            throw new NotFoundException(CHAT_IS_NOT_REGISTERED, message);
-        }
-    }
-
-    ResultOfServiceOperation registerUser(Long id) {
-        ResultOfServiceOperation result;
+    ResultOfServiceOperation registerUser(Long id) throws RequestProcessingException {
         if (!dataService.checkExistingOfChat(id)) {
             dataService.registerChat(id);
-            result = new ResultOfServiceOperation(
-                id, true,
+            return new ResultOfServiceOperation(
+                id,
                 "Чат зарегистрирован"
             );
-        } else {
-            result = new ResultOfServiceOperation(
-                id,
-                false,
-                "Чат уже зарегестрован, повторная регистрация ни к чему не приведёт"
-            );
         }
+        throw new RequestProcessingException("Чат уже зарегестрован, повторная регистрация ни к чему не приведёт");
 
-        return result;
+
     }
 
-    ResultOfServiceOperation deleteUser(Long id) {
-        ResultOfServiceOperation result;
-        if (dataService.checkExistingOfChat(id)) {
-            dataService.deleteChat(id);
-            result =  new ResultOfServiceOperation(id, true, "Чат удален");
-        } else {
-            result =  new ResultOfServiceOperation(
-                id, false, "Чат не зарегистрован. Удалять то, чего нет, мы не умеем");
-        }
-        return result;
-    }
+    ResultOfServiceOperation deleteUser(Long chatId) throws RequestProcessingException {
+        isChatExist(chatId);
 
-    ResultOfServiceOperation checkIsUserRegistered(Long id) {
-        ResultOfServiceOperation result;
-        if (dataService.checkExistingOfChat(id)) {
-            result = new ResultOfServiceOperation(id, true, "Чат есть");
-        } else {
-            result = new ResultOfServiceOperation(id, false, "Чата нет");
-        }
-        return result;
+        dataService.deleteChat(chatId);
+        return new ResultOfServiceOperation(chatId, "Чат удален");
 
     }
+
+    ResultOfServiceOperation checkIsUserRegistered(Long chatId) throws RequestProcessingException {
+        isChatExist(chatId);
+        return new ResultOfServiceOperation(chatId, "Чат есть");
+
+    }
+
 }

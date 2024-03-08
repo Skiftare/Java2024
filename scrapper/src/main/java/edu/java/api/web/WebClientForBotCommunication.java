@@ -9,12 +9,13 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class WebClientInScrapper {
+public class WebClientForBotCommunication {
     private final WebClient webClient;
 
-    public WebClientInScrapper(String baseUrl) {
+    public WebClientForBotCommunication(String baseUrl) {
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
+
 
     public Optional<String> sendUpdate(LinkUpdateRequest request) {
         return webClient
