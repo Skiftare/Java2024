@@ -4,11 +4,14 @@ import edu.java.api.entities.exceptions.ApiErrorException;
 import edu.java.api.entities.requests.LinkUpdateRequest;
 import edu.java.api.entities.responses.ApiErrorResponse;
 import java.util.Optional;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Service
 public class WebClientForBotCommunication {
     private final WebClient webClient;
 

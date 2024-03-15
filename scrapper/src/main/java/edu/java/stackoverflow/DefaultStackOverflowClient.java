@@ -9,13 +9,17 @@ import edu.java.utility.EmptyJsonException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
+@Service
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final WebClient webClient;
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
 
+    @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
         String defaultUrl = config.stackOverflow().defaultUrl();
         webClient = WebClient.builder()
