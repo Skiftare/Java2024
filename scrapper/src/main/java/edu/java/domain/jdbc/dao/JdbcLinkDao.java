@@ -1,4 +1,4 @@
-package edu.java.database.dao;
+package edu.java.domain.jdbc.dao;
 
 import edu.java.database.dto.LinkDto;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public class LinkDao {
+public class JdbcLinkDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public LinkDao(JdbcTemplate jdbcTemplate) {
+    public JdbcLinkDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

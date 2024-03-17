@@ -34,6 +34,7 @@ public class Link implements Serializable {
     private Long linkId;
     private String url;
     private OffsetDateTime createdAt;
+    private OffsetDateTime lastUpdateAt;
 
     public Link() {}
 
@@ -41,17 +42,20 @@ public class Link implements Serializable {
         this.linkId = value.linkId;
         this.url = value.url;
         this.createdAt = value.createdAt;
+        this.lastUpdateAt = value.lastUpdateAt;
     }
 
-    @ConstructorProperties({ "linkId", "url", "createdAt" })
+    @ConstructorProperties({ "linkId", "url", "createdAt", "lastUpdateAt" })
     public Link(
         @NotNull Long linkId,
         @NotNull String url,
-        @Nullable OffsetDateTime createdAt
+        @Nullable OffsetDateTime createdAt,
+        @NotNull OffsetDateTime lastUpdateAt
     ) {
         this.linkId = linkId;
         this.url = url;
         this.createdAt = createdAt;
+        this.lastUpdateAt = lastUpdateAt;
     }
 
     /**
@@ -102,6 +106,22 @@ public class Link implements Serializable {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Getter for <code>LINK.LAST_UPDATE_AT</code>.
+     */
+    @jakarta.validation.constraints.NotNull
+    @NotNull
+    public OffsetDateTime getLastUpdateAt() {
+        return this.lastUpdateAt;
+    }
+
+    /**
+     * Setter for <code>LINK.LAST_UPDATE_AT</code>.
+     */
+    public void setLastUpdateAt(@NotNull OffsetDateTime lastUpdateAt) {
+        this.lastUpdateAt = lastUpdateAt;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -129,6 +149,12 @@ public class Link implements Serializable {
         }
         else if (!this.createdAt.equals(other.createdAt))
             return false;
+        if (this.lastUpdateAt == null) {
+            if (other.lastUpdateAt != null)
+                return false;
+        }
+        else if (!this.lastUpdateAt.equals(other.lastUpdateAt))
+            return false;
         return true;
     }
 
@@ -139,6 +165,7 @@ public class Link implements Serializable {
         result = prime * result + ((this.linkId == null) ? 0 : this.linkId.hashCode());
         result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
+        result = prime * result + ((this.lastUpdateAt == null) ? 0 : this.lastUpdateAt.hashCode());
         return result;
     }
 
@@ -149,6 +176,7 @@ public class Link implements Serializable {
         sb.append(linkId);
         sb.append(", ").append(url);
         sb.append(", ").append(createdAt);
+        sb.append(", ").append(lastUpdateAt);
 
         sb.append(")");
         return sb.toString();

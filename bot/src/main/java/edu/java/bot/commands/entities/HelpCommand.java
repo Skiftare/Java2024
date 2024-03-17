@@ -13,10 +13,12 @@ public class HelpCommand implements Command {
     private static final String HELP_COMMAND_DESCRIPTION = "Вывести окно с командами";
 
     private final CommandLoaderForHelpMessage loader;
+    private final DialogManager manager;
 
     @Autowired
-    public HelpCommand(CommandLoaderForHelpMessage loader) {
+    public HelpCommand(CommandLoaderForHelpMessage loader, DialogManager manager) {
         this.loader = loader;
+        this.manager = manager;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class HelpCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        DialogManager.resetDialogState(chatId);
+        manager.resetDialogState(chatId);
         return new SendMessage(chatId, loader.getCommandsWithDescription());
     }
 
