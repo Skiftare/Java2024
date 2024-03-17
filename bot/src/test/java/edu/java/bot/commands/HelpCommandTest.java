@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class HelpCommandTest {
-    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication(":")));
+    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     private final Command helpCommand = new HelpCommand(new CommandLoaderForHelpMessage(
         new StartCommand(manager),
@@ -66,7 +66,7 @@ public class HelpCommandTest {
         SendMessage sendMessage = helpCommand.handle(update);
 
         // Then dialog state is reset
-        assertEquals(DialogManager.getDialogState(chatId), DialogState.NOT_REGISTERED);
+        assertEquals(manager.getDialogState(chatId), DialogState.NOT_REGISTERED);
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
