@@ -8,7 +8,6 @@ import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.processor.UserRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +39,11 @@ public class DataManager {
             LOGGER.error("Ошибка при добавлении URL: {}", e.getMessage());
             return false;
         }
+    }
+
+    boolean registerUser(Long id) {
+        Optional<String> serverAnswer = webClient.registerChat(id);
+        return serverAnswer.isPresent();
     }
 
     boolean deleteURl(UserRequest update) {

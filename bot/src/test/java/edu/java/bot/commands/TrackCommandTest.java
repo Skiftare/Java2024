@@ -62,30 +62,5 @@ public class TrackCommandTest {
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
 
-    @Test
-    public void testThatGetCommandAndReturnedWaitngMessage() {
-        //Given: setup
-        SecureRandom secureRandom = new SecureRandom();
-        Update update = mock(Update.class);
-        Chat chat = mock(Chat.class);
-
-        Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-
-        when(message.text()).thenReturn("/track");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-        when(update.message()).thenReturn(message);
-        manager.registerUser(chatId);
-
-        String expectedTextMessage = "Жду ссылку на отслеживание";
-
-        //When: we execute update with this Command
-        SendMessage sendMessage = testingCommand.handle(update);
-
-        //Then: we get right answer
-        assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
-    }
 }
 

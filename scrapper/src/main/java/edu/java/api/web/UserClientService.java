@@ -68,7 +68,6 @@ public class UserClientService {
         }
         throw new RequestProcessingException("Чат уже зарегестрован, повторная регистрация ни к чему не приведёт");
 
-
     }
 
     ResultOfServiceOperation deleteUser(Long chatId) throws RequestProcessingException {

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.utility.EmptyJsonException;
-import java.net.URI;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,8 @@ import org.springframework.web.reactive.function.client.WebClientException;
 
 @Service
 public class DefaultStackOverflowClient implements StackOverflowClient {
-    private final WebClient webClient;
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
+    private final WebClient webClient;
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
@@ -31,16 +30,6 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
 
     public DefaultStackOverflowClient(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
-    }
-
-    public Optional<StackOverflowResponse> processUpdates(URI link) {
-        String path = link.getPath();
-        String[] parts = path.split("/");
-        if (parts.length < 3) {
-            return Optional.empty();
-        }
-        long questionId = Long.parseLong(parts[2]);
-        return processQuestionUpdates(questionId);
     }
 
     @Override

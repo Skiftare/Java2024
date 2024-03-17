@@ -2,11 +2,11 @@ package edu.java.domain.jdbc.dao;
 
 import edu.java.domain.jdbc.written.chat.Chat;
 import edu.java.domain.jdbc.written.chat.ChatRowMapper;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class JdbcChatDao {
     }
 
     public Optional<Chat> getByTgChatId(long tgChatId) {
-        String sql = "SELECT * FROM chat WHERE tg_chat_id = ?";
+        String sql = "SELECT * FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)
             .query(chatRowMapper).optional();

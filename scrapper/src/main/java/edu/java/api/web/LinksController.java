@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class LinksController {
-    private final UserClientService methodProcessingService;
-
     private static final String INVALID_ID = "Неверный ID чата";
+    private final UserClientService methodProcessingService;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<TgChatInteractionResponse> registerChat(
@@ -66,6 +65,7 @@ public class LinksController {
     public ResponseEntity<ListLinksResponse> getAllLinks(
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId
     ) throws RequestProcessingException {
+
         ListOfLinksResponse result = methodProcessingService.getLinks(tgChatId); // Получение списка ссылок
         ListLinksResponse wrappedResult = new ListLinksResponse(
             result.resultList(), result.resultList().size()

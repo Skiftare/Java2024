@@ -1,6 +1,5 @@
 package edu.java.bot.memory;
 
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
 import java.util.HashMap;
@@ -17,8 +16,8 @@ public class DialogManager {
     private static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
     private static final String UNSUCCESSFUL_UNTRACK_INFO = "Ссылка невалидна или отсутсвует в отслеживаемых";
     private DataManager manager;
+
     public DialogManager(DataManager dataManager) {
-        // This constructor is intentionally empty. Nothing special is needed here.
         manager = dataManager;
     }
 
@@ -31,23 +30,16 @@ public class DialogManager {
     }
 
     public boolean registerUser(Long id) {
-        if (!ALL_DIALOGS.containsKey(id)) {
-            ALL_DIALOGS.put(id, DialogState.DEFAULT_SESSION);
-            return true;
-        }
-        return false;
+        return manager.registerUser(id);
     }
 
     public void setWaitForUntrack(Long id) {
-        if (ALL_DIALOGS.containsKey(id)) {
-            ALL_DIALOGS.put(id, DialogState.UNTRACK_URI);
-        }
+        ALL_DIALOGS.put(id, DialogState.UNTRACK_URI);
     }
 
     public void resetDialogState(Long id) {
-        if (ALL_DIALOGS.containsKey(id)) {
-            ALL_DIALOGS.put(id, DialogState.DEFAULT_SESSION);
-        }
+        ALL_DIALOGS.put(id, DialogState.DEFAULT_SESSION);
+
     }
 
     public boolean trackURL(UserRequest update) {

@@ -3,7 +3,6 @@ package edu.java.bot.api.link_updater.mapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.entities.requests.LinkUpdate;
-import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

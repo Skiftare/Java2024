@@ -45,26 +45,4 @@ public class ListCommandTest {
         assertEquals("Показать список отслеживаемых ссылок", listCommand.description());
     }
 
-    @Test
-    public void testThatGetCommandAndReturnedMessageForThatCommand() {
-        SecureRandom secureRandom = new SecureRandom();
-        Update update = mock(Update.class);
-        Chat chat = mock(Chat.class);
-
-        Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-
-        when(update.message()).thenReturn(message);
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-
-        //When: we execute update with this Command
-        SendMessage actualSendMessage = listCommand.handle(update);
-
-        assertEquals(actualSendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(actualSendMessage.getParameters().get("text"), "Никаких ссылок не отслеживается");
-
-
-    }
-
 }

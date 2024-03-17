@@ -1,8 +1,8 @@
 package edu.java.domain.jdbc.written.chat;
 
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.OffsetDateTime;
 
 @Getter
 @Setter

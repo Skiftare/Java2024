@@ -1,10 +1,10 @@
 package edu.java.domain.jdbc.dao;
 
 import edu.java.database.dto.LinkDto;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Repository
 public class JdbcLinkDao {
@@ -27,12 +27,14 @@ public class JdbcLinkDao {
     }
 
     public List<LinkDto> findAll() {
-        String sql = "SELECT * FROM link";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new LinkDto(rs.getLong("link_id"), rs.getString("url"), rs.getTimestamp("created_at").toLocalDateTime()));
-    }
-
-    public List<LinkDto> listAllSortedByUpdateDate() {
         String sql = "SELECT * FROM link ORDER BY updated_at DESC";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new LinkDto(rs.getLong("link_id"), rs.getString("url"), rs.getTimestamp("created_at").toLocalDateTime()));
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> new LinkDto(
+                rs.getLong("link_id"),
+                rs.getString("url"),
+                rs.getTimestamp("created_at").toLocalDateTime()
+            )
+        );
     }
 }

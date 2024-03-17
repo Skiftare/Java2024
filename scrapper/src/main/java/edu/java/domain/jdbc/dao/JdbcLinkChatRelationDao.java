@@ -1,26 +1,31 @@
 package edu.java.domain.jdbc.dao;
 
-import edu.java.database.dto.LinkChatRelationDto;
 import edu.java.domain.dto_chat_links.ChatLinkWithUrl;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLink;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRowMapper;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChat;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChatRowMapper;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrlRowMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcLinkChatRelationDao {
-    private final JdbcClient jdbcClient;
-    private final ChatLinkRowMapper chatLinkRowMapper;
+
+    private static JdbcClient jdbcClient;
+    private static ChatLinkRowMapper chatLinkRowMapper;
     private final ChatLinkWithUrlRowMapper chatLinkWithUrlRowMapper;
     private final ChatLinkWithTgChatRowMapper chatLinkWithTgChatRowMapper;
+
+    public static List<ChatLink> getByLinkId(long id) {
+        String sql = "SELECT * FROM chat_link WHERE link_id = ?";
+        return jdbcClient.sql(sql)
+            .param(id)
+            .query(chatLinkRowMapper).list();
+    }
 
     public List<ChatLink> getAll() {
         String sql = "SELECT * FROM chat_link";
@@ -29,7 +34,7 @@ public class JdbcLinkChatRelationDao {
     }
 
     public List<ChatLink> getByChatId(long id) {
-        String sql = "SELECT * FROM chat_link WHERE chat_id = ?";
+        String sql = "SELECT * FROM link_chat_relation WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkRowMapper).list();
@@ -44,13 +49,6 @@ public class JdbcLinkChatRelationDao {
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkWithUrlRowMapper).list();
-    }
-
-    public List<ChatLink> getByLinkId(long id) {
-        String sql = "SELECT * FROM chat_link WHERE link_id = ?";
-        return jdbcClient.sql(sql)
-            .param(id)
-            .query(chatLinkRowMapper).list();
     }
 
     public List<ChatLinkWithTgChat> getByLinkIdIdJoinChat(long id) {

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import java.time.OffsetDateTime;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DatabaseTest extends IntegrationTest {
@@ -21,26 +23,28 @@ public class DatabaseTest extends IntegrationTest {
     }
 
     @Test
+    @Rollback
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
         var jdbcTemplate = new JdbcTemplate(source);
 
         long givenChatId = 123L;
         long givenLinkId = 1234L;
+        OffsetDateTime time = OffsetDateTime.now();
         String givenUrl = "https://github.com/zed-industries/zed";
 
-        String queryToInsertInChatDatabase = "INSERT INTO database.chat (chat_id) VALUES (?)";
-        String queryToInsertInLinkDatabase = "INSERT INTO database.link (link_id, url) VALUES (?, ?)";
+        String queryToInsertInChatDatabase = "INSERT INTO chat (chat_id) VALUES (?)";
+        String queryToInsertInLinkDatabase = "INSERT INTO link (link_id, url, last_update_at) VALUES (?, ?, ?)";
         String queryToInsertInChainDatabase =
-            "INSERT INTO database.link_chat_relation (id_of_chat, id_of_link) VALUES (?, ?)";
+            "INSERT INTO  link_chat_relation (id_of_chat, id_of_link) VALUES (?, ?)";
 
         jdbcTemplate.update(queryToInsertInChatDatabase, givenChatId);
-        jdbcTemplate.update(queryToInsertInLinkDatabase, givenLinkId, givenUrl);
+        jdbcTemplate.update(queryToInsertInLinkDatabase, givenLinkId, givenUrl, time);
         jdbcTemplate.update(queryToInsertInChainDatabase, givenChatId, givenLinkId);
 
-        String queryToSelectFromChatDatabase = "SELECT chat_id FROM database.chat WHERE chat_id = ?";
-        String queryToSelectFromLinkDatabase = "SELECT url FROM database.link WHERE link_id = ?";
+        String queryToSelectFromChatDatabase = "SELECT chat_id FROM chat WHERE chat_id = ?";
+        String queryToSelectFromLinkDatabase = "SELECT url FROM link WHERE link_id = ?";
         String queryToSelectFromChainDatabase =
-            "SELECT id_of_link FROM database.link_chat_relation WHERE id_of_chat = ?";
+            "SELECT id_of_link FROM link_chat_relation WHERE id_of_chat = ?";
 
         Integer realChatId = jdbcTemplate.queryForObject(queryToSelectFromChatDatabase, Integer.class, givenChatId);
         String realUrl = jdbcTemplate.queryForObject(queryToSelectFromLinkDatabase, String.class, givenLinkId);

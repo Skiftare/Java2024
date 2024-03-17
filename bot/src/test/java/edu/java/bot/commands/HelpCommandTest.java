@@ -16,6 +16,7 @@ import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.DialogState;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
 
 import java.security.SecureRandom;
 
@@ -48,6 +49,7 @@ public class HelpCommandTest {
 
 
     @Test
+    @Rollback
     public void testThatGetCommandAndReturnedMessageForThatCommand() {
         // Given: setup
         SecureRandom secureRandom = new SecureRandom();
@@ -66,7 +68,7 @@ public class HelpCommandTest {
         SendMessage sendMessage = helpCommand.handle(update);
 
         // Then dialog state is reset
-        assertEquals(manager.getDialogState(chatId), DialogState.NOT_REGISTERED);
+        assertEquals(manager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);

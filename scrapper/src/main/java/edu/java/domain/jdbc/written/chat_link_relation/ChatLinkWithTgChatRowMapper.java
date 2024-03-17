@@ -1,9 +1,9 @@
 package edu.java.domain.jdbc.written.chat_link_relation;
 
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ChatLinkWithTgChatRowMapper implements RowMapper<ChatLinkWithTgChat> {

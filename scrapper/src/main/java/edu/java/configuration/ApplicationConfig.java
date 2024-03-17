@@ -25,7 +25,9 @@ public record ApplicationConfig(
 
 ) {
 
-    public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay,  @NotNull Duration parserDelay) {
+    public record Scheduler(
+        boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay, @NotNull Duration parserDelay
+    ) {
     }
 
     public record StackOverflow(@NotBlank String defaultUrl, String configUrl) {
