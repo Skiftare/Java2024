@@ -1,4 +1,4 @@
-package edu.java.github;
+package edu.java.links_clients.github;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -16,17 +16,8 @@ public class UpdatesController {
     private static final String FAILED_LINKS_UPDATE =
         "Некорректные параметры запроса";
     private final UpdateManager updateManager;
-    private static final String INVALID_ID = "Неверный ID чата";
-
-    private void isIdCorrect(@Positive(message = INVALID_ID) Long chatId) throws RequestProcessingException {
-        if (chatId < 0) {
-            throw new RequestProcessingException(INVALID_ID);
-        }
-    }
-
     @PostMapping("/updates")
     public ResponseEntity<String> sendUpdate(@RequestBody LinkUpdate linkUpdate) throws RequestProcessingException {
-        isIdCorrect(linkUpdate.id());
         if (updateManager.addRequest(linkUpdate)) {
             return ResponseEntity.ok(SUCCESS_LINK_UPDATED);
         } else {

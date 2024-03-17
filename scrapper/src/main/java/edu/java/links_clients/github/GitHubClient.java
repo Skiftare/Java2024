@@ -1,4 +1,4 @@
-package edu.java.github;
+package edu.java.links_clients.github;
 
 import java.util.Optional;
 

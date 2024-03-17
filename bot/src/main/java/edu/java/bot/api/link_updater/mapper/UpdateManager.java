@@ -1,20 +1,31 @@
 package edu.java.bot.api.link_updater.mapper;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.entities.requests.LinkUpdate;
 import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateManager {
-    private ArrayList<LinkUpdate> currentListOfUpdates;
+    TelegramBot bot;
 
-    //Тут должна быть БД, которая тыкается через shceduler, если я всё правильно понимаю
-    boolean addRequest(LinkUpdate req) {
-        if (currentListOfUpdates.contains(req)) {
-            return false;
-        } else {
-            currentListOfUpdates.add(req);
-            return true;
+    boolean addRequest(@NotNull LinkUpdate req) {
+        for (long id : req.tgChatIds()) {
+            try {
+                bot.execute(
+                    new SendMessage(
+                        id,
+                        "Ссылка " + req.url().toString() + " обновлена. Обнаружен новый контент:\n" + req.description()
+                    )
+                );
+            } catch (Exception e) {
+
+            }
         }
+        return true;
     }
 }
+
+

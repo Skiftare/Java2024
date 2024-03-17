@@ -43,11 +43,15 @@
         <!-- Linters -->
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
         <checkstyle.version>10.12.7</checkstyle.version>
+
+        <liquibase.version>4.26.0</liquibase.version>
+        <jooq.version>3.18.9</jooq.version>
     </properties>
 
     <modules>
         <module>bot</module>
         <module>scrapper</module>
+        <module>jooq-generator</module>
     </modules>
 
     <dependencyManagement>
@@ -127,6 +131,16 @@
             <groupId>org.wiremock</groupId>
             <artifactId>wiremock-standalone</artifactId>
             <version>${wiremock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.18.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.18.9</version>
         </dependency>
 
     </dependencies>

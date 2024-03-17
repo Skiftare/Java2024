@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,9 +36,9 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public Collection<LinkDto> listAll(long tgChatId) {
+    public Collection<LinkDto> listAll() {
         return linkDao.findAll().stream()
-            .filter(link -> link.linkId().equals(tgChatId))
+            .sorted(Comparator.comparing(LinkDto::createdAt))
             .collect(Collectors.toList());
     }
 }

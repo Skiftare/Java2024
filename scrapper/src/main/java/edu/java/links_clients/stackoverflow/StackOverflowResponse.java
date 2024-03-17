@@ -1,4 +1,4 @@
-package edu.java.stackoverflow;
+package edu.java.links_clients.stackoverflow;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

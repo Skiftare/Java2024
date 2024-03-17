@@ -8,5 +8,5 @@ import java.util.Collection;
 public interface LinkService {
     LinkDto add(long tgChatId, URI url);
     LinkDto remove(long tgChatId, URI url);
-    Collection<LinkDto> listAll(long tgChatId);
+    Collection<LinkDto> listAll();
 }

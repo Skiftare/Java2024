@@ -1,4 +1,4 @@
-package edu.java.stackoverflow;
+package edu.java.links_clients.stackoverflow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.utility.EmptyJsonException;
+import java.net.URI;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,16 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
 
     public DefaultStackOverflowClient(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
+    }
+
+    public Optional<StackOverflowResponse> processUpdates(URI link) {
+        String path = link.getPath();
+        String[] parts = path.split("/");
+        if (parts.length < 3) {
+            return Optional.empty();
+        }
+        long questionId = Long.parseLong(parts[2]);
+        return processQuestionUpdates(questionId);
     }
 
     @Override

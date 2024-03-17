@@ -1,20 +1,24 @@
 package edu.java.database.services.entities;
 
-
+import edu.java.api.entities.requests.LinkUpdateRequest;
 import edu.java.api.web.WebClientForBotCommunication;
-import edu.java.database.services.interfaces.LinkUpdater;
-import edu.java.github.DefaultGitHubClient;
-import edu.java.stackoverflow.DefaultStackOverflowClient;
-import org.springframework.stereotype.Service;
-
-
+import edu.java.configuration.ApplicationConfig;
+import edu.java.database.dto.LinkDto;
 import edu.java.database.services.interfaces.LinkService;
 import edu.java.database.services.interfaces.LinkUpdater;
-import edu.java.database.dto.LinkDto;
-import org.springframework.stereotype.Service;
-
+import edu.java.links_clients.github.DefaultGitHubClient;
+import edu.java.links_clients.github.GitHubResponse;
+import edu.java.links_clients.stackoverflow.DefaultStackOverflowClient;
+import edu.java.links_clients.stackoverflow.StackOverflowResponse;
 import java.net.URI;
-import java.util.Collection;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JdbcLinkUpdater implements LinkUpdater {
@@ -22,12 +26,21 @@ public class JdbcLinkUpdater implements LinkUpdater {
     private final DefaultGitHubClient githubClient;
     private final DefaultStackOverflowClient stackOverFlowClient;
     private final WebClientForBotCommunication botClient;
+    private ApplicationConfig.Scheduler scheduler;
 
-    public JdbcLinkUpdater(LinkService linkService, DefaultGitHubClient githubClient, DefaultStackOverflowClient stackOverFlowClient, WebClientForBotCommunication botClient) {
+
+    public JdbcLinkUpdater(
+        LinkService linkService,
+        DefaultGitHubClient githubClient,
+        DefaultStackOverflowClient stackOverFlowClient,
+        WebClientForBotCommunication botClient,
+        ApplicationConfig.Scheduler scheduler
+    ) {
         this.linkService = linkService;
         this.githubClient = githubClient;
         this.stackOverFlowClient = stackOverFlowClient;
         this.botClient = botClient;
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -39,10 +52,23 @@ public class JdbcLinkUpdater implements LinkUpdater {
     @Override
     public void checkForUpdates() {
         linkService.listAll().stream()
-            .map(LinkDto::url)
-            .map(URI::create)
-            .filter(url -> githubClient.checkForUpdates(url) || stackOverFlowClient.checkForUpdates(url))
-            .forEach(botClient::sendUpdateNotification);
-        }
+            .filter(link -> Duration.between(link.createdAt(), LocalDateTime.now()).toMillis() >
+                scheduler.parserDelay().toMillis());
+            //.forEach(this::update);
     }
+
+    /*private void update(LinkDto linkDto) {
+        URI link = URI.create(linkDto.url());
+        Optional<GitHubResponse> gitHubResponse = githubClient.processUpdates(link.toString());
+        Optional<StackOverflowResponse> stackOverflowResponse = stackOverFlowClient.processUpdates(link.toString());
+        List<String> messages = Stream.of(gitHubResponse, stackOverflowResponse)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(response -> response.toMessage(link))
+            .collect(Collectors.toList());
+        messages.forEach(message -> botClient.sendUpdate(new LinkUpdateRequest(
+            JdbcLinkService., link.toString(), message)));
+
+    }*/
+
 }
