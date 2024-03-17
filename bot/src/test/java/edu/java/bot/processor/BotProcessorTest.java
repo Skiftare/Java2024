@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.HelpCommand;
 import edu.java.bot.commands.entities.ListCommand;
 import edu.java.bot.commands.entities.StartCommand;
@@ -13,6 +14,8 @@ import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.commands.loaders.CommandsLoader;
+import edu.java.bot.memory.DataManager;
+import edu.java.bot.memory.DialogManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,19 +41,22 @@ public class BotProcessorTest {
         Mockito.when(chat.id()).thenReturn(chatId);
         Mockito.when(message.text()).thenReturn("unknown");
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
+        WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
+        DialogManager dialogManager = new DialogManager(new DataManager(server));
         CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
-            new StartCommand(),
-            new ListCommand(),
-            new TrackCommand(),
-            new UntrackCommand()
+            new StartCommand(dialogManager),
+            new ListCommand(dialogManager),
+            new TrackCommand(dialogManager),
+            new UntrackCommand(dialogManager)
         );
 
         CommandsLoader loader = new CommandsLoader(
-            new HelpCommand(helper), helper
+            new HelpCommand(helper, dialogManager), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,dialogManager);
 
         //When
         SendMessage response = bot.recognizeCommand(update);
@@ -75,19 +81,21 @@ public class BotProcessorTest {
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(update.message()).thenReturn(message);
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
+        WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
+        DialogManager dialogManager = new DialogManager(new DataManager(server));
         CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
-            new StartCommand(),
-            new ListCommand(),
-            new TrackCommand(),
-            new UntrackCommand()
+            new StartCommand(dialogManager),
+            new ListCommand(dialogManager),
+            new TrackCommand(dialogManager),
+            new UntrackCommand(dialogManager)
         );
 
         CommandsLoader loader = new CommandsLoader(
-            new HelpCommand(helper), helper
+            new HelpCommand(helper, dialogManager), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard, dialogManager);
 
 
 

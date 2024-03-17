@@ -9,18 +9,19 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Objects;
+
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationConfig.class)
 public class BotApplication {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(BotApplication.class);
         application.addInitializers(new EnvConfig());
-        application.run(args);
 
+        application.run(args);
     }
 
     static class EnvConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
         @Override
         public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
             Dotenv dotenv = Dotenv.configure().load();

@@ -1,6 +1,7 @@
 app:
-  telegram-token: ${TELEGRAM_TOKEN}
-  admin-chat-id: ${ADMIN_CHAT_ID}
+  telegramToken: ${TELEGRAM_TOKEN}
+  api:
+    scrapper-url: http://localhost:8080
 
 spring:
   application:

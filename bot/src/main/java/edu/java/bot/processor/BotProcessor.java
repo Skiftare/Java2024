@@ -22,8 +22,12 @@ public class BotProcessor {
     private final CommandsLoader loader;
     private final DialogManager manager;
 
-    @Autowired
-    BotProcessor(TelegramBot bot, CommandsLoader loader, ReplyKeyboardMarkup keyboard, DialogManager manager) {
+    @Autowired BotProcessor(
+        TelegramBot bot,
+        CommandsLoader loader,
+        ReplyKeyboardMarkup keyboard,
+        DialogManager manager
+    ) {
         this.bot = bot;
         this.bot.setUpdatesListener(this::createUpdatesManager);
         this.loader = loader;
@@ -56,23 +60,21 @@ public class BotProcessor {
                 update.message().chat().id(),
                 update.message().text()
             ));
-            if(resultCookie.state() == CookieState.WAITING_FOR_TRACK_URL) {
+            if (resultCookie.state() == CookieState.WAITING_FOR_TRACK_URL) {
                 for (Command command : availableCommand) {
                     if (command.getCommandName().equals("/track")) {
                         msg = command.handle(update);
                         break;
                     }
                 }
-            }
-            else if(resultCookie.state() == CookieState.WAITING_FOR_UNTRACK_URL) {
+            } else if (resultCookie.state() == CookieState.WAITING_FOR_UNTRACK_URL) {
                 for (Command command : availableCommand) {
                     if (command.getCommandName().equals("/untrack")) {
                         msg = command.handle(update);
                         break;
                     }
                 }
-            }
-            else{
+            } else {
                 msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");
             }
         }
