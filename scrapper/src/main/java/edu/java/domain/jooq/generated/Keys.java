@@ -40,8 +40,7 @@ public class Keys {
     public static final UniqueKey<LinkRecord> CONSTRAINT_2 =
         Internal.createUniqueKey(Link.LINK, DSL.name("CONSTRAINT_2"), new TableField[] {Link.LINK.LINK_ID}, true);
     public static final UniqueKey<LinkChatRelationRecord> CONSTRAINT_D =
-        Internal.createUniqueKey(
-            LinkChatRelation.LINK_CHAT_RELATION,
+        Internal.createUniqueKey(LinkChatRelation.LINK_CHAT_RELATION,
             DSL.name("CONSTRAINT_D"),
             new TableField[] {LinkChatRelation.LINK_CHAT_RELATION.ID},
             true

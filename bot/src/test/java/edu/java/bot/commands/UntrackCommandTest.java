@@ -8,7 +8,6 @@ import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
-import edu.java.bot.processor.UserRequest;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,6 @@ public class UntrackCommandTest {
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
-
 
     @Test
     public void testThatGetCommandAndReturnedWaitngMessage() {

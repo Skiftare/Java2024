@@ -60,8 +60,7 @@ public class Link extends TableImpl<LinkRecord> {
     /**
      * The column <code>LINK.CREATED_AT</code>.
      */
-    public final TableField<LinkRecord, OffsetDateTime> CREATED_AT = createField(
-        DSL.name("CREATED_AT"),
+    public final TableField<LinkRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("CREATED_AT"),
         SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false)
             .defaultValue(DSL.field(DSL.raw("CURRENT_DATE"), SQLDataType.TIMESTAMPWITHTIMEZONE)),
         this,

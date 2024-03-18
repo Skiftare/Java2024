@@ -21,20 +21,20 @@ public class JdbcLinkChatRelationDao {
     private final ChatLinkWithTgChatRowMapper chatLinkWithTgChatRowMapper;
 
     public static List<ChatLink> getByLinkId(long id) {
-        String sql = "SELECT * FROM chat_link WHERE link_id = ?";
+        String sql = "SELECT * FROM link_chat_relation WHERE id_of_link = ?";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkRowMapper).list();
     }
 
     public List<ChatLink> getAll() {
-        String sql = "SELECT * FROM chat_link";
+        String sql = "SELECT * FROM link_chat_relation";
         return jdbcClient.sql(sql)
             .query(chatLinkRowMapper).list();
     }
 
     public List<ChatLink> getByChatId(long id) {
-        String sql = "SELECT * FROM link_chat_relation WHERE chat_id = ?";
+        String sql = "SELECT * FROM link_chat_relation WHERE id_of_chat = ?";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkRowMapper).list();
@@ -42,10 +42,10 @@ public class JdbcLinkChatRelationDao {
 
     public List<ChatLinkWithUrl> getByChatIdJoinLink(long id) {
         String sql = """
-            SELECT cl.chat_id, cl.link_id, l.url
-            FROM chat_link cl
-            JOIN link l ON l.id = cl.link_id
-            WHERE chat_id = ?""";
+            SELECT lcr.id_of_chat, lcr.id_of_link, l.url
+            FROM link_chat_relation lcr
+            JOIN link l ON l.id = lcr.id_of_link
+            WHERE id_of_chat = ?""";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkWithUrlRowMapper).list();
@@ -53,24 +53,24 @@ public class JdbcLinkChatRelationDao {
 
     public List<ChatLinkWithTgChat> getByLinkIdIdJoinChat(long id) {
         String sql = """
-            SELECT cl.chat_id, cl.link_id, c.tg_chat_id
-            FROM chat_link cl
-            JOIN chat c ON c.id = cl.chat_id
-            WHERE link_id = ?""";
+            SELECT lcr.id_of_chat, lcr.id_of_link, c.tg_chat_id
+            FROM link_chat_relation lcr
+            JOIN chat c ON c.chat_id = lcr.id_of_chat
+            WHERE id_of_link = ?""";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkWithTgChatRowMapper).list();
     }
 
     public int save(ChatLink chatLink) {
-        String sql = "INSERT INTO chat_link(chat_id, link_id) VALUES (?, ?)";
+        String sql = "INSERT INTO link_chat_relation(id_of_chat, id_of_link) VALUES (?, ?)";
         return jdbcClient.sql(sql)
             .params(chatLink.getChatId(), chatLink.getLinkId())
             .update();
     }
 
     public int delete(long chatId, long linkId) {
-        String sql = "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?";
+        String sql = "DELETE FROM link_chat_relation WHERE id_of_chat = ? AND id_of_link = ?";
         return jdbcClient.sql(sql)
             .params(chatId, linkId)
             .update();

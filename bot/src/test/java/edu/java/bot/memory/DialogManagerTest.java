@@ -1,11 +1,9 @@
 package edu.java.bot.memory;
 
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.processor.UserRequest;
-import org.junit.Test;
-import org.mockito.Mockito;
 import java.security.SecureRandom;
+import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,6 +25,6 @@ public class DialogManagerTest {
         Cookie message = manager.resolveCommandNeedCookie(userRequest);
 
         // Then
-         assertThat(message.state()).isEqualTo(CookieState.INVALID_LINK);
+        assertThat(message.state()).isEqualTo(CookieState.INVALID_LINK);
     }
 }
