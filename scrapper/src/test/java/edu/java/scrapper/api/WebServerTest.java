@@ -2,13 +2,13 @@ package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.api.entities.exceptions.ApiErrorException;
-import edu.java.api.entities.requests.LinkUpdateRequest;
-import edu.java.api.entities.responses.ApiErrorResponse;
 import edu.java.api.web.WebClientForBotCommunication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import edu.java.data.request.LinkUpdateRequest;
+import edu.java.data.response.ApiErrorResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
