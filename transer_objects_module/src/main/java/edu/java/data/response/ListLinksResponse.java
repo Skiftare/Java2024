@@ -1,4 +1,4 @@
-package edu.java.api.entities.responses;
+package edu.java.data.response;
 
 import java.util.List;
 

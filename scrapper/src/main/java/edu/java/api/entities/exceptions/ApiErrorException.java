@@ -1,6 +1,6 @@
 package edu.java.api.entities.exceptions;
 
-import edu.java.api.entities.responses.ApiErrorResponse;
+import edu.java.data.response.ApiErrorResponse;
 import lombok.Getter;
 
 @Getter

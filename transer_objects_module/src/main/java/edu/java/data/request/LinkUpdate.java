@@ -1,4 +1,4 @@
-package edu.java.bot.api.entities.requests;
+package edu.java.data.request;
 
 import java.net.URI;
 import java.util.List;

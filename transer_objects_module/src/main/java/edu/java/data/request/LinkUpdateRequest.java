@@ -1,4 +1,4 @@
-package edu.java.api.entities.requests;
+package edu.java.data.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;

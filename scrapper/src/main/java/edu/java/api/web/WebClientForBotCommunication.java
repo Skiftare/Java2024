@@ -1,9 +1,9 @@
 package edu.java.api.web;
 
 import edu.java.api.entities.exceptions.ApiErrorException;
-import edu.java.api.entities.requests.LinkUpdateRequest;
-import edu.java.api.entities.responses.ApiErrorResponse;
 import java.util.Optional;
+import edu.java.data.request.LinkUpdateRequest;
+import edu.java.data.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

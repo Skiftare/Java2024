@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.memory.DialogManager;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,7 @@ public class HelpCommand implements Command {
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
         manager.resetDialogState(chatId);
+        LoggerFactory.getLogger(HelpCommand.class).info("User requested help");
         return new SendMessage(chatId, loader.getCommandsWithDescription());
     }
 

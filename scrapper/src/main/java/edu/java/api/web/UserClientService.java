@@ -1,10 +1,9 @@
 package edu.java.api.web;
 
 import edu.java.api.entities.exceptions.RequestProcessingException;
-import edu.java.api.entities.responses.LinkResponse;
-import edu.java.api.web.entities.LinkOperationResponse;
-import edu.java.api.web.entities.ListOfLinksResponse;
-import edu.java.api.web.entities.ResultOfServiceOperation;
+import edu.java.data.response.LinkResponse;
+import edu.java.data.response.ListOfLinksResponse;
+import edu.java.data.response.ResultOfServiceOperation;
 import edu.java.database.DatabaseOperations;
 import java.net.URI;
 import java.util.List;
@@ -28,7 +27,7 @@ public class UserClientService {
 
     }
 
-    public LinkOperationResponse addLink(Long chatId, URI link) throws RequestProcessingException {
+    public LinkResponse addLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
 
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
@@ -40,17 +39,17 @@ public class UserClientService {
         }
 
         dataService.addLink(chatId, link);
-        return new LinkOperationResponse(chatId, link);
+        return new LinkResponse(chatId, link);
     }
 
-    public LinkOperationResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
+    public LinkResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
 
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
             if (linkResponse.url().getPath().equals(link.getPath())) {
                 dataService.removeLink(chatId, link);
-                return new LinkOperationResponse(chatId, link);
+                return new LinkResponse(chatId, link);
             }
 
         }

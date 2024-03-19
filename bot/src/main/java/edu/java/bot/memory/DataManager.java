@@ -1,14 +1,14 @@
 package edu.java.bot.memory;
 
-import edu.java.bot.api.entities.requests.AddLinkRequest;
-import edu.java.bot.api.entities.requests.RemoveLinkRequest;
-import edu.java.bot.api.entities.responses.LinkResponse;
-import edu.java.bot.api.entities.responses.ListLinksResponse;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.processor.UserRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import edu.java.data.request.AddLinkRequest;
+import edu.java.data.request.RemoveLinkRequest;
+import edu.java.data.response.LinkResponse;
+import edu.java.data.response.ListLinksResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;

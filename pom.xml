@@ -52,6 +52,7 @@
         <module>bot</module>
         <module>scrapper</module>
         <module>jooq-generator</module>
+        <module>transer_objects_module</module>
     </modules>
 
     <dependencyManagement>
@@ -65,6 +66,11 @@
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock</artifactId>
                 <version>${wiremock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>edu.java</groupId>
+                <artifactId>transer_objects_module</artifactId>
+                <version>0.1</version>
             </dependency>
 
             <dependency>
@@ -100,11 +106,7 @@
             <version>${jetbrains-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
-        </dependency>
+
 
         <!-- Tests -->
         <dependency>
@@ -132,16 +134,7 @@
             <artifactId>wiremock-standalone</artifactId>
             <version>${wiremock.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-codegen</artifactId>
-            <version>3.18.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-meta</artifactId>
-            <version>3.18.9</version>
-        </dependency>
+
 
     </dependencies>
 

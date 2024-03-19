@@ -2,12 +2,12 @@ package edu.java.database;
 
 import edu.java.api.entities.exceptions.BadRequestException;
 import edu.java.api.entities.exceptions.NotFoundException;
-import edu.java.api.entities.responses.LinkResponse;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import edu.java.data.response.LinkResponse;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,7 +41,7 @@ public class DatabaseOperations {
 
         List<LinkResponse> linkResponses = chatLinks.get(chatId);
         for (LinkResponse linkResponse : linkResponses) {
-            if (linkResponse.url().getPath().equals(link.getPath())) {
+            if (linkResponse.url().equals(link.getPath())) {
                 throw new BadRequestException("Ссылка уже отслеживается", "Нельзя добавить уже отслеживаемую ссылку");
             }
         }

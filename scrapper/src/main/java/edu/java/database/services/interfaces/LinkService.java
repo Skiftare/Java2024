@@ -1,13 +1,14 @@
 package edu.java.database.services.interfaces;
 
-import edu.java.database.dto.LinkDto;
-import java.net.URI;
-import java.util.Collection;
+import edu.java.data.request.AddLinkRequest;
+import edu.java.data.request.RemoveLinkRequest;
+import edu.java.data.response.LinkResponse;
+import edu.java.data.response.ListLinksResponse;
 
 public interface LinkService {
-    LinkDto add(long tgChatId, URI url);
+    LinkResponse add(long tgChatId, AddLinkRequest linkRequest);
 
-    LinkDto remove(long tgChatId, URI url);
+    LinkResponse remove(long tgChatId, RemoveLinkRequest linkRequest);
 
-    Collection<LinkDto> listAll();
+    ListLinksResponse listAll(long tgChatId);
 }
