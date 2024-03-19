@@ -1,9 +1,9 @@
 package edu.java.data.request;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import org.jetbrains.annotations.NotNull;
 
 public record LinkUpdateRequest(

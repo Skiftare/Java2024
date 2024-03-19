@@ -9,4 +9,18 @@
     <artifactId>transer_objects_module</artifactId>
     <name>Archetype - transer_objects_module</name>
     <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>2.2.19</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.31.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>
