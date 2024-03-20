@@ -2,12 +2,12 @@ package edu.java.database;
 
 import edu.java.api.entities.exceptions.BadRequestException;
 import edu.java.api.entities.exceptions.NotFoundException;
+import edu.java.data.response.LinkResponse;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import edu.java.data.response.LinkResponse;
 import org.springframework.stereotype.Repository;
 
 @Repository
