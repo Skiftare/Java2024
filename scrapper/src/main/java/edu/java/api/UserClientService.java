@@ -1,10 +1,14 @@
-package edu.java.api.web;
+package edu.java.api;
 
-import edu.java.api.entities.exceptions.RequestProcessingException;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListOfLinksResponse;
 import edu.java.data.response.ResultOfServiceOperation;
 import edu.java.database.DatabaseOperations;
+import edu.java.exceptions.RequestProcessingException;
+import edu.java.exceptions.entities.LinkAlreadyExistException;
+import edu.java.exceptions.entities.LinkNotFoundException;
+import edu.java.exceptions.entities.UserAlreadyExistException;
+import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +21,7 @@ public class UserClientService {
 
     private void isChatExist(Long chatId) throws RequestProcessingException {
         if (!dataService.checkExistingOfChat(chatId)) {
-            throw new RequestProcessingException("Пользователь не зарегистрирован");
+            throw new UserNotFoundException("Пользователь не зарегистрирован");
         }
     }
 
@@ -32,14 +36,14 @@ public class UserClientService {
 
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
-            if (linkResponse.url().getPath().equals(link.getPath())) {
-                throw new RequestProcessingException("Эта ссылка уже отслеживается");
+            if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
+                throw new LinkAlreadyExistException("Эта ссылка уже отслеживается");
 
             }
         }
 
         dataService.addLink(chatId, link);
-        return new LinkResponse(chatId, link);
+        return new LinkResponse(chatId, link.toString());
     }
 
     public LinkResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
@@ -47,13 +51,13 @@ public class UserClientService {
 
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
-            if (linkResponse.url().getPath().equals(link.getPath())) {
+            if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
                 dataService.removeLink(chatId, link);
-                return new LinkResponse(chatId, link);
+                return new LinkResponse(chatId, link.toString());
             }
 
         }
-        throw new RequestProcessingException("Данной ссылки нет в отслеживаемых");
+        throw new LinkNotFoundException("Данной ссылки нет в отслеживаемых");
 
     }
 
@@ -65,7 +69,7 @@ public class UserClientService {
                 "Чат зарегистрирован"
             );
         }
-        throw new RequestProcessingException("Чат уже зарегестрован, повторная регистрация ни к чему не приведёт");
+        throw new UserAlreadyExistException("Чат уже зарегестрован, повторная регистрация ни к чему не приведёт");
 
     }
 

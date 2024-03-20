@@ -1,40 +1,72 @@
 package edu.java.domain.jdbc.dao;
 
-import edu.java.database.dto.LinkDto;
+import edu.java.domain.jdbc.written.link.Link;
+import edu.java.domain.jdbc.written.link.LinkRowMapper;
+import java.time.OffsetDateTime;
 import java.util.List;
-import org.springframework.jdbc.core.JdbcTemplate;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@RequiredArgsConstructor
 public class JdbcLinkDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcClient jdbcClient;
+    private final LinkRowMapper linkRowMapper = new LinkRowMapper();
 
-    public JdbcLinkDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public List<Link> getAll() {
+        String sql = "SELECT * FROM link";
+        return jdbcClient.sql(sql)
+            .query(linkRowMapper).list();
     }
 
-    @Transactional
-    public void add(LinkDto link) {
-        String sql = "INSERT INTO link (link_id, url, created_at) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, link.linkId(), link.url(), link.createdAt());
+    public Optional<Link> findByUrl(String url) {
+        String sql = "SELECT * FROM link WHERE url = ?";
+        return jdbcClient.sql(sql)
+            .param(url)
+            .query(linkRowMapper).optional();
     }
 
-    @Transactional
-    public void remove(LinkDto link) {
-        String sql = "DELETE FROM link WHERE link_id = ?";
-        jdbcTemplate.update(sql, link.linkId());
+    public Optional<Link> findById(long id) {
+        String sql = "SELECT * FROM link WHERE id = ?";
+        return jdbcClient.sql(sql)
+            .param(id)
+            .query(linkRowMapper).optional();
     }
 
-    public List<LinkDto> findAll() {
-        String sql = "SELECT * FROM link ORDER BY updated_at DESC";
-        return jdbcTemplate.query(
-            sql,
-            (rs, rowNum) -> new LinkDto(
-                rs.getLong("link_id"),
-                rs.getString("url"),
-                rs.getTimestamp("created_at").toLocalDateTime()
-            )
-        );
+    public List<Link> getByLastUpdate(OffsetDateTime dateTime) {
+        String sql = "SELECT * FROM link WHERE last_update_at < ?";
+        return jdbcClient.sql(sql)
+            .param(dateTime)
+            .query(linkRowMapper).list();
+    }
+
+    public int save(Link link) {
+        String sql = "INSERT INTO link(url, created_at, last_update_at) VALUES (?, ?, ?)";
+        return jdbcClient.sql(sql)
+            .params(link.getUrl(), link.getCreatedAt(), link.getLastUpdateAt())
+            .update();
+    }
+
+    public void updateLastUpdateAtById(long id, OffsetDateTime dateTime) {
+        String sql = "UPDATE link SET last_update_at = ? WHERE id = ?";
+        jdbcClient.sql(sql)
+            .params(dateTime, id)
+            .update();
+    }
+
+    public int deleteByLink(String url) {
+        String sql = "DELETE FROM link WHERE url = ?";
+        return jdbcClient.sql(sql)
+            .param(url)
+            .update();
+    }
+
+    public void deleteByDataLinkId(long id) {
+        String sql = "DELETE FROM link WHERE id = ?";
+        jdbcClient.sql(sql)
+            .param(id)
+            .update();
     }
 }

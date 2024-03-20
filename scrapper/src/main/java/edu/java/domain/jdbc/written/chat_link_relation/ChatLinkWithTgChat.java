@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChatLinkWithTgChat {
-    private long chatId;
-    private long linkId;
+    private long dataChatId;
+    private long dataLinkId;
     private long tgChatId;
 }

@@ -1,8 +1,8 @@
-package edu.java.api.web;
+package edu.java.api;
 
-import edu.java.api.entities.exceptions.ApiErrorException;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
+import edu.java.exceptions.entities.CustomApiException;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -26,7 +26,7 @@ public class WebClientForBotCommunication {
                 HttpStatus.BAD_REQUEST::equals,
                 response -> response
                     .bodyToMono(ApiErrorResponse.class)
-                    .flatMap(errorResponse -> Mono.error(new ApiErrorException(errorResponse)))
+                    .flatMap(errorResponse -> Mono.error(new CustomApiException(errorResponse)))
             )
             .bodyToMono(String.class)
             .blockOptional();

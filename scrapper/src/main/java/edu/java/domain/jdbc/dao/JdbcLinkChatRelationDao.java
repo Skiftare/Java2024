@@ -1,8 +1,8 @@
 package edu.java.domain.jdbc.dao;
 
 import edu.java.domain.dto_chat_links.ChatLinkWithUrl;
-import edu.java.domain.jdbc.written.chat_link_relation.ChatLink;
-import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRowMapper;
+import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelation;
+import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelationRowMapper;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChat;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChatRowMapper;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrlRowMapper;
@@ -15,25 +15,25 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class JdbcLinkChatRelationDao {
 
-    private static JdbcClient jdbcClient;
-    private static ChatLinkRowMapper chatLinkRowMapper;
+    private final JdbcClient jdbcClient;
+    private final ChatLinkRelationRowMapper chatLinkRowMapper;
     private final ChatLinkWithUrlRowMapper chatLinkWithUrlRowMapper;
     private final ChatLinkWithTgChatRowMapper chatLinkWithTgChatRowMapper;
 
-    public static List<ChatLink> getByLinkId(long id) {
+    public List<ChatLinkRelation> getByLinkId(long id) {
         String sql = "SELECT * FROM link_chat_relation WHERE id_of_link = ?";
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkRowMapper).list();
     }
 
-    public List<ChatLink> getAll() {
+    public List<ChatLinkRelation> getAll() {
         String sql = "SELECT * FROM link_chat_relation";
         return jdbcClient.sql(sql)
             .query(chatLinkRowMapper).list();
     }
 
-    public List<ChatLink> getByChatId(long id) {
+    public List<ChatLinkRelation> getByChatId(long id) {
         String sql = "SELECT * FROM link_chat_relation WHERE id_of_chat = ?";
         return jdbcClient.sql(sql)
             .param(id)
@@ -62,10 +62,10 @@ public class JdbcLinkChatRelationDao {
             .query(chatLinkWithTgChatRowMapper).list();
     }
 
-    public int save(ChatLink chatLink) {
+    public int save(ChatLinkRelation chatLink) {
         String sql = "INSERT INTO link_chat_relation(id_of_chat, id_of_link) VALUES (?, ?)";
         return jdbcClient.sql(sql)
-            .params(chatLink.getChatId(), chatLink.getLinkId())
+            .params(chatLink.getDataChatId(), chatLink.getDataLinkId())
             .update();
     }
 

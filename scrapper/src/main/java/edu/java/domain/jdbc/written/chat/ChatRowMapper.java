@@ -12,9 +12,8 @@ public class ChatRowMapper implements RowMapper<Chat> {
     @SuppressWarnings("MagicNumber")
     public Chat mapRow(ResultSet rs, int rowNum) throws SQLException {
         Chat chat = new Chat();
-        chat.setId(rs.getLong(1));
-        chat.setTgChatId(rs.getLong(2));
-        chat.setCreatedAt(rs.getObject(3, OffsetDateTime.class));
+        chat.setTgChatId(rs.getLong(1));
+        chat.setCreatedAt(rs.getObject(2, OffsetDateTime.class));
         return chat;
     }
 }

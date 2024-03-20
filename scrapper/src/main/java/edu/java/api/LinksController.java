@@ -1,6 +1,5 @@
-package edu.java.api.web;
+package edu.java.api;
 
-import edu.java.api.entities.exceptions.RequestProcessingException;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.LinkResponse;
@@ -8,6 +7,7 @@ import edu.java.data.response.ListLinksResponse;
 import edu.java.data.response.ListOfLinksResponse;
 import edu.java.data.response.ResultOfServiceOperation;
 import edu.java.data.response.TgChatInteractionResponse;
+import edu.java.exceptions.RequestProcessingException;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;

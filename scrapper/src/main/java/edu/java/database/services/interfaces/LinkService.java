@@ -11,4 +11,8 @@ public interface LinkService {
     LinkResponse remove(long tgChatId, RemoveLinkRequest linkRequest);
 
     ListLinksResponse listAll(long tgChatId);
+
+    default String generateExceptionMessage(String message, String reason) {
+        return message + ' ' + reason;
+    }
 }

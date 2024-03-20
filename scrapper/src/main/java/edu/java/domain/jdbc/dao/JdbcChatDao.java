@@ -24,25 +24,19 @@ public class JdbcChatDao {
         String sql = "SELECT * FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)
-            .query(chatRowMapper).optional();
-    }
-
-    public Optional<Chat> getById(long id) {
-        String sql = "SELECT * FROM chat WHERE id = ?";
-        return jdbcClient.sql(sql)
-            .param(id)
-            .query(chatRowMapper).optional();
+            .query(chatRowMapper)
+            .optional();
     }
 
     public int save(Chat chat) {
-        String sql = "INSERT INTO chat(tg_chat_id, created_at) VALUES (?, ?)";
+        String sql = "INSERT INTO chat(chat_id, created_at) VALUES (?, ?)";
         return jdbcClient.sql(sql)
             .params(chat.getTgChatId(), chat.getCreatedAt())
             .update();
     }
 
-    public int delete(long tgChatId) {
-        String sql = "DELETE FROM chat WHERE tg_chat_id = ?";
+    public int deleteByTgChatId(long tgChatId) {
+        String sql = "DELETE FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)
             .update();

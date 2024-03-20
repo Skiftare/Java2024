@@ -12,7 +12,7 @@ public class LinkRowMapper implements RowMapper<Link> {
     @SuppressWarnings("MagicNumber")
     public Link mapRow(ResultSet rs, int rowNum) throws SQLException {
         Link link = new Link();
-        link.setId(rs.getLong(1));
+        link.setDataLinkId(rs.getLong(1));
         link.setUrl(rs.getString(2));
         link.setCreatedAt(rs.getObject(3, OffsetDateTime.class));
         link.setLastUpdateAt(rs.getObject(4, OffsetDateTime.class));

@@ -7,7 +7,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Chat {
-    private long id;
     private long tgChatId;
     private OffsetDateTime createdAt;
+
+    public static Chat makeChat(long id, OffsetDateTime time) {
+        Chat chat = new Chat();
+        chat.setTgChatId(id);
+        chat.setCreatedAt(time);
+        return chat;
+    }
 }
