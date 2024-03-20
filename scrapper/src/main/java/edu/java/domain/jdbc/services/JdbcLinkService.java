@@ -49,16 +49,15 @@ public class JdbcLinkService implements LinkService {
         long chatId = getChatByTgChatId(tgChatId).getTgChatId();
         Link actualLink;
 
-        //Создание ссылки в таблице ссылок, если ее нет
         if (linkDao.findByUrl(url).isEmpty()) {
             Link createLink = Link.makeLink(url, OffsetDateTime.now(), OffsetDateTime.now());
             linkDao.save(createLink);
             actualLink = linkDao.findByUrl(url).get();
         } else {
-            //Иначе проверка на предмет повторного добавления
+
             actualLink = linkDao.findByUrl(url).get();
             for (ChatLinkRelation chatLink : chatLinkDao.getByChatId(chatId)) {
-                if (chatLink.getDataLinkId() == actualLink.getDataLinkId()) {
+                if (chatLink.getDataLinkId() == chatId) {
                     throw new LinkAlreadyExistException(
                         generateExceptionMessage(EXCEPTION_CHAT_MESSAGE_TEMPLATE, String.valueOf(tgChatId))
                             + ", "

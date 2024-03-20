@@ -43,6 +43,7 @@ public class JdbcLinkDao {
     }
 
     public int save(Link link) {
+
         String sql = "INSERT INTO link(url, created_at, last_update_at) VALUES (?, ?, ?)";
         return jdbcClient.sql(sql)
             .params(link.getUrl(), link.getCreatedAt(), link.getLastUpdateAt())
