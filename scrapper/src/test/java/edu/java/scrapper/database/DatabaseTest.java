@@ -30,10 +30,10 @@ public class DatabaseTest extends IntegrationTest {
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
         var jdbcTemplate = new JdbcTemplate(source);
 
-        long givenChatId = 12324L;
-        long givenLinkId = 1234456L;
+        long givenChatId = 1232467867456L;
+        long givenLinkId = 1236785674456L;
         OffsetDateTime time = OffsetDateTime.now();
-        String givenUrl = "https://github.com/zed-industries/zed";
+        String givenUrl = "https://github.com/Skiftare/Java2024/pull/6";
 
         String queryToInsertInChatDatabase = "INSERT INTO chat (chat_id) VALUES (?)";
         String queryToInsertInLinkDatabase = "INSERT INTO link (url, created_at, last_update_at) VALUES (?, ?, ?)";
