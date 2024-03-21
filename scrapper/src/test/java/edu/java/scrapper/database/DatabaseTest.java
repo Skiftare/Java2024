@@ -30,8 +30,8 @@ public class DatabaseTest extends IntegrationTest {
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
         var jdbcTemplate = new JdbcTemplate(source);
 
-        long givenChatId = 1232467867456L;
-        long givenLinkId = 1236785674456L;
+        long givenChatId = 23;
+        long givenLinkId = 45;
         OffsetDateTime time = OffsetDateTime.now();
         String givenUrl = "https://github.com/Skiftare/Java2024/pull/6";
 
