@@ -25,7 +25,6 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
-
     }
 
     public DefaultStackOverflowClient(String baseUrl) {

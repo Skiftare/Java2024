@@ -32,28 +32,6 @@ public class DefaultGitHubClient implements GitHubClient {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
-    @SuppressWarnings("MagicNumber")
-    public Optional<GitHubResponse> processUpdates(String link) {
-        try {
-            URI linkUri = URI.create(link);
-            String path = linkUri.getPath();
-            String[] parts = path.split("/");
-
-            if (parts.length < 3) {
-                return Optional.empty();
-            }
-
-            String owner = parts[1];
-            String repo = parts[2];
-
-            return processRepositoryUpdates(owner, repo);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            return Optional.empty();
-        }
-
-    }
-
     @Override
     public Optional<GitHubResponse> processRepositoryUpdates(String owner, String repo) {
         try {
