@@ -7,8 +7,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-
-    <!-- Решил записать так, чтоб больше  инфы впихнуть. Хотя не уверен, что в id засовывать описание того, что проиходит - хорошая идея.-->
+  
     <changeSet id="create-chat-table" author="Skiftare">
         <sqlFile path="tables_configuration/chat.sql"/>
     </changeSet>

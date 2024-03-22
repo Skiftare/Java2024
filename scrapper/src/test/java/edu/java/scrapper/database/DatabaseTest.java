@@ -24,7 +24,7 @@ public class DatabaseTest extends IntegrationTest {
             .password(POSTGRES.getPassword())
             .build();
     }
-
+  
     @Test
     @Rollback
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
