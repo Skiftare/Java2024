@@ -1,8 +1,10 @@
 package edu.java.database;
 
-import edu.java.api.entities.exceptions.BadRequestException;
-import edu.java.api.entities.exceptions.NotFoundException;
-import edu.java.api.entities.responses.LinkResponse;
+import edu.java.data.response.LinkResponse;
+import edu.java.exceptions.entities.LinkAlreadyExistException;
+import edu.java.exceptions.entities.LinkNotFoundException;
+import edu.java.exceptions.entities.UserAlreadyExistException;
+import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class DatabaseOperations {
 
     public void registerChat(long chatId) {
         if (chatLinks.containsKey(chatId)) {
-            throw new BadRequestException("Чат уже зарегистрирован", "Нельзя повторно зарегистрировать чат");
+            throw new UserAlreadyExistException("Пользователь " + chatId + " уже существует");
         }
 
         chatLinks.put(chatId, new ArrayList<>());
@@ -41,12 +43,12 @@ public class DatabaseOperations {
 
         List<LinkResponse> linkResponses = chatLinks.get(chatId);
         for (LinkResponse linkResponse : linkResponses) {
-            if (linkResponse.url().getPath().equals(link.getPath())) {
-                throw new BadRequestException("Ссылка уже отслеживается", "Нельзя добавить уже отслеживаемую ссылку");
+            if (linkResponse.url().equals(link.getPath())) {
+                throw new LinkAlreadyExistException("Ссылка уже отслеживается");
             }
         }
 
-        LinkResponse linkResponse = new LinkResponse((long) (linkResponses.size() + 1), link);
+        LinkResponse linkResponse = new LinkResponse((long) (linkResponses.size() + 1), link.toString());
         linkResponses.add(linkResponse);
 
         return linkResponse;
@@ -57,17 +59,17 @@ public class DatabaseOperations {
 
         List<LinkResponse> linkResponses = chatLinks.get(chatId);
         for (LinkResponse linkResponse : linkResponses) {
-            if (linkResponse.url().getPath().equals(link.getPath())) {
+            if (linkResponse.url().equals(link.getPath())) {
                 linkResponses.remove(linkResponse);
                 return linkResponse;
             }
         }
-        throw new NotFoundException("Ссылка отсутствует", "Нельзя удалить ненайденную ссылку");
+        throw new LinkNotFoundException("Ссылка отсутствует");
     }
 
     private void checkChatNotFound(Long chatId, String message) {
         if (!chatLinks.containsKey(chatId)) {
-            throw new NotFoundException("Чат не был зарегистрирован", message);
+            throw new UserNotFoundException("Чат не был зарегистрирован");
         }
     }
 

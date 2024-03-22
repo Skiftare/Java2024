@@ -1,9 +1,8 @@
 package edu.java.bot.api.link_updater.mapper;
 
 import edu.java.bot.api.entities.exceptions.RequestProcessingException;
-import edu.java.bot.api.entities.requests.LinkUpdate;
+import edu.java.data.request.LinkUpdate;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,17 +15,9 @@ public class UpdatesController {
     private static final String FAILED_LINKS_UPDATE =
         "Некорректные параметры запроса";
     private final UpdateManager updateManager;
-    private static final String INVALID_ID = "Неверный ID чата";
-
-    private void isIdCorrect(@Positive(message = INVALID_ID) Long chatId) throws RequestProcessingException {
-        if (chatId < 0) {
-            throw new RequestProcessingException(INVALID_ID);
-        }
-    }
 
     @PostMapping("/updates")
     public ResponseEntity<String> sendUpdate(@RequestBody LinkUpdate linkUpdate) throws RequestProcessingException {
-        isIdCorrect(linkUpdate.id());
         if (updateManager.addRequest(linkUpdate)) {
             return ResponseEntity.ok(SUCCESS_LINK_UPDATED);
         } else {

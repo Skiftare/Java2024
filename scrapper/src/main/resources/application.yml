@@ -3,6 +3,7 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
+    parser-delay: 600s
 
   stack-overflow:
     default-url: https://api.stackexchange.com/2.3/
@@ -16,14 +17,21 @@ app:
 spring:
   application:
     name: scrapper
+  liquibase:
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 
 server:
-  port: 8070
+  port: 8080
 
 logging:
   config: classpath:log4j2-plain.xml
 scrapper:
-  baseUrl: http://localhost:8080
+  baseUrl: http://localhost:8090
 springdoc:
   swagger-ui:
     path: /swagger-ui

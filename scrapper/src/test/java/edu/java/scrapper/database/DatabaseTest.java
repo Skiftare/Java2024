@@ -5,7 +5,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
+import static org.assertj.core.api.Assertions.within;
 
 public class DatabaseTest extends IntegrationTest {
 
@@ -19,36 +24,30 @@ public class DatabaseTest extends IntegrationTest {
             .password(POSTGRES.getPassword())
             .build();
     }
-
+  
     @Test
+    @Rollback
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
         var jdbcTemplate = new JdbcTemplate(source);
 
-        long givenChatId = 123L;
-        long givenLinkId = 1234L;
-        String givenUrl = "https://github.com/zed-industries/zed";
+        long givenChatId = 23;
+        long givenLinkId = 45;
+        OffsetDateTime time = OffsetDateTime.now();
+        String givenUrl = "https://github.com/Skiftare/Java2024/pull/6";
 
         String queryToInsertInChatDatabase = "INSERT INTO chat (chat_id) VALUES (?)";
-        String queryToInsertInLinkDatabase = "INSERT INTO link (link_id, url) VALUES (?, ?)";
-        String queryToInsertInChainDatabase =
-            "INSERT INTO link_chat_relation (id_of_chat, id_of_link) VALUES (?, ?)";
+        String queryToInsertInLinkDatabase = "INSERT INTO link (url, created_at, last_update_at) VALUES (?, ?, ?)";
 
         jdbcTemplate.update(queryToInsertInChatDatabase, givenChatId);
-        jdbcTemplate.update(queryToInsertInLinkDatabase, givenLinkId, givenUrl);
-        jdbcTemplate.update(queryToInsertInChainDatabase, givenChatId, givenLinkId);
+        jdbcTemplate.update(queryToInsertInLinkDatabase, givenUrl, time, time);
 
         String queryToSelectFromChatDatabase = "SELECT chat_id FROM chat WHERE chat_id = ?";
-        String queryToSelectFromLinkDatabase = "SELECT url FROM link WHERE link_id = ?";
-        String queryToSelectFromChainDatabase =
-            "SELECT id_of_link FROM link_chat_relation WHERE id_of_chat = ?";
+        String queryToSelectFromLinkDatabase = "SELECT last_update_at FROM link WHERE url = ?";
 
         Integer realChatId = jdbcTemplate.queryForObject(queryToSelectFromChatDatabase, Integer.class, givenChatId);
-        String realUrl = jdbcTemplate.queryForObject(queryToSelectFromLinkDatabase, String.class, givenLinkId);
-        Integer realChatAndLinkRelationChain =
-            jdbcTemplate.queryForObject(queryToSelectFromChainDatabase, Integer.class, givenChatId);
+        OffsetDateTime realTime = jdbcTemplate.queryForObject(queryToSelectFromLinkDatabase, OffsetDateTime.class, givenUrl);
 
         assertThat(realChatId).isEqualTo(givenChatId);
-        assertThat(realUrl).isEqualTo(givenUrl);
-        assertThat(realChatAndLinkRelationChain).isEqualTo(givenLinkId);
+        assertThat(realTime).isCloseTo(time, within(1, ChronoUnit.SECONDS));
     }
 }

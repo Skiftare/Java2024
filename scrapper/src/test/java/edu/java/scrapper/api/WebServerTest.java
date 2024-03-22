@@ -1,14 +1,14 @@
 package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.api.entities.exceptions.ApiErrorException;
-import edu.java.api.entities.requests.LinkUpdateRequest;
-import edu.java.api.entities.responses.ApiErrorResponse;
-import edu.java.api.web.WebClientForBotCommunication;
+import edu.java.api.WebClientForBotCommunication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import edu.java.data.request.LinkUpdateRequest;
+import edu.java.data.response.ApiErrorResponse;
+import edu.java.exceptions.entities.CustomApiException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -96,9 +96,9 @@ public class WebServerTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(expectedResponseBody)));
 
-        ApiErrorException thrownException = catchThrowableOfType(
+        CustomApiException thrownException = catchThrowableOfType(
             () -> client.sendUpdate(requestToClient),
-            ApiErrorException.class
+            CustomApiException.class
         );
         ApiErrorResponse actualResponse = thrownException.getErrorResponse();
 

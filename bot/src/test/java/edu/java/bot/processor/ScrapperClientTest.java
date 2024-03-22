@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.N;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -72,10 +71,11 @@ public class ScrapperClientTest {
         String baseUrl = "http://localhost:" + wireMockServer.port();
         scrapperWebClient = new WebClientForScrapperCommunication(baseUrl);
     }
+
     @Nested
-    class TgChatTests{
+    class TgChatTests {
         @Nested
-        class PostRequests{
+        class PostRequests {
             @Test
             @DisplayName("/tg-chat/: POST; Correct result")
             public void testThatGetCorrectPostRequestToRegisterChatForTheFirstTimeAndReturnedSuccessRegistration() {
@@ -92,6 +92,7 @@ public class ScrapperClientTest {
                 assertThat(actualResponse).isPresent();
                 assertThat(actualResponse.get()).isEqualTo(responseBody);
             }
+
             @Test
             @DisplayName("/tg-chat/: POST; Incorrect result - double registration")
             public void testThatCorrectGetPostRequestToRegisterChatTwiceAndReturnedExceptionAtTheSecondRegistration() {
@@ -119,12 +120,14 @@ public class ScrapperClientTest {
                     .isInstanceOf(ApiErrorException.class);
             }
         }
+
         @Nested
-        class GetRequests{
+        class GetRequests {
 
         }
+
         @Nested
-        class DeleteRequests{
+        class DeleteRequests {
             @Test
             @DisplayName("/tg-chat/: DELETE; Correct result")
             public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsRegisteredAndReturnedSuccessRemoving() {
@@ -141,6 +144,7 @@ public class ScrapperClientTest {
                 assertThat(actualResponse).isPresent();
                 assertThat(actualResponse.get()).isEqualTo(responseBody);
             }
+
             @Test
             @DisplayName("/tg-chat/: DELETE; Incorrect result - user is not registered")
             public void testThatCorrectGetDeleteRequestToRemoveTheChatWhichIsNotRegisteredAndReturnedFailureExceptionChatNotFound() {
@@ -160,13 +164,15 @@ public class ScrapperClientTest {
             }
         }
     }
+
     @Nested
-    class LinksTests{
+    class LinksTests {
         @Nested
-        class PostRequests{
+        class PostRequests {
             @Test
             @DisplayName("/links: POST; Correct result")
-            public void testThatGetCorrectPostRequestToRegisterNewLinkForUserAndReturnedSuccessRegistration() throws URISyntaxException {
+            public void testThatGetCorrectPostRequestToRegisterNewLinkForUserAndReturnedSuccessRegistration()
+                throws URISyntaxException {
                 wireMockServer.stubFor(post(urlEqualTo("/links"))
                     .withHeader("Tg-Chat-Id", equalTo("1"))
                     .willReturn(aResponse()
@@ -240,22 +246,23 @@ public class ScrapperClientTest {
                     .isInstanceOf(ApiErrorException.class);
             }
         }
+
         @Nested
-        class GetRequests{
+        class GetRequests {
             @Test
             @DisplayName("/links: GET; Correct result")
             public void testThatGetCorrectGetRequestToClaimLinksForUserFromTheDatabaseAndReturnedExpectedListOfLinks() {
                 String responseBody = """
-            {
-                "links":[
                     {
-                        "id":1,
-                        "url":"link"
+                        "links":[
+                            {
+                                "id":1,
+                                "url":"link"
+                            }
+                        ],
+                        "size":1
                     }
-                ],
-                "size":1
-            }
-            """;
+                    """;
                 wireMockServer.stubFor(get(urlEqualTo("/links"))
                     .withHeader("Tg-Chat-Id", equalTo("1"))
                     .willReturn(aResponse()
@@ -272,6 +279,7 @@ public class ScrapperClientTest {
                     .extracting(LinkResponse::id, link -> link.url().getPath())
                     .containsExactly(tuple(1L, "link"));
             }
+
             @Test
             @DisplayName("/links: GET; Incorrect result - invalid id")
             public void testThatGetIncorrectGetRequestToClaimLinksForUserFromDatabaseAndReturnedExceptionOfInvalidId() {
@@ -310,11 +318,13 @@ public class ScrapperClientTest {
                     .isInstanceOf(ApiErrorException.class);
             }
         }
+
         @Nested
-        class DeleteRequests{
+        class DeleteRequests {
             @Test
             @DisplayName("/links: DELETE; Correct result")
-            public void testThatGetCorrectDeleteRequestToRemoveTheLinkAndReturnedSuccessDeleting() throws URISyntaxException {
+            public void testThatGetCorrectDeleteRequestToRemoveTheLinkAndReturnedSuccessDeleting()
+                throws URISyntaxException {
                 wireMockServer.stubFor(delete(urlEqualTo("/links"))
                     .withHeader("Tg-Chat-Id", equalTo("1"))
                     .willReturn(aResponse()

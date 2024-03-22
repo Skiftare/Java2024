@@ -7,6 +7,8 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.Command;
 import edu.java.bot.commands.loaders.CommandsLoader;
+import edu.java.bot.memory.Cookie;
+import edu.java.bot.memory.CookieState;
 import edu.java.bot.memory.DialogManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,19 @@ public class BotProcessor {
     private final TelegramBot bot;
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final CommandsLoader loader;
+    private final DialogManager manager;
 
-    @Autowired
-    BotProcessor(TelegramBot bot, CommandsLoader loader, ReplyKeyboardMarkup keyboard) {
+    @Autowired BotProcessor(
+        TelegramBot bot,
+        CommandsLoader loader,
+        ReplyKeyboardMarkup keyboard,
+        DialogManager manager
+    ) {
         this.bot = bot;
         this.bot.setUpdatesListener(this::createUpdatesManager);
         this.loader = loader;
         this.replyKeyboardMarkup = keyboard;
+        this.manager = manager;
     }
 
     private int createUpdatesManager(List<Update> updates) {
@@ -48,10 +56,27 @@ public class BotProcessor {
             }
         }
         if (!foundRightCommand) {
-            msg = DialogManager.resolveCommandNeedCookie(new UserRequest(
+            Cookie resultCookie = manager.resolveCommandNeedCookie(new UserRequest(
                 update.message().chat().id(),
                 update.message().text()
             ));
+            if (resultCookie.state() == CookieState.WAITING_FOR_TRACK_URL) {
+                for (Command command : availableCommand) {
+                    if (command.getCommandName().equals("/track")) {
+                        msg = command.handle(update);
+                        break;
+                    }
+                }
+            } else if (resultCookie.state() == CookieState.WAITING_FOR_UNTRACK_URL) {
+                for (Command command : availableCommand) {
+                    if (command.getCommandName().equals("/untrack")) {
+                        msg = command.handle(update);
+                        break;
+                    }
+                }
+            } else {
+                msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");
+            }
         }
 
         return msg;

@@ -1,12 +1,13 @@
 package edu.java.bot.api.web;
 
 import edu.java.bot.api.entities.exceptions.ApiErrorException;
-import edu.java.bot.api.entities.requests.AddLinkRequest;
-import edu.java.bot.api.entities.requests.RemoveLinkRequest;
-import edu.java.bot.api.entities.responses.ApiErrorResponse;
-import edu.java.bot.api.entities.responses.LinkResponse;
-import edu.java.bot.api.entities.responses.ListLinksResponse;
 import java.util.Optional;
+import edu.java.data.request.AddLinkRequest;
+import edu.java.data.request.RemoveLinkRequest;
+import edu.java.data.response.ApiErrorResponse;
+import edu.java.data.response.LinkResponse;
+import edu.java.data.response.ListLinksResponse;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -55,6 +56,7 @@ public class WebClientForScrapperCommunication {
     }
 
     public Optional<ListLinksResponse> getLinks(Long id) {
+        LoggerFactory.getLogger(WebClientForScrapperCommunication.class).info("Get links for chat with id: " + id);
         return webClient
             .get()
             .uri(PATH_TO_LINK)
