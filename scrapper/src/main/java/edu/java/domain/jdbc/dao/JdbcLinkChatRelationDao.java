@@ -1,10 +1,8 @@
 package edu.java.domain.jdbc.dao;
 
-import edu.java.domain.dto_chat_links.ChatLinkWithUrl;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelation;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelationRowMapper;
-import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChat;
-import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChatRowMapper;
+import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrl;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrlRowMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,6 @@ public class JdbcLinkChatRelationDao {
     private final JdbcClient jdbcClient;
     private final ChatLinkRelationRowMapper chatLinkRowMapper;
     private final ChatLinkWithUrlRowMapper chatLinkWithUrlRowMapper;
-    private final ChatLinkWithTgChatRowMapper chatLinkWithTgChatRowMapper;
 
     public List<ChatLinkRelation> getByLinkId(long id) {
         String sql = "SELECT * FROM link_chat_relation WHERE id_of_link = ?";
@@ -49,17 +46,6 @@ public class JdbcLinkChatRelationDao {
         return jdbcClient.sql(sql)
             .param(id)
             .query(chatLinkWithUrlRowMapper).list();
-    }
-
-    public List<ChatLinkWithTgChat> getByLinkIdIdJoinChat(long id) {
-        String sql = """
-            SELECT lcr.id_of_chat, lcr.id_of_link, c.tg_chat_id
-            FROM link_chat_relation lcr
-            JOIN chat c ON c.chat_id = lcr.id_of_chat
-            WHERE id_of_link = ?""";
-        return jdbcClient.sql(sql)
-            .param(id)
-            .query(chatLinkWithTgChatRowMapper).list();
     }
 
     public int save(ChatLinkRelation chatLink) {

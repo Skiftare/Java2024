@@ -1,4 +1,4 @@
-package edu.java.domain.dto_chat_links;
+package edu.java.domain.jdbc.written.chat_link_relation;
 
 import lombok.Getter;
 import lombok.Setter;

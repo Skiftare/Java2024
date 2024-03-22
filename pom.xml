@@ -51,7 +51,6 @@
     <modules>
         <module>bot</module>
         <module>scrapper</module>
-        <module>jooq-generator</module>
         <module>transer_objects_module</module>
     </modules>
 
