@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
 public class DataManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
     private static final HashMap<Long, HashSet<URI>> TRACK_CASHED_MAP = new HashMap<>();
-
     private static final String ENDL_CHAR = "\n";
-    private static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
+    static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
 
     static boolean addURl(UserRequest update) {
         Long id = update.id();
+
         String url = update.message();
         HashSet<URI> urls = TRACK_CASHED_MAP.computeIfAbsent(id, k -> new HashSet<>());
 
@@ -38,6 +38,7 @@ public class DataManager {
         Long id = update.id();
         String url = update.message();
         HashSet<URI> urls = TRACK_CASHED_MAP.get(id);
+
         boolean result = false;
 
         try {

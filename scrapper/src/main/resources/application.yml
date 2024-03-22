@@ -10,6 +10,7 @@ app:
   github:
     default-url: https://api.github.com/
 
+
     #add another Link there as smth-record-class: first-url: value
     #Then redact ApplicationConfig
 spring:
@@ -17,8 +18,13 @@ spring:
     name: scrapper
 
 server:
-  port: 8080
+  port: 8070
 
 logging:
   config: classpath:log4j2-plain.xml
+scrapper:
+  baseUrl: http://localhost:8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
 
