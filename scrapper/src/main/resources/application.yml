@@ -4,6 +4,14 @@ app:
     interval: 10s
     force-check-delay: 10s
 
+  stack-overflow:
+    default-url: https://api.stackexchange.com/2.3/
+
+  github:
+    default-url: https://api.github.com/
+
+    #add another Link there as smth-record-class: first-url: value
+    #Then redact ApplicationConfig
 spring:
   application:
     name: scrapper
@@ -13,3 +21,4 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+

@@ -1,0 +1,172 @@
+[
+    {
+        "id": "34318456632",
+        "type": "PushEvent",
+        "actor": {
+            "id": 74261401,
+            "login": "Skiftare",
+            "display_login": "Skiftare",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/Skiftare",
+            "avatar_url": "https://avatars.githubusercontent.com/u/74261401?"
+        },
+        "repo": {
+            "id": 701637497,
+            "name": "Skiftare/Java2023",
+            "url": "https://api.github.com/repos/Skiftare/Java2023"
+        },
+        "payload": {
+            "repository_id": 701637497,
+            "push_id": 16357050511,
+            "size": 14,
+            "distinct_size": 1,
+            "ref": "refs/heads/main",
+            "head": "e4d99d8fb46ad3d16a917d935db440b7587b92b0",
+            "before": "05477c07c1fb638e2925337bde2410c22aff690b",
+            "commits": [
+                {
+                    "sha": "716f66ab286426aed52ad28ae5fc0c7d90b3a4f1",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "Я в многопоточном режиме делаю проект 4 и дз 8.",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/716f66ab286426aed52ad28ae5fc0c7d90b3a4f1"
+                },
+                {
+                    "sha": "8ca238dedbd8615283c57d38dfff6d9960b70240",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "Я в многопоточном режиме делаю проект 4 и дз 8.",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/8ca238dedbd8615283c57d38dfff6d9960b70240"
+                },
+                {
+                    "sha": "adc96116c31fd251af3f0f5462cb4b3fa7cfe91b",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "Я в многопоточном режиме делаю проект 4 и дз 8.",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/adc96116c31fd251af3f0f5462cb4b3fa7cfe91b"
+                },
+                {
+                    "sha": "976dd98e6f35c0fdc35865598a35629ffd8cad2a",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "доп.таска",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/976dd98e6f35c0fdc35865598a35629ffd8cad2a"
+                },
+                {
+                    "sha": "19ef8e132d29f696690e724798f257ef6f50c8f4",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "осталось тесты написать",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/19ef8e132d29f696690e724798f257ef6f50c8f4"
+                },
+                {
+                    "sha": "777501f4856c8a700d8d3795e1db633431c2d5ca",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "в универе сделаю очистку кода. В целом, работает. Только надо понять, насколько многопоточно на самом деле работает ThreadPool, и что там вообще надо было делать.",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/777501f4856c8a700d8d3795e1db633431c2d5ca"
+                },
+                {
+                    "sha": "af8097d8e3fb3094830f012ad273cf470abde3d8",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "в универе сделаю очистку кода. В целом, работает. Только надо понять, насколько многопоточно на самом деле работает ThreadPool, и что там вообще надо было делать.",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/af8097d8e3fb3094830f012ad273cf470abde3d8"
+                },
+                {
+                    "sha": "2073b1f1a794c9e7a6b1267a03d55b5c57ea265c",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "Отрефакчено",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/2073b1f1a794c9e7a6b1267a03d55b5c57ea265c"
+                },
+                {
+                    "sha": "35c3f54976a1f21f83b1cde3bab6dbf63287554f",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "Сделал многопоточную генерацию паролей.\nПароли сейчас перебираются как по файлу с топ-уязвимыми паролями, так и по свежесгенеренному файлу",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/35c3f54976a1f21f83b1cde3bab6dbf63287554f"
+                },
+                {
+                    "sha": "e4642bf1b84260e685a4a429234b8ecacef4855a",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": "минорные допилы кода",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/e4642bf1b84260e685a4a429234b8ecacef4855a"
+                },
+                {
+                    "sha": "c305df9f8d19043b302bd9da7ef085f3ce0166d3",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": ".",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/c305df9f8d19043b302bd9da7ef085f3ce0166d3"
+                },
+                {
+                    "sha": "52f951c24d18ab631d5b215048344c944a7f4865",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": ".",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/52f951c24d18ab631d5b215048344c944a7f4865"
+                },
+                {
+                    "sha": "463ff4c55ca47b2d0b8a0b678c589f81dfbbf71b",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "skiftare"
+                    },
+                    "message": ".",
+                    "distinct": false,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/463ff4c55ca47b2d0b8a0b678c589f81dfbbf71b"
+                },
+                {
+                    "sha": "e4d99d8fb46ad3d16a917d935db440b7587b92b0",
+                    "author": {
+                        "email": "74261401+Skiftare@users.noreply.github.com",
+                        "name": "Kirill Bratanov"
+                    },
+                    "message": "Merge pull request #14 from Skiftare/hw8\n\nHw8",
+                    "distinct": true,
+                    "url": "https://api.github.com/repos/Skiftare/Java2023/commits/e4d99d8fb46ad3d16a917d935db440b7587b92b0"
+                }
+            ]
+        },
+        "public": true,
+        "created_at": "2023-12-20T18:11:12Z"
+    }
+]

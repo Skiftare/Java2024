@@ -1,7 +1,6 @@
 package edu.java.bot.memory;
 
 import edu.java.bot.processor.UserRequest;
-import edu.java.bot.utility.GlobalExceptionHandler;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DataManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
     private static final HashMap<Long, HashSet<URI>> TRACK_CASHED_MAP = new HashMap<>();
 
     private static final String ENDL_CHAR = "\n";
@@ -29,8 +29,7 @@ public class DataManager {
             TRACK_CASHED_MAP.put(id, urls);
             return true;
         } catch (URISyntaxException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error("Ошибка при добавлении URL: {}", e.getMessage());
+            LOGGER.error("Ошибка при добавлении URL: {}", e.getMessage());
             return false;
         }
     }
@@ -52,8 +51,7 @@ public class DataManager {
                 result = true;
             }
         } catch (URISyntaxException e) {
-            Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-            logger.error("Ошибка при удалении URL: {}", e.getMessage());
+            LOGGER.error("Ошибка при удалении URL: {}", e.getMessage());
         }
 
         return result;
