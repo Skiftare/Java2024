@@ -1,0 +1,35 @@
+{
+    "items": [
+        {
+            "tags": [
+                "c++",
+                "c",
+                "language-lawyer",
+                "posix"
+            ],
+            "owner": {
+                "reputation": 508,
+                "user_id": 1626653,
+                "user_type": "registered",
+                "profile_image": "https://i.stack.imgur.com/36RNP.jpg?s=256&g=1",
+                "display_name": "khw",
+                "link": "https://stackoverflow.com/users/1626653/khw"
+            },
+            "is_answered": false,
+            "view_count": 41,
+            "answer_count": 1,
+            "score": 1,
+            "last_activity_date": 1708878710,
+            "creation_date": 1708876710,
+            "last_edit_date": 1708878280,
+            "question_id": 78056645,
+            "content_license": "CC BY-SA 4.0",
+            "link": "https://stackoverflow.com/questions/78056645/does-the-posix-standard-really-mean-that-a-non-thread-safe-function-can-break-th",
+            "title": "Does the POSIX Standard really mean that a non-thread safe function can break the thread-safety of every other function?"
+        }
+    ],
+    "has_more": false,
+    "quota_max": 300,
+    "quota_remaining": 299
+}
+

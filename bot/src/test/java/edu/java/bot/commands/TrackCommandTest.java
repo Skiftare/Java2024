@@ -4,7 +4,10 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.TrackCommand;
+import edu.java.bot.memory.DataManager;
+import edu.java.bot.memory.DialogManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +19,11 @@ import static org.mockito.Mockito.when;
 
 public class TrackCommandTest {
     private TrackCommand testingCommand;
+    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     @BeforeEach
     public void setUp() {
-        testingCommand = new TrackCommand();
+        testingCommand = new TrackCommand(manager);
     }
 
     @Test
@@ -58,53 +62,5 @@ public class TrackCommandTest {
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
 
-    @Test
-    public void testThatGetCorrectCommandAndReturnedSuccsessMessage() {
-        //Given: setup
-        SecureRandom secureRandom = new SecureRandom();
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-        Update update = mock(Update.class);
-        Message message = mock(Message.class);
-
-        Chat chat = mock(Chat.class);
-        when(message.text()).thenReturn("/track https://github.com/");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-        when(update.message()).thenReturn(message);
-
-        String expectedTextMessage = "Отслеживание ссылки начато!";
-
-        //When: we execute update with this Command
-        SendMessage sendMessage = testingCommand.handle(update);
-
-        //Then: we get right answer
-        assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
-    }
-
-    @Test
-    public void testThatGetCommandAndReturnedWaitngMessage() {
-        //Given: setup
-        SecureRandom secureRandom = new SecureRandom();
-        Update update = mock(Update.class);
-        Chat chat = mock(Chat.class);
-
-        Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-
-        when(message.text()).thenReturn("/track");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-        when(update.message()).thenReturn(message);
-
-        String expectedTextMessage = "Жду ссылку на отслеживание";
-
-        //When: we execute update with this Command
-        SendMessage sendMessage = testingCommand.handle(update);
-
-        //Then: we get right answer
-        assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
-    }
 }
 

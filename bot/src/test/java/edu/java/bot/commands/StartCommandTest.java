@@ -4,8 +4,10 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.Command;
 import edu.java.bot.commands.entities.StartCommand;
+import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.DialogState;
 import java.security.SecureRandom;
@@ -17,10 +19,13 @@ import static org.mockito.Mockito.when;
 
 public class StartCommandTest {
     private Command testingCommand;
+    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
+
+
 
     @BeforeEach
     public void setUp() {
-        testingCommand = new StartCommand();
+        testingCommand = new StartCommand(manager);
     }
 
     @Test
@@ -40,7 +45,7 @@ public class StartCommandTest {
         Chat chat = mock(Chat.class);
         Message message = mock(Message.class);
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-        String expectedTextMessage = "Бот будет хранить id диалога только если есть хотя бы 1 отслеживаемая ссылка";
+        String expectedTextMessage = "Вы зарегистрированы!";
 
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
@@ -49,7 +54,7 @@ public class StartCommandTest {
         //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
-        assertEquals(DialogManager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
+        assertEquals(manager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
 
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);

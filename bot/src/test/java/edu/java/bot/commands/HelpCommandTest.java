@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.Command;
 import edu.java.bot.commands.entities.HelpCommand;
 import edu.java.bot.commands.entities.ListCommand;
@@ -11,9 +12,11 @@ import edu.java.bot.commands.entities.StartCommand;
 import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
+import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.DialogState;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
 
 import java.security.SecureRandom;
 
@@ -24,13 +27,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class HelpCommandTest {
+    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     private final Command helpCommand = new HelpCommand(new CommandLoaderForHelpMessage(
-        new StartCommand(),
-        new ListCommand(),
-        new TrackCommand(),
-        new UntrackCommand()
-    ));
+        new StartCommand(manager),
+        new ListCommand(manager),
+        new TrackCommand(manager),
+        new UntrackCommand(manager)
+    ), manager);
 
 
     @Test
@@ -45,6 +49,7 @@ public class HelpCommandTest {
 
 
     @Test
+    @Rollback
     public void testThatGetCommandAndReturnedMessageForThatCommand() {
         // Given: setup
         SecureRandom secureRandom = new SecureRandom();
@@ -63,7 +68,7 @@ public class HelpCommandTest {
         SendMessage sendMessage = helpCommand.handle(update);
 
         // Then dialog state is reset
-        assertEquals(DialogManager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
+        assertEquals(manager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);

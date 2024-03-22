@@ -1,6 +1,7 @@
 app:
   telegram-token: ${TELEGRAM_TOKEN}
-  admin-chat-id: ${ADMIN_CHAT_ID}
+  api:
+    scrapper-url: http://localhost:8080
 
 spring:
   application:
@@ -13,3 +14,10 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+api:
+  scrapper:
+    baseUrl: http://localhost:8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum DialogState {
     TRACK_URI("trackURI"),
     UNTRACK_URI("untrackURI"),
-    DEFAULT_SESSION("defaultSession");
+    DEFAULT_SESSION("defaultSession"),
+    NOT_REGISTERED("not registered");
 
     private final String value;
 
