@@ -2,9 +2,9 @@ package edu.java.scrapper.stackoverflow;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.stackoverflow.DefaultStackOverflowClient;
-import edu.java.stackoverflow.StackOverflowClient;
-import edu.java.stackoverflow.StackOverflowResponse;
+import edu.java.links_clients.stackoverflow.DefaultStackOverflowClient;
+import edu.java.links_clients.stackoverflow.StackOverflowClient;
+import edu.java.links_clients.stackoverflow.StackOverflowResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
