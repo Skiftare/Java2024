@@ -2,9 +2,9 @@ package edu.java.scrapper.github;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.github.DefaultGitHubClient;
-import edu.java.github.GitHubClient;
-import edu.java.github.GitHubResponse;
+import edu.java.links_clients.github.DefaultGitHubClient;
+import edu.java.links_clients.github.GitHubClient;
+import edu.java.links_clients.github.GitHubResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

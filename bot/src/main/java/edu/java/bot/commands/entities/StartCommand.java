@@ -13,6 +13,12 @@ public class StartCommand implements Command {
         "Вы зарегистрированы!";
     private static final String UNSUCCESS_START_INFO =
         "Вы уже зарегистрированы, повторная регистрация не нужна";
+    private final DialogManager manager;
+
+    public StartCommand(DialogManager manager) {
+        this.manager = manager;
+    }
+
 
     @Override
     public String getCommandName() {
@@ -27,7 +33,7 @@ public class StartCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        return new SendMessage(chatId, DialogManager.registerUser(chatId) ? SUCCESS_START_INFO : UNSUCCESS_START_INFO);
+        return new SendMessage(chatId, manager.registerUser(chatId) ? SUCCESS_START_INFO : UNSUCCESS_START_INFO);
     }
 
     @Override

@@ -15,6 +15,12 @@ public class UntrackCommand implements Command {
     private static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
     private static final String UNSUCCESSFUL_UNTRACK_INFO = "Ссылка невалидна или отсутсвует в отслеживаемых";
     private static final String WAIT_FOR_URL_UNTRACK_INFO = "Жду ссылку на удаление";
+    private final DialogManager manager;
+
+    public UntrackCommand(DialogManager manager) {
+        this.manager = manager;
+    }
+
 
     @Override
     public String getCommandName() {
@@ -32,14 +38,14 @@ public class UntrackCommand implements Command {
         Long chatId = update.message().chat().id();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
         if (Objects.equals(textMessage, this.getCommandName())) {
-            DialogManager.setWaitForUntrack(chatId);
+            manager.setWaitForUntrack(chatId);
             result = WAIT_FOR_URL_UNTRACK_INFO;
         } else {
             String[] parts = textMessage.split(" ");
             if (parts.length > 1) {
                 String link = parts[1];
                 UserRequest request = new UserRequest(chatId, link);
-                if (checkLinkWithoutConnecting(link) && DialogManager.untrackURL(request)) {
+                if (checkLinkWithoutConnecting(link) && manager.untrackURL(request)) {
                     result = SUCCESS_UNTRACK_INFO;
                 }
             }
