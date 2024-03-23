@@ -3,8 +3,10 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.memory.DialogManager;
+import edu.java.bot.processor.BotProcessor;
 import edu.java.bot.processor.UserRequest;
 import java.util.Objects;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
 
@@ -19,6 +21,7 @@ public class TrackCommand implements Command {
     private static final String USER_IS_NOT_REGISTERED =
         "Пользователь не зарегистрирован, так что ссыль отслеживаться не будет";
     private final DialogManager manager;
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(TrackCommand.class);
 
     public TrackCommand(DialogManager manager) {
         this.manager = manager;
@@ -39,7 +42,7 @@ public class TrackCommand implements Command {
     public SendMessage handle(Update update) {
         String textMessage = update.message().text();
         Long chatId = update.message().chat().id();
-
+        logger.info("Пользователь {} запросил отслеживание {}", chatId, textMessage);
         String result = UNSUCCESSFUL_TRACK_INFO;
         if (Objects.equals(textMessage, this.getCommandName())) {
             if (manager.setWaitForTrack(chatId)) {

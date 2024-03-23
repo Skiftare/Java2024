@@ -11,6 +11,7 @@ import edu.java.bot.memory.Cookie;
 import edu.java.bot.memory.CookieState;
 import edu.java.bot.memory.DialogManager;
 import java.util.List;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class BotProcessor {
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final CommandsLoader loader;
     private final DialogManager manager;
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(BotProcessor.class);
 
     @Autowired BotProcessor(
         TelegramBot bot,
@@ -45,40 +47,21 @@ public class BotProcessor {
 
     SendMessage recognizeCommand(Update update) {
 
-        SendMessage msg = null;
+        SendMessage msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");;
         boolean foundRightCommand = false;
         List<Command> availableCommand = loader.getCommandsList();
         for (Command command : availableCommand) {
             if (command.supportsMessageProcessing(update)) {
-                msg = command.handle(update);
-                foundRightCommand = true;
-                break;
+                try {
+                    msg = command.handle(update);
+                    foundRightCommand = true;
+                    break;
+                }
+                catch (Exception e) {
+                    logger.error("Error while handling command", e);
+                }
             }
         }
-        if (!foundRightCommand) {
-            Cookie resultCookie = manager.resolveCommandNeedCookie(new UserRequest(
-                update.message().chat().id(),
-                update.message().text()
-            ));
-            if (resultCookie.state() == CookieState.WAITING_FOR_TRACK_URL) {
-                for (Command command : availableCommand) {
-                    if (command.getCommandName().equals("/track")) {
-                        msg = command.handle(update);
-                        break;
-                    }
-                }
-            } else if (resultCookie.state() == CookieState.WAITING_FOR_UNTRACK_URL) {
-                for (Command command : availableCommand) {
-                    if (command.getCommandName().equals("/untrack")) {
-                        msg = command.handle(update);
-                        break;
-                    }
-                }
-            } else {
-                msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");
-            }
-        }
-
         return msg;
     }
 }

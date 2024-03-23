@@ -9,7 +9,6 @@ import static edu.java.bot.memory.DataManager.NO_LINKS_NOT_TRACKED;
 @Service
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DialogManager {
-    private static final HashMap<Long, DialogState> ALL_DIALOGS = new HashMap<>();
     private static final String SUCCESS_TRACK_INFO = "Отслеживание ссылки начато!";
     private static final String UNSUCCESSFUL_TRACK_INFO = "Ссылка невалидна";
 
@@ -22,7 +21,7 @@ public class DialogManager {
     }
 
     public boolean setWaitForTrack(Long id) {
-        if (ALL_DIALOGS.containsKey(id)) {
+        if ( ALL_DIALOGS.containsKey(id)) {
             ALL_DIALOGS.put(id, DialogState.TRACK_URI);
             return true;
         }
