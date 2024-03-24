@@ -10,19 +10,17 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
-    /*@Bean
+
     AccessType databaseAccessType,
-*/
+
     @Bean
     @NotNull
     Scheduler scheduler,
 
-    @NotNull
-    StackOverflow stackOverflow,
+    ListOfSupportedLinks listOfLinksSupported,
 
     @NotNull
-    GitHub gitHub
-
+    Api api
 ) {
 
     public record Scheduler(
@@ -30,9 +28,8 @@ public record ApplicationConfig(
     ) {
     }
 
-    public record StackOverflow(@NotBlank String defaultUrl, String configUrl) {
+    public record ListOfSupportedLinks(String stackoverflow, String github) {
     }
-
-    public record GitHub(@NotBlank String defaultUrl, String configUrl) {
+    public record Api(String botUrl) {
     }
 }

@@ -54,8 +54,6 @@ public class StartCommandTest {
         //When: we execute update with this Command
         SendMessage sendMessage = testingCommand.handle(update);
 
-        assertEquals(manager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
-
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }

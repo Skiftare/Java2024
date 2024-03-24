@@ -25,7 +25,7 @@ public class JdbcChatService implements TgChatService {
     @Override
     public void register(long tgChatId) {
         if (chatDao.getByTgChatId(tgChatId).isPresent()) {
-            throw new UserAlreadyExistException(generateExceptionMessage(tgChatId));
+            throw new UserAlreadyExistException(generateExceptionMessageForChatId(tgChatId));
         }
         Chat chat = Chat.makeChat(tgChatId, OffsetDateTime.now());
         chatDao.save(chat);
@@ -35,7 +35,7 @@ public class JdbcChatService implements TgChatService {
     public void unregister(long tgChatId) {
         long id = chatDao.getByTgChatId(tgChatId)
             .orElseThrow(
-                () -> new UserNotFoundException(generateExceptionMessage(tgChatId))
+                () -> new UserNotFoundException(generateExceptionMessageForChatId(tgChatId))
             ).getTgChatId();
         List<ChatLinkRelation> links = chatLinkDao.getByChatId(id);
         for (ChatLinkRelation chatLink : links) {

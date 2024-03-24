@@ -21,20 +21,17 @@ public class BotProcessor {
     private final TelegramBot bot;
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final CommandsLoader loader;
-    private final DialogManager manager;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(BotProcessor.class);
 
     @Autowired BotProcessor(
         TelegramBot bot,
         CommandsLoader loader,
-        ReplyKeyboardMarkup keyboard,
-        DialogManager manager
+        ReplyKeyboardMarkup keyboard
     ) {
         this.bot = bot;
         this.bot.setUpdatesListener(this::createUpdatesManager);
         this.loader = loader;
         this.replyKeyboardMarkup = keyboard;
-        this.manager = manager;
     }
 
     private int createUpdatesManager(List<Update> updates) {
@@ -46,15 +43,12 @@ public class BotProcessor {
     }
 
     SendMessage recognizeCommand(Update update) {
-
-        SendMessage msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");;
-        boolean foundRightCommand = false;
+        SendMessage msg = new SendMessage(update.message().chat().id(), "Неизвестная команда");
         List<Command> availableCommand = loader.getCommandsList();
         for (Command command : availableCommand) {
             if (command.supportsMessageProcessing(update)) {
                 try {
                     msg = command.handle(update);
-                    foundRightCommand = true;
                     break;
                 }
                 catch (Exception e) {

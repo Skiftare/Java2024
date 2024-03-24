@@ -9,6 +9,7 @@ import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import edu.java.exceptions.entities.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -67,14 +68,18 @@ public class DataManager {
 
     String getListOFTrackedCommands(Long id) {
         String result = NO_LINKS_NOT_TRACKED;
-
-        Optional<ListLinksResponse> linksResponse = webClient.getLinks(id);
-        if (linksResponse.isPresent()) {
-            StringBuilder sb = new StringBuilder();
-            for (LinkResponse linkResponse : linksResponse.get().links()) {
-                sb.append(linkResponse.url().toString()).append(ENDL_CHAR);
+        try {
+            Optional<ListLinksResponse> linksResponse = webClient.getLinks(id);
+            if (linksResponse.isPresent()) {
+                StringBuilder sb = new StringBuilder();
+                for (LinkResponse linkResponse : linksResponse.get().links()) {
+                    sb.append(linkResponse.url().toString()).append(ENDL_CHAR);
+                }
+                result = sb.toString();
             }
-            result = sb.toString();
+        } catch (UserNotFoundException e){
+            LOGGER.error("Пользователь не найден: {}", e.getMessage());
+            return "Пользователь не зарегистрирован";
         }
         return result;
     }

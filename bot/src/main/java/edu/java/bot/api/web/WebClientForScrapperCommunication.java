@@ -1,12 +1,13 @@
 package edu.java.bot.api.web;
 
-import edu.java.bot.api.entities.exceptions.ApiErrorException;
 import java.util.Optional;
+import edu.java.bot.api.exceptions.entities.ApiErrorException;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
@@ -39,6 +40,7 @@ public class WebClientForScrapperCommunication {
             .bodyToMono(String.class)
             .blockOptional();
     }
+
 
     public Optional<String> deleteChat(Long id) {
         return webClient
@@ -73,11 +75,13 @@ public class WebClientForScrapperCommunication {
     }
 
     public Optional<LinkResponse> addLink(Long id, AddLinkRequest request) {
+        Logger logger = LoggerFactory.getLogger(WebClientForScrapperCommunication.class);
+        logger.info("Add link for chat with id: " + id + " link: " + request.link());
         return webClient
             .post()
             .uri(PATH_TO_LINK)
             .header(HEADER_NAME, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -93,7 +97,7 @@ public class WebClientForScrapperCommunication {
         return webClient.method(HttpMethod.DELETE)
             .uri(PATH_TO_LINK)
             .header(HEADER_NAME, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -104,4 +108,5 @@ public class WebClientForScrapperCommunication {
             .bodyToMono(LinkResponse.class)
             .blockOptional();
     }
+
 }

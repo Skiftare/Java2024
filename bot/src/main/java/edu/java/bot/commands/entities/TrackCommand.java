@@ -3,9 +3,7 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.memory.DialogManager;
-import edu.java.bot.processor.BotProcessor;
 import edu.java.bot.processor.UserRequest;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
@@ -27,7 +25,6 @@ public class TrackCommand implements Command {
         this.manager = manager;
     }
 
-
     @Override
     public String getCommandName() {
         return TRACK_COMMAND_NAME;
@@ -44,22 +41,16 @@ public class TrackCommand implements Command {
         Long chatId = update.message().chat().id();
         logger.info("Пользователь {} запросил отслеживание {}", chatId, textMessage);
         String result = UNSUCCESSFUL_TRACK_INFO;
-        if (Objects.equals(textMessage, this.getCommandName())) {
-            if (manager.setWaitForTrack(chatId)) {
-                result = WAIT_FOR_URL_TRACK_INFO;
-            } else {
-                result = USER_IS_NOT_REGISTERED;
-            }
-        } else {
-            String[] parts = textMessage.split(" ");
-            if (parts.length > 1) {
-                String link = parts[1];
-                UserRequest request = new UserRequest(chatId, link);
-                if (checkLinkWithoutConnecting(link) && manager.trackURL(request)) {
-                    result = SUCCESS_TRACK_INFO;
-                }
+
+        String[] parts = textMessage.split(" ");
+        if (parts.length > 1) {
+            String link = parts[1];
+            UserRequest request = new UserRequest(chatId, link);
+            if (checkLinkWithoutConnecting(link) && manager.trackURL(request)) {
+                result = SUCCESS_TRACK_INFO;
             }
         }
+
         return new SendMessage(update.message().chat().id(), result);
     }
 

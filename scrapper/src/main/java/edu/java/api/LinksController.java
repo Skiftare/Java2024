@@ -76,7 +76,7 @@ public class LinksController {
 
     @PostMapping("/links")
     public ResponseEntity<LinkResponse> addLink(
-        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @RequestBody
+        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @org.springframework.web.bind.annotation.RequestBody
     AddLinkRequest addLinkRequest
     ) throws RequestProcessingException {
         LoggerFactory.getLogger(LinksController.class).info("Add link request: " + addLinkRequest.link());
@@ -89,7 +89,7 @@ public class LinksController {
 
     @DeleteMapping("/links")
     public ResponseEntity<LinkResponse> removeLink(
-        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @RequestBody
+        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @org.springframework.web.bind.annotation.RequestBody
     RemoveLinkRequest removeLinkRequest
     ) throws RequestProcessingException {
         LoggerFactory.getLogger(LinksController.class).info("Remove link request: " + removeLinkRequest.link());

@@ -16,6 +16,7 @@ import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.DialogState;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.security.SecureRandom;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 public class HelpCommandTest {
     private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
@@ -34,7 +36,7 @@ public class HelpCommandTest {
         new ListCommand(manager),
         new TrackCommand(manager),
         new UntrackCommand(manager)
-    ), manager);
+    ));
 
 
     @Test
@@ -67,8 +69,6 @@ public class HelpCommandTest {
         //When: we execute update with this Command
         SendMessage sendMessage = helpCommand.handle(update);
 
-        // Then dialog state is reset
-        assertEquals(manager.getDialogState(chatId), DialogState.DEFAULT_SESSION);
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);

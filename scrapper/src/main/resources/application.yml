@@ -1,15 +1,19 @@
 app:
+  database-access-type:
+    jdbc
   scheduler:
     enable: true
     interval: 10s
     force-check-delay: 10s
     parser-delay: 600s
 
-  stack-overflow:
-    default-url: https://api.stackexchange.com/2.3/
+  list-of-links-supported:
+    stackoverflow: stackoverflow.com
+    github: github.com
 
-  github:
-    default-url: https://api.github.com/
+
+  api:
+    bot-url: http://localhost:8090
 
 
     #add another Link there as smth-record-class: first-url: value
@@ -24,6 +28,9 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
 
 server:
   port: 8080

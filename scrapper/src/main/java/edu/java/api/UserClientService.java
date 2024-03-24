@@ -12,12 +12,15 @@ import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserClientService {
     private final DatabaseOperations dataService;
+    private static final Logger logger = LoggerFactory.getLogger(UserClientService.class);
 
     private void isChatExist(Long chatId) throws RequestProcessingException {
         if (!dataService.checkExistingOfChat(chatId)) {
@@ -34,6 +37,8 @@ public class UserClientService {
     public LinkResponse addLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
 
+        logger.info("At least, user {} is registered", chatId);
+        logger.info("Adding link: " + link.toString());
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
             if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
@@ -48,7 +53,8 @@ public class UserClientService {
 
     public LinkResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
-
+        logger.info("At least, user {} is registered", chatId);
+        logger.info("Deleting link: " + link.toString());
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
             if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {

@@ -59,6 +59,7 @@ public class DatabaseOperations {
 
         List<LinkResponse> linkResponses = chatLinks.get(chatId);
         for (LinkResponse linkResponse : linkResponses) {
+
             if (linkResponse.url().equals(link.getPath())) {
                 linkResponses.remove(linkResponse);
                 return linkResponse;

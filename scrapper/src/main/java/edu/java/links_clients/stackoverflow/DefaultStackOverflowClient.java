@@ -5,7 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
+import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
+import edu.java.links_clients.dto.stckoverflow.AnswerItems;
+import edu.java.links_clients.dto.stckoverflow.CommentInfo;
+import edu.java.links_clients.dto.stckoverflow.CommentItems;
 import edu.java.utility.EmptyJsonException;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +27,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
-        String defaultUrl = config.stackOverflow().defaultUrl();
+        String defaultUrl = config.listOfLinksSupported().stackoverflow();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
@@ -65,5 +71,23 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
             LOGGER.error(e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public List<AnswerInfo> getAnswerInfoByQuestion(Long question) {
+        return Objects.requireNonNull(webClient.get()
+                .uri( "/questions/{question}/answers?order=desc&site=stackoverflow", question)
+                .retrieve()
+                .bodyToMono(AnswerItems.class)
+                .block())
+            .getAnswerInfo();
+    }
+
+    public List<CommentInfo> getCommentInfoByQuestion(Long question) {
+        return Objects.requireNonNull(webClient.get()
+                .uri("/questions/{question}/comments?order=desc&sort=creation&site=stackoverflow", question)
+                .retrieve()
+                .bodyToMono(CommentItems.class)
+                .block())
+            .getCommentInfo();
     }
 }
