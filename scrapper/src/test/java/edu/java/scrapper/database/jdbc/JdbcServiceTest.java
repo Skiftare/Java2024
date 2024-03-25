@@ -97,7 +97,7 @@ public class JdbcServiceTest extends IntegrationTest {
             AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK));
             RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK));
             jdbcLinkService.add(id, addRequest);
-            jdbcLinkService.remove(id, new RemoveLinkRequest(URI.create(TEST_LINK)));
+            jdbcLinkService.remove(id, removeRequest);
             assertThrows(LinkNotFoundException.class,()->jdbcLinkService.remove(id, removeRequest));
         }
     }
