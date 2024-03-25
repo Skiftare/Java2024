@@ -9,13 +9,13 @@ import edu.java.links_clients.dto.github.GithubActions;
 import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
 import edu.java.links_clients.dto.stckoverflow.CommentInfo;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
 import static java.lang.String.format;
 
 @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true", matchIfMissing = true)
@@ -29,8 +29,6 @@ public class JpaLinkUpdaterScheduler {
     private static final String SOF_HEAD = "В вопросе %s, появились новые ответы/кометарии:\n";
     private static final String SOF_ANSWER = "Новый ответ (время %s)\n";
     private static final String SOF_COMMENT = "Новый комментарий (время %s)\n";
-
-
 
     private final JpaLinkRepository linkRepository;
     private final BotServiceForWebClient botService;

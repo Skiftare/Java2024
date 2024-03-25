@@ -2,9 +2,9 @@ package edu.java.links_clients.dto.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.java.links_clients.github.GitHubResponse;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.OffsetDateTime;
 
 @Getter
 @Setter

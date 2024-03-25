@@ -1,6 +1,5 @@
 package edu.java.configuration;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,6 +29,7 @@ public record ApplicationConfig(
 
     public record ListOfSupportedLinks(String stackoverflow, String github) {
     }
+
     public record Api(String botUrl) {
     }
 }

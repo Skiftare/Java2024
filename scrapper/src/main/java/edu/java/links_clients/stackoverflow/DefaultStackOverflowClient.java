@@ -75,7 +75,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
 
     public List<AnswerInfo> getAnswerInfoByQuestion(Long question) {
         return Objects.requireNonNull(webClient.get()
-                .uri( "/questions/{question}/answers?order=desc&site=stackoverflow", question)
+                .uri("/questions/{question}/answers?order=desc&site=stackoverflow", question)
                 .retrieve()
                 .bodyToMono(AnswerItems.class)
                 .block())

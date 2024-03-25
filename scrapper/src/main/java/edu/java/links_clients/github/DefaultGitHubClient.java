@@ -5,9 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
+import edu.java.links_clients.dto.github.GithubActions;
 import java.util.List;
 import java.util.Optional;
-import edu.java.links_clients.dto.github.GithubActions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +49,7 @@ public class DefaultGitHubClient implements GitHubClient {
             return Optional.empty();
         }
     }
+
     public List<GithubActions> getActionsInfo(String owner, String repo) {
         return webClient.get()
             .uri("/repos/{owner}/{repo}/activity", owner, repo)

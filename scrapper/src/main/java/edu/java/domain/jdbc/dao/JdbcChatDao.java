@@ -24,7 +24,7 @@ public class JdbcChatDao {
     }
 
     public Optional<Chat> getByTgChatId(long tgChatId) {
-        logger.info("Getting chat by chat_id: " + tgChatId+" in the ChatDaoJdbc");
+        logger.info("Getting chat by chat_id: " + tgChatId + " in the ChatDaoJdbc");
         String sql = "SELECT * FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)

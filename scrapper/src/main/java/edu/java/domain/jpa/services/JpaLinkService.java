@@ -13,10 +13,10 @@ import edu.java.exceptions.entities.LinkAlreadyExistException;
 import edu.java.exceptions.entities.LinkNotFoundException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Transactional
@@ -24,6 +24,7 @@ public class JpaLinkService implements LinkService {
 
     private final JpaChatRepository chatRepository;
     private final JpaLinkRepository linkRepository;
+
     @Override
     public ListLinksResponse listAll(long tgChatId) {
         Chat chat = getChatByTgChatId(tgChatId);
@@ -40,7 +41,6 @@ public class JpaLinkService implements LinkService {
     public LinkResponse add(long tgChatId, AddLinkRequest linkRequest) {
         URI url = linkRequest.link();
         Chat chat = getChatByTgChatId(tgChatId);
-
 
         Link actualLink;
         if (linkRepository.findLinkByUrl(String.valueOf(url)).isEmpty()) {

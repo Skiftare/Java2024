@@ -1,26 +1,22 @@
 package edu.java.domain.jdbc.services;
 
 import edu.java.api.BotServiceForWebClient;
-import edu.java.data.request.LinkUpdateRequest;
 import edu.java.domain.jdbc.dao.JdbcLinkChatRelationDao;
 import edu.java.domain.jdbc.dao.JdbcLinkDao;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelation;
-import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithTgChat;
 import edu.java.domain.jdbc.written.link.Link;
 import edu.java.links_clients.LinkHandler;
 import edu.java.links_clients.dto.github.GithubActions;
 import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
 import edu.java.links_clients.dto.stckoverflow.CommentInfo;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
-import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true", matchIfMissing = true)
 @Slf4j
@@ -54,7 +50,7 @@ public class JdbcUpdateScheduler {
 
         OffsetDateTime now = OffsetDateTime.now();
         List<Link> links = linkDao.getByLastUpdate(now.minus(NEED_TO_CHECK));
-        for (Link link: links) {
+        for (Link link : links) {
             if (webResourceHandler.isGitHubUrl(link.getUrl())) {
                 gitHubProcess(link, now);
             } else {

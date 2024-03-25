@@ -1,4 +1,6 @@
 package edu.java.domain.jpa.dao;
+
+import edu.java.exceptions.entities.LinkNotFoundException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +18,6 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -51,7 +51,10 @@ public class Chat {
     }
 
     public void removeLink(Link link) {
-        this.links.remove(link);
+        boolean removed = this.links.remove(link);
+        if (!removed) {
+            throw new LinkNotFoundException("Link not found in the chat");
+        }
         link.getChats().remove(this);
     }
 

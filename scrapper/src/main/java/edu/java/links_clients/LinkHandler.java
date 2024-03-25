@@ -6,10 +6,8 @@ import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
 import edu.java.links_clients.dto.stckoverflow.CommentInfo;
 import edu.java.links_clients.github.DefaultGitHubClient;
 import edu.java.links_clients.stackoverflow.DefaultStackOverflowClient;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
 
 @Service
 public class LinkHandler {

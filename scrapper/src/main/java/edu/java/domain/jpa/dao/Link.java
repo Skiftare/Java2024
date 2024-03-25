@@ -1,6 +1,5 @@
 package edu.java.domain.jpa.dao;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,8 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-
-
 
 @Getter
 @Setter
@@ -35,7 +32,6 @@ public class Link {
 
     @Column(name = "last_update_at", nullable = false)
     private OffsetDateTime lastUpdateAt;
-
 
     @ManyToMany(mappedBy = "links", fetch = FetchType.LAZY)
     private Set<Chat> chats = new HashSet<>();

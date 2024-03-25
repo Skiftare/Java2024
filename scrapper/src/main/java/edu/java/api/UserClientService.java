@@ -19,8 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserClientService {
+    private static final String LOGGING_USER_TEMPLATE = "At least, user {} is registered";
     private final DatabaseOperations dataService;
-    private static final Logger logger = LoggerFactory.getLogger(UserClientService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserClientService.class);
 
     private void isChatExist(Long chatId) throws RequestProcessingException {
         if (!dataService.checkExistingOfChat(chatId)) {
@@ -37,7 +38,7 @@ public class UserClientService {
     public LinkResponse addLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
 
-        logger.info("At least, user {} is registered", chatId);
+        logger.info(LOGGING_USER_TEMPLATE, chatId);
         logger.info("Adding link: " + link.toString());
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {
@@ -53,7 +54,7 @@ public class UserClientService {
 
     public LinkResponse removeLink(Long chatId, URI link) throws RequestProcessingException {
         isChatExist(chatId);
-        logger.info("At least, user {} is registered", chatId);
+        logger.info(LOGGING_USER_TEMPLATE, chatId);
         logger.info("Deleting link: " + link.toString());
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
         for (LinkResponse linkResponse : linkResponses) {

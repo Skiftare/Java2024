@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatRowMapper implements RowMapper<Chat> {
     private final Logger logger = Logger.getLogger(ChatRowMapper.class.getName());
+
     @Override
     @SuppressWarnings("MagicNumber")
     public Chat mapRow(ResultSet rs, int rowNum) throws SQLException {

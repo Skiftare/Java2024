@@ -1,22 +1,22 @@
 package edu.java.domain.jpa.written;
 
 import edu.java.domain.jpa.dao.Link;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
 
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
 
     Optional<Link> findLinkByUrl(String url);
 
-    @EntityGraph(attributePaths = "chat")
+    @EntityGraph(attributePaths = "chats")
     Optional<Link> findLinkWithChatByUrl(String url);
 
-    @EntityGraph(attributePaths = "chat")
+    @EntityGraph(attributePaths = "chats")
     Optional<Link> findLinkWithChatById(long id);
 
     List<Link> findLinksByLastUpdateAtBefore(OffsetDateTime dateTime);

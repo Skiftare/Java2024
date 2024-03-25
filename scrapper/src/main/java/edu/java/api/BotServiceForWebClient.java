@@ -16,7 +16,6 @@ public class BotServiceForWebClient {
     private final UserClientService chatService;
     Logger logger = Logger.getLogger(BotServiceForWebClient.class.getName());
 
-
     public void sendUpdate(long id, String url, String description, List<Long> tgChatIds) {
         try {
             botClient.sendUpdate(new LinkUpdateRequest(id, URI.create(url), description, tgChatIds));
