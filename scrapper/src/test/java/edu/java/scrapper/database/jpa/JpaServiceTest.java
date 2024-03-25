@@ -35,7 +35,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testRegisterFail() {
-            long tgChatId = 123456L;
+            long tgChatId = 234L;
             jpaChatService.register(tgChatId);
             assertTrue(jpaChatService.isRegistered(tgChatId));
             assertThrows(UserAlreadyExistException.class, () -> jpaChatService.register(tgChatId));
@@ -44,7 +44,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testUnregisterFail() {
-            long tgChatId = 123455L;
+            long tgChatId = 235L;
             jpaChatService.register(tgChatId);
             jpaChatService.unregister(tgChatId);
             assertThrows(UserNotFoundException.class, () -> jpaChatService.unregister(tgChatId));
@@ -53,7 +53,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testRegisterSucc() {
-            long tgChatId = 123457L;
+            long tgChatId = 236L;
             jpaChatService.register(tgChatId);
             assertTrue(jpaChatService.isRegistered(tgChatId));
         }
@@ -61,7 +61,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testUnregisterSucc() {
-            long tgChatId = 123459L;
+            long tgChatId = 237L;
             jpaChatService.register(tgChatId);
             jpaChatService.unregister(tgChatId);
             assertThrows(UserNotFoundException.class, () -> jpaChatService.unregister(tgChatId));
@@ -73,7 +73,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testLinkRegisterDoubleTimeError() {
-            long id = 1238L;
+            long id = 238L;
             jpaChatService.register(id);
             AddLinkRequest request = new AddLinkRequest(URI.create(TEST_LINK));
             jpaLinkService.add(id, request);
@@ -83,7 +83,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testLinkRegisterError() {
-            long id = 1235L;
+            long id = 239L;
             AddLinkRequest request = new AddLinkRequest(URI.create(TEST_LINK));
             assertThrows(UserNotFoundException.class,()->jpaLinkService.add(id, request));
         }
@@ -91,7 +91,7 @@ public class JpaServiceTest extends IntegrationTest {
         @Test
         @Rollback
         public void testLinkDeleteError() {
-            long id = 1237L;
+            long id = 240L;
             jpaChatService.register(id);
             AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK));
             RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK));
