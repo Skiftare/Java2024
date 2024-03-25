@@ -1,10 +1,7 @@
 package edu.java.bot.memory;
 
-import edu.java.bot.processor.DialogState;
 import edu.java.bot.processor.UserRequest;
-import java.util.HashMap;
 import org.springframework.stereotype.Service;
-import static edu.java.bot.memory.DataManager.NO_LINKS_NOT_TRACKED;
 
 @Service
 @SuppressWarnings("HideUtilityClassConstructor")
@@ -14,23 +11,20 @@ public class DialogManager {
 
     private static final String SUCCESS_UNTRACK_INFO = "Отслеживание ссылки прекращено!";
     private static final String UNSUCCESSFUL_UNTRACK_INFO = "Ссылка невалидна или отсутсвует в отслеживаемых";
-    private DataManager manager;
+    private final DataManager manager;
 
     public DialogManager(DataManager dataManager) {
         manager = dataManager;
     }
 
-
-
     public boolean registerUser(Long id) {
         return manager.registerUser(id);
     }
 
-
     public boolean trackURL(UserRequest update) {
-            return manager.addURl(update);
+        return manager.addURl(update);
 
-            //return false;
+        //return false;
 
     }
 
@@ -40,12 +34,10 @@ public class DialogManager {
 
     public String getListOfTracked(UserRequest update) {
 
-            return manager.getListOFTrackedCommands(update.id());
+        return manager.getListOFTrackedCommands(update.id());
 
-            //return NO_LINKS_NOT_TRACKED;
+        //return NO_LINKS_NOT_TRACKED;
 
     }
-
-
 
 }

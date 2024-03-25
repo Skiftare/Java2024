@@ -2,14 +2,14 @@ package edu.java.bot.memory;
 
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.processor.UserRequest;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
 import edu.java.exceptions.entities.UserNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -17,10 +17,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DataManager {
+    static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
     private static final String ENDL_CHAR = "\n";
-    static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
-
     private final WebClientForScrapperCommunication webClient;
 
     public DataManager(WebClientForScrapperCommunication webClient) {
@@ -73,17 +72,15 @@ public class DataManager {
             if (linksResponse.isPresent()) {
                 StringBuilder sb = new StringBuilder();
                 for (LinkResponse linkResponse : linksResponse.get().links()) {
-                    sb.append(linkResponse.url().toString()).append(ENDL_CHAR);
+                    sb.append(linkResponse.url()).append(ENDL_CHAR);
                 }
                 result = sb.toString();
             }
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             LOGGER.error("Пользователь не найден: {}", e.getMessage());
             return "Пользователь не зарегистрирован";
         }
         return result;
     }
-
-
 
 }

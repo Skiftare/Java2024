@@ -7,9 +7,6 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.Command;
 import edu.java.bot.commands.loaders.CommandsLoader;
-import edu.java.bot.memory.Cookie;
-import edu.java.bot.memory.CookieState;
-import edu.java.bot.memory.DialogManager;
 import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +47,7 @@ public class BotProcessor {
                 try {
                     msg = command.handle(update);
                     break;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error("Error while handling command", e);
                 }
             }

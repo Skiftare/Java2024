@@ -1,30 +1,28 @@
 package edu.java.bot.api.web;
 
-import java.util.Optional;
 import edu.java.bot.api.exceptions.entities.ApiErrorException;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class WebClientForScrapperCommunication {
-    private final WebClient webClient;
     private final static String PATH_TO_CHAT = "tg-chat/{id}";
     private final static String PATH_TO_LINK = "/links";
     private final static String HEADER_NAME = "Tg-Chat-Id";
+    private final WebClient webClient;
 
     public WebClientForScrapperCommunication(String incomeUrlAsBase) {
         this.webClient = WebClient.builder().baseUrl(incomeUrlAsBase).build();
     }
-
 
     public Optional<String> registerChat(Long id) {
         return webClient
@@ -40,7 +38,6 @@ public class WebClientForScrapperCommunication {
             .bodyToMono(String.class)
             .blockOptional();
     }
-
 
     public Optional<String> deleteChat(Long id) {
         return webClient

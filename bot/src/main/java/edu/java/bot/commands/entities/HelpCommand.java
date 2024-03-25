@@ -3,10 +3,8 @@ package edu.java.bot.commands.entities;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
-import edu.java.bot.memory.DialogManager;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

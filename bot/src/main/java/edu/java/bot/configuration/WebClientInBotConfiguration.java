@@ -11,7 +11,7 @@ public class WebClientInBotConfiguration {
 
     @Bean
     public WebClientForScrapperCommunication scrapperWebClient(ApplicationConfig appConfig) {
-        Logger logger  = LoggerFactory.getLogger(WebClientInBotConfiguration.class);
+        Logger logger = LoggerFactory.getLogger(WebClientInBotConfiguration.class);
         logger.info("Scrapper URL: " + appConfig.api().scrapperUrl());
         return new WebClientForScrapperCommunication(appConfig.api().scrapperUrl());
     }

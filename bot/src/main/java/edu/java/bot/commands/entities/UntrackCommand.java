@@ -44,7 +44,7 @@ public class UntrackCommand implements Command {
                 result = SUCCESS_UNTRACK_INFO;
             }
         }
-        
+
         return new SendMessage(update.message().chat().id(), result);
     }
 
