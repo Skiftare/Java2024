@@ -94,8 +94,8 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testLinkDeleteError() {
             long id = 1237L;
             jdbcChatService.register(id);
-            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK));
-            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK));
+            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK+"5"));
+            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK+"5"));
             jdbcLinkService.add(id, addRequest);
             jdbcLinkService.remove(id, removeRequest);
             assertThrows(LinkNotFoundException.class,()->jdbcLinkService.remove(id, removeRequest));
