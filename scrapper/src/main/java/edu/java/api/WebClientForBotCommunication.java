@@ -1,5 +1,6 @@
 package edu.java.api;
 
+import edu.java.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.exceptions.entities.CustomApiException;
@@ -12,8 +13,12 @@ import reactor.core.publisher.Mono;
 public class WebClientForBotCommunication {
     private final WebClient webClient;
 
-    public WebClientForBotCommunication(String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+    public WebClientForBotCommunication(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
+    public WebClientForBotCommunication(ApplicationConfig config) {
+        this.webClient = WebClient.builder().baseUrl(config.api().botUrl()).build();
     }
 
     public Optional<String> sendUpdate(LinkUpdateRequest request) {

@@ -11,7 +11,7 @@ public record ApplicationConfig(
     String telegramToken,
     Api api
 ) {
-    public record Api(String scrapperUrl){
+    public record Api(String scrapperUrl) {
 
     }
 }

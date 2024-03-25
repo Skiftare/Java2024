@@ -28,10 +28,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+
         <dependency>
             <groupId>edu.java</groupId>
             <artifactId>transer_objects_module</artifactId>
             <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pengrad</groupId>
+            <artifactId>java-telegram-bot-api</artifactId>
+            <version>5.3.0</version>
         </dependency>
 
         <dependency>

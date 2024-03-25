@@ -51,12 +51,12 @@ public class BotProcessorTest {
         );
 
         CommandsLoader loader = new CommandsLoader(
-            new HelpCommand(helper, dialogManager), helper
+            new HelpCommand(helper), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,dialogManager);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
 
         //When
         SendMessage response = bot.recognizeCommand(update);
@@ -91,11 +91,11 @@ public class BotProcessorTest {
         );
 
         CommandsLoader loader = new CommandsLoader(
-            new HelpCommand(helper, dialogManager), helper
+            new HelpCommand(helper), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard, dialogManager);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
 
 
 

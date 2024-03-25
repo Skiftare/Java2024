@@ -15,6 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -29,7 +31,7 @@ public class WebServerTest {
     void setUpEnvironment() {
         mockedServer.start();
         String baseUrl = "http://localhost:" + mockedServer.port();
-        client = new WebClientForBotCommunication(baseUrl);
+        client = new WebClientForBotCommunication(WebClient.create(baseUrl));
     }
 
     @AfterEach

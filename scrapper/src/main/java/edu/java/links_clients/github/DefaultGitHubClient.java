@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
+import edu.java.links_clients.dto.github.GithubActions;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class DefaultGitHubClient implements GitHubClient {
 
     @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
-        String defaultUrl = config.gitHub().defaultUrl();
+        String defaultUrl = config.listOfLinksSupported().github();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
@@ -47,6 +48,15 @@ public class DefaultGitHubClient implements GitHubClient {
             LOGGER.error(e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public List<GithubActions> getActionsInfo(String owner, String repo) {
+        return webClient.get()
+            .uri("/repos/{owner}/{repo}/activity", owner, repo)
+            .retrieve()
+            .bodyToFlux(GithubActions.class)
+            .collectList()
+            .block();
     }
 
     private Optional<GitHubResponse> parseJson(String json) {

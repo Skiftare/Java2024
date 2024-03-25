@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @SuppressWarnings("HideUtilityClassConstructor")
-
 public class CommandsLoader implements Loader {
 
     private final List<Command> commandList;
@@ -23,11 +22,11 @@ public class CommandsLoader implements Loader {
     }
 
     public List<String> getCommandsNames() {
-        List<String> commandsNames = new ArrayList<>();
+        List<String> commandNames = new ArrayList<>();
         for (Command command : commandList) {
-            commandsNames.add(command.getCommandName());
+            commandNames.add(command.getCommandName());
         }
-        return commandsNames;
+        return commandNames;
     }
 
     @Override

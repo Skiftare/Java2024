@@ -11,6 +11,8 @@ import edu.java.exceptions.entities.UserNotFoundException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +23,12 @@ public class JdbcChatService implements TgChatService {
     private final JdbcChatDao chatDao;
     private final JdbcLinkDao linkDao;
     private final JdbcLinkChatRelationDao chatLinkDao;
+    private final Logger logger = LoggerFactory.getLogger(JdbcChatService.class);
 
     @Override
     public void register(long tgChatId) {
         if (chatDao.getByTgChatId(tgChatId).isPresent()) {
-            throw new UserAlreadyExistException(generateExceptionMessage(tgChatId));
+            throw new UserAlreadyExistException(generateExceptionMessageForChatId(tgChatId));
         }
         Chat chat = Chat.makeChat(tgChatId, OffsetDateTime.now());
         chatDao.save(chat);
@@ -35,7 +38,7 @@ public class JdbcChatService implements TgChatService {
     public void unregister(long tgChatId) {
         long id = chatDao.getByTgChatId(tgChatId)
             .orElseThrow(
-                () -> new UserNotFoundException(generateExceptionMessage(tgChatId))
+                () -> new UserNotFoundException(generateExceptionMessageForChatId(tgChatId))
             ).getTgChatId();
         List<ChatLinkRelation> links = chatLinkDao.getByChatId(id);
         for (ChatLinkRelation chatLink : links) {
@@ -47,5 +50,11 @@ public class JdbcChatService implements TgChatService {
             }
         }
         chatDao.deleteByTgChatId(tgChatId);
+    }
+
+    @Override
+    public boolean isRegistered(long tgChatId) {
+        logger.info("Checking if chat with id: " + tgChatId + " exists with JDBC");
+        return chatDao.getByTgChatId(tgChatId).isPresent();
     }
 }

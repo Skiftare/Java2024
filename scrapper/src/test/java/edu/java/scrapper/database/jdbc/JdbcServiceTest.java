@@ -10,12 +10,12 @@ import edu.java.exceptions.entities.UserAlreadyExistException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import edu.java.scrapper.database.IntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Rollback
@@ -38,8 +38,11 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testRegisterFail() {
             long tgChatId = 123456L;
             jdbcChatService.register(tgChatId);
+            assertTrue(jdbcChatService.isRegistered(tgChatId));
             assertThrows(UserAlreadyExistException.class, () -> jdbcChatService.register(tgChatId));
         }
+
+
 
         @Test
         @Rollback
@@ -91,10 +94,10 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testLinkDeleteError() {
             long id = 1237L;
             jdbcChatService.register(id);
-            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK));
-            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK));
+            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK+"5"));
+            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK+"5"));
             jdbcLinkService.add(id, addRequest);
-            jdbcLinkService.remove(id, new RemoveLinkRequest(URI.create(TEST_LINK)));
+            jdbcLinkService.remove(id, removeRequest);
             assertThrows(LinkNotFoundException.class,()->jdbcLinkService.remove(id, removeRequest));
         }
     }

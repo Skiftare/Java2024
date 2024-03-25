@@ -1,29 +1,28 @@
 package edu.java.bot.api.web;
 
-import edu.java.bot.api.entities.exceptions.ApiErrorException;
-import java.util.Optional;
+import edu.java.bot.api.exceptions.entities.ApiErrorException;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import java.util.Optional;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class WebClientForScrapperCommunication {
-    private final WebClient webClient;
     private final static String PATH_TO_CHAT = "tg-chat/{id}";
     private final static String PATH_TO_LINK = "/links";
     private final static String HEADER_NAME = "Tg-Chat-Id";
+    private final WebClient webClient;
 
     public WebClientForScrapperCommunication(String incomeUrlAsBase) {
         this.webClient = WebClient.builder().baseUrl(incomeUrlAsBase).build();
     }
-
 
     public Optional<String> registerChat(Long id) {
         return webClient
@@ -73,11 +72,13 @@ public class WebClientForScrapperCommunication {
     }
 
     public Optional<LinkResponse> addLink(Long id, AddLinkRequest request) {
+        Logger logger = LoggerFactory.getLogger(WebClientForScrapperCommunication.class);
+        logger.info("Add link for chat with id: " + id + " link: " + request.link());
         return webClient
             .post()
             .uri(PATH_TO_LINK)
             .header(HEADER_NAME, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -93,7 +94,7 @@ public class WebClientForScrapperCommunication {
         return webClient.method(HttpMethod.DELETE)
             .uri(PATH_TO_LINK)
             .header(HEADER_NAME, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -104,4 +105,5 @@ public class WebClientForScrapperCommunication {
             .bodyToMono(LinkResponse.class)
             .blockOptional();
     }
+
 }

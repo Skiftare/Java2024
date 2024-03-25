@@ -1,6 +1,6 @@
 package edu.java.bot.api.link_updater.mapper;
 
-import edu.java.bot.api.entities.exceptions.RequestProcessingException;
+import edu.java.bot.api.exceptions.entities.RequestProcessingException;
 import edu.java.data.request.LinkUpdate;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;

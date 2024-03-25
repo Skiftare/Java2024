@@ -12,7 +12,6 @@ public class Link {
     private OffsetDateTime createdAt;
     private OffsetDateTime lastUpdateAt;
 
-
     public static Link makeLink(String url, OffsetDateTime createdAt, OffsetDateTime lastUpdateAt) {
         Link link = new Link();
         link.setUrl(url);

@@ -19,7 +19,6 @@ public class StartCommand implements Command {
         this.manager = manager;
     }
 
-
     @Override
     public String getCommandName() {
         return START_COMMAND_NAME;
