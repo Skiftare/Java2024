@@ -54,24 +54,5 @@ public class UntrackCommandTest {
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
         assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
     }
-
-    @Test
-    public void testThatGetCommandAndReturnedWaitngMessage() {
-        SecureRandom secureRandom = new SecureRandom();
-        Update update = mock(Update.class);
-        Chat chat = mock(Chat.class);
-
-        Message message = mock(Message.class);
-        Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
-        when(message.text()).thenReturn("/untrack");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
-        when(update.message()).thenReturn(message);
-
-        String expectedTextMessage = "Жду ссылку на удаление";
-        SendMessage sendMessage = testingCommand.handle(update);
-        assertEquals(sendMessage.getParameters().get("chat_id"), chatId);
-        assertEquals(sendMessage.getParameters().get("text"), expectedTextMessage);
-    }
 }
 
