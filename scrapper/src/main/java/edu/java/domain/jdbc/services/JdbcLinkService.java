@@ -80,7 +80,9 @@ public class JdbcLinkService implements LinkService {
         long chatId = getChatByTgChatId(tgChatId).getTgChatId();
         long linkId = actualLink.getDataLinkId();
         int countChatTrackLink = chatLinkDao.getByLinkId(linkId).size();
+
         chatLinkDao.delete(chatId, linkId);
+
         //Data optimizing
         if (countChatTrackLink == 1) {
             linkDao.deleteByLink(url);
