@@ -1,8 +1,6 @@
 package edu.java.configuration.database;
 
 import edu.java.api.BotServiceForWebClient;
-import edu.java.database.services.interfaces.LinkService;
-import edu.java.database.services.interfaces.TgChatService;
 import edu.java.domain.jpa.services.JpaChatService;
 import edu.java.domain.jpa.services.JpaLinkService;
 import edu.java.domain.jpa.services.JpaLinkUpdaterScheduler;

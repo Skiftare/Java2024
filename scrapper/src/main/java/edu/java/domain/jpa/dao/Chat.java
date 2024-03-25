@@ -40,7 +40,7 @@ public class Chat {
     }, fetch = FetchType.LAZY)
 
     @JoinTable(name = "link_chat_relation",
-               joinColumns = @JoinColumn(name = "id_of_chat", referencedColumnName = "id"),
+               joinColumns = @JoinColumn(name = "id_of_chat", referencedColumnName = "chat_id"),
                inverseJoinColumns = @JoinColumn(name = "id_of_link", referencedColumnName = "id")
     )
     private Set<Link> links = new HashSet<>();

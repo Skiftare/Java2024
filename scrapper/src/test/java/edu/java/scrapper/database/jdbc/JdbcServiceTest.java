@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Rollback
@@ -37,8 +38,11 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testRegisterFail() {
             long tgChatId = 123456L;
             jdbcChatService.register(tgChatId);
+            assertTrue(jdbcChatService.isRegistered(tgChatId));
             assertThrows(UserAlreadyExistException.class, () -> jdbcChatService.register(tgChatId));
         }
+
+
 
         @Test
         @Rollback

@@ -51,6 +51,7 @@ public class JdbcUpdateScheduler {
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
+
         OffsetDateTime now = OffsetDateTime.now();
         List<Link> links = linkDao.getByLastUpdate(now.minus(NEED_TO_CHECK));
         for (Link link: links) {

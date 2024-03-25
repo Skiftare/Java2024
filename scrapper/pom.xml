@@ -29,6 +29,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>edu.java</groupId>
             <artifactId>transer_objects_module</artifactId>
             <version>0.1</version>

@@ -13,10 +13,10 @@ public interface JpaLinkRepository extends JpaRepository<Link, Long> {
 
     Optional<Link> findLinkByUrl(String url);
 
-    @EntityGraph(attributePaths = "chats")
+    @EntityGraph(attributePaths = "chat")
     Optional<Link> findLinkWithChatByUrl(String url);
 
-    @EntityGraph(attributePaths = "chats")
+    @EntityGraph(attributePaths = "chat")
     Optional<Link> findLinkWithChatById(long id);
 
     List<Link> findLinksByLastUpdateAtBefore(OffsetDateTime dateTime);

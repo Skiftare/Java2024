@@ -34,4 +34,9 @@ public class JpaChatService implements TgChatService {
             );
         chatRepository.deleteByTgChatId(tgChatId);
     }
+
+    @Override
+    public boolean isRegistered(long tgChatId) {
+        return chatRepository.findChatByTgChatId(tgChatId).isPresent();
+    }
 }

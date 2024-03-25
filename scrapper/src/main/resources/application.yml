@@ -3,7 +3,7 @@ app:
     jdbc
   scheduler:
     enable: true
-    interval: 10s
+    interval: 100s
     force-check-delay: 10s
     parser-delay: 600s
 
@@ -23,6 +23,7 @@ spring:
     name: scrapper
   liquibase:
     enabled: false
+
   datasource:
     url: jdbc:postgresql://localhost:5432/
     username: postgres
