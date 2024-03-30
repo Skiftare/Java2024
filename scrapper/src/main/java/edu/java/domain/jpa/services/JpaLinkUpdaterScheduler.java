@@ -1,6 +1,7 @@
 package edu.java.domain.jpa.services;
 
 import edu.java.api.BotServiceForWebClient;
+import edu.java.database.services.interfaces.LinkUpdater;
 import edu.java.domain.jpa.dao.Chat;
 import edu.java.domain.jpa.dao.Link;
 import edu.java.domain.jpa.written.JpaLinkRepository;
@@ -14,13 +15,15 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import static java.lang.String.format;
 
 @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true", matchIfMissing = true)
 @Slf4j
-public class JpaLinkUpdaterScheduler {
+public class JpaLinkUpdaterScheduler implements LinkUpdater {
     private static final Duration NEED_TO_CHECK = Duration.ofSeconds(30);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy");
 
@@ -33,6 +36,8 @@ public class JpaLinkUpdaterScheduler {
     private final JpaLinkRepository linkRepository;
     private final BotServiceForWebClient botService;
     private final LinkHandler webResourceHandler;
+    private final Logger logger = LoggerFactory.getLogger(JpaLinkUpdaterScheduler.class);
+
 
     public JpaLinkUpdaterScheduler(
         JpaLinkRepository jpaLinkRepository,
@@ -44,14 +49,19 @@ public class JpaLinkUpdaterScheduler {
         this.webResourceHandler = webResourceHandler;
     }
 
-    @Scheduled(fixedDelayString = "#{@scheduler.interval}")
+
+    @Override
+    @Scheduled(fixedDelayString = "#{@app.scheduler.interval}")
     @Transactional
-    public void update() {
+    public void checkForUpdates() {
         linkRepository.deleteUnnecessary();
+        logger.info("Data optimizing completed");
         OffsetDateTime now = OffsetDateTime.now();
         List<Link> links = linkRepository.findLinksByLastUpdateAtBefore(now.minus(NEED_TO_CHECK));
         for (Link link : links) {
+            logger.info("Updating link with ID: {}", link.getId());
             if (webResourceHandler.isGitHubUrl(link.getUrl())) {
+                logger.info("GitHub link: {}", link.getUrl());
                 gitHubProcess(link, now);
             } else {
                 stackOverflowProcess(link, now);
@@ -61,8 +71,12 @@ public class JpaLinkUpdaterScheduler {
     }
 
     private void gitHubProcess(Link link, OffsetDateTime now) {
+
         List<GithubActions> actionsInfo = webResourceHandler.getActionsGitHubInfoByUrl(link.getUrl());
+        logger.info("actionsInfo size: {}", actionsInfo.size());
+        logger.info("link.getLastUpdateAt(): {}", link.getLastUpdateAt());
         if (link.getLastUpdateAt().isBefore(actionsInfo.getFirst().getPushedAt())) {
+            logger.info("link.getLastUpdateAt().isBefore queried pushedAt");
             StringBuilder description =
                 new StringBuilder(format(GIT_HEAD, link.getUrl(), actionsInfo.size()));
             actionsInfo.stream()

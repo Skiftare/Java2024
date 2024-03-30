@@ -1,7 +1,7 @@
 package edu.java.bot.api.link_updater.mapper;
 
 import edu.java.bot.api.exceptions.entities.RequestProcessingException;
-import edu.java.data.request.LinkUpdate;
+import edu.java.data.request.LinkUpdateRequest;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,9 @@ public class UpdatesController {
     private final UpdateManager updateManager;
 
     @PostMapping("/updates")
-    public ResponseEntity<String> sendUpdate(@RequestBody LinkUpdate linkUpdate) throws RequestProcessingException {
+    public ResponseEntity<String> sendUpdate(@RequestBody LinkUpdateRequest linkUpdate)
+        throws RequestProcessingException {
+
         if (updateManager.addRequest(linkUpdate)) {
             return ResponseEntity.ok(SUCCESS_LINK_UPDATED);
         } else {

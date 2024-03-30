@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 public class JdbcLinkDao {
     private final JdbcClient jdbcClient;
     private final LinkRowMapper linkRowMapper = new LinkRowMapper();
+    private final Logger logger = LoggerFactory.getLogger(JdbcLinkDao.class);
 
     public List<Link> getAll() {
         String sql = "SELECT * FROM link";
@@ -50,11 +53,14 @@ public class JdbcLinkDao {
             .update();
     }
 
+
     public void updateLastUpdateAtById(long id, OffsetDateTime dateTime) {
         String sql = "UPDATE link SET last_update_at = ? WHERE id = ?";
+        logger.info("Updating link with ID: {}", id);
         jdbcClient.sql(sql)
             .params(dateTime, id)
             .update();
+        logger.info("Link with ID: {} updated", id);
     }
 
     public int deleteByLink(String url) {

@@ -31,6 +31,14 @@ public class JdbcChatDao {
             .query(chatRowMapper)
             .optional();
     }
+    public Optional<Chat> getByDataId(long tgChatId) {
+        logger.info("Getting chat by id: " + tgChatId + " in the ChatDaoJdbc");
+        String sql = "SELECT * FROM chat WHERE id = ?";
+        return jdbcClient.sql(sql)
+            .param(tgChatId)
+            .query(chatRowMapper)
+            .optional();
+    }
 
     public int save(Chat chat) {
         String sql = "INSERT INTO chat(chat_id, created_at) VALUES (?, ?)";

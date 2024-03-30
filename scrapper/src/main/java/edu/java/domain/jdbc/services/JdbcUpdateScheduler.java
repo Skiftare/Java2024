@@ -1,8 +1,11 @@
 package edu.java.domain.jdbc.services;
 
 import edu.java.api.BotServiceForWebClient;
+import edu.java.database.services.interfaces.LinkUpdater;
+import edu.java.domain.jdbc.dao.JdbcChatDao;
 import edu.java.domain.jdbc.dao.JdbcLinkChatRelationDao;
 import edu.java.domain.jdbc.dao.JdbcLinkDao;
+import edu.java.domain.jdbc.written.chat.Chat;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelation;
 import edu.java.domain.jdbc.written.link.Link;
 import edu.java.links_clients.LinkHandler;
@@ -13,14 +16,17 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import static java.lang.String.format;
 
 @ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true", matchIfMissing = true)
 @Slf4j
-public class JdbcUpdateScheduler {
+public class JdbcUpdateScheduler implements LinkUpdater {
     private static final Duration NEED_TO_CHECK = Duration.ofSeconds(30);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy");
     private static final String GIT_HEAD = "В репозитории %s, %d новых изменений:\n";
@@ -30,38 +36,53 @@ public class JdbcUpdateScheduler {
     private static final String SOF_COMMENT = "Новый комментарий (время %s)\n";
     private final JdbcLinkDao linkDao;
     private final JdbcLinkChatRelationDao chatLinkDao;
+    private final JdbcChatDao chatDao;
     private final BotServiceForWebClient botService;
     private final LinkHandler webResourceHandler;
+    private final Logger logger = LoggerFactory.getLogger(JdbcUpdateScheduler.class);
 
     public JdbcUpdateScheduler(
         JdbcLinkDao linkDao,
-        JdbcLinkChatRelationDao chatLinkDao,
+        JdbcLinkChatRelationDao chatLinkDao, JdbcChatDao chatService,
         BotServiceForWebClient botService,
         LinkHandler webResourceHandler
     ) {
         this.linkDao = linkDao;
         this.chatLinkDao = chatLinkDao;
+        this.chatDao = chatService;
         this.botService = botService;
         this.webResourceHandler = webResourceHandler;
     }
 
-    @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
-    public void update() {
-
+    @Override
+    @Scheduled(fixedDelayString = "#{@scheduler.interval}")
+    public void checkForUpdates() {
         OffsetDateTime now = OffsetDateTime.now();
         List<Link> links = linkDao.getByLastUpdate(now.minus(NEED_TO_CHECK));
         for (Link link : links) {
-            if (webResourceHandler.isGitHubUrl(link.getUrl())) {
-                gitHubProcess(link, now);
-            } else {
-                stackOverflowProcess(link, now);
+            try {
+                if (webResourceHandler.isGitHubUrl(link.getUrl())) {
+                    gitHubProcess(link, now);
+                    updateTablesAndSendMsg(
+                        link,
+                        now,
+                        STR."В github-репозитории были изменения: \{link.getUrl()}\nСкорее проверьте, это наверняка что-то важное!"
+                    );
+
+                } else {
+                    stackOverflowProcess(link, now);
+                }
+                linkDao.updateLastUpdateAtById(link.getDataLinkId(), now);
+            } catch (Exception e) {
+                log.error("Error while updating link with URL: {}", link.getUrl(), e);
             }
-            linkDao.updateLastUpdateAtById(link.getDataLinkId(), now);
         }
     }
 
     private void gitHubProcess(Link link, OffsetDateTime now) {
         List<GithubActions> actionsInfo = webResourceHandler.getActionsGitHubInfoByUrl(link.getUrl());
+        logger.info("GitHub link: {}", link.getUrl());
+        logger.info(String.valueOf(actionsInfo.size()));
         if (link.getLastUpdateAt().isBefore(actionsInfo.getFirst().getPushedAt())) {
             StringBuilder description =
                 new StringBuilder(format(GIT_HEAD, link.getUrl(), actionsInfo.size()));
@@ -107,10 +128,22 @@ public class JdbcUpdateScheduler {
     private void updateTablesAndSendMsg(Link link, OffsetDateTime newUpdateTime, String description) {
         long linkId = link.getDataLinkId();
         linkDao.updateLastUpdateAtById(linkId, newUpdateTime);
-        List<Long> chatIdsToSendMsg = chatLinkDao.getByLinkId(linkId)
+        List<Optional<Chat>> dataChatIds = chatLinkDao.getByLinkId(linkId)
             .stream()
             .map(ChatLinkRelation::getDataChatId)
+            .map(chatDao::getByDataId)
             .toList();
+
+        for(Optional<Chat> chat : dataChatIds) {
+            if (chat.isEmpty()) {
+                log.error("Chat with id {} not found", chat.get().getTgChatId());
+            }
+        }
+        List<Long> chatIdsToSendMsg = dataChatIds
+            .stream()
+            .map(chat -> chat.get().getTgChatId())
+            .toList();
+
         botService.sendUpdate(linkId, link.getUrl(), description, chatIdsToSendMsg);
     }
 }
