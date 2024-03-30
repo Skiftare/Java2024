@@ -22,7 +22,7 @@ public class DefaultGitHubClient implements GitHubClient {
 
     @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
-        String defaultUrl = config.listOfLinksSupported().github();
+        String defaultUrl = "https://api."+config.listOfLinksSupported().github();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();

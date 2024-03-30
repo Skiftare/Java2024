@@ -55,8 +55,7 @@ public class DatabaseOperations {
     public LinkResponse removeLink(Long chatId, URI link) {
         checkChatNotFound(chatId, "Нельзя удалить ссылку для незарегистрированного чат");
 
-        linkService.remove(chatId, new edu.java.data.request.RemoveLinkRequest(link));
-        throw new LinkNotFoundException("Ссылка отсутствует");
+        return linkService.remove(chatId, new edu.java.data.request.RemoveLinkRequest(link));
     }
 
     private void checkChatNotFound(Long chatId, String message) {

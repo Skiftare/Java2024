@@ -57,7 +57,9 @@ public class UserClientService {
         logger.info(LOGGING_USER_TEMPLATE, chatId);
         logger.info("Deleting link: " + link.toString());
         List<LinkResponse> linkResponses = dataService.getLinks(chatId);
+        logger.info(String.valueOf(linkResponses.size()));
         for (LinkResponse linkResponse : linkResponses) {
+            logger.info("Checking link: " + linkResponse.url());
             if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
                 dataService.removeLink(chatId, link);
                 return new LinkResponse(chatId, link.toString());
