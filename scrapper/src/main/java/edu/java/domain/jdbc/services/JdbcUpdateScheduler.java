@@ -5,7 +5,6 @@ import edu.java.database.services.interfaces.LinkUpdater;
 import edu.java.domain.jdbc.dao.JdbcChatDao;
 import edu.java.domain.jdbc.dao.JdbcLinkChatRelationDao;
 import edu.java.domain.jdbc.dao.JdbcLinkDao;
-import edu.java.domain.jdbc.written.chat.Chat;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkRelation;
 import edu.java.domain.jdbc.written.link.Link;
 import edu.java.links_clients.LinkHandler;
@@ -16,7 +15,6 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,23 +126,17 @@ public class JdbcUpdateScheduler implements LinkUpdater {
     private void updateTablesAndSendMsg(Link link, OffsetDateTime newUpdateTime, String description) {
         long linkId = link.getDataLinkId();
         linkDao.updateLastUpdateAtById(linkId, newUpdateTime);
-        List<Optional<Chat>> dataChatIds = chatLinkDao.getByLinkId(linkId)
+
+        List<ChatLinkRelation> dataChatIds = chatLinkDao.getByLinkId(linkId);
+        logger.info("Amount of chat ids: {}", dataChatIds.size());
+        List<Long> dataChatIdsToSendMsg = dataChatIds
             .stream()
-            .map(ChatLinkRelation::getDataChatId)
-            .map(chatDao::getByDataId)
+            .map(chat -> chat.getDataChatId())
             .toList();
 
-        for(Optional<Chat> chat : dataChatIds) {
-            if (chat.isEmpty()) {
-                log.error("Chat with id {} not found", chat.get().getTgChatId());
-            }
-        }
-        List<Long> chatIdsToSendMsg = dataChatIds
-            .stream()
-            .map(chat -> chat.get().getTgChatId())
-            .toList();
-
-        botService.sendUpdate(linkId, link.getUrl(), description, chatIdsToSendMsg);
+        logger.info(
+            "botService sendUpdate: " + linkId + " " + link.getUrl() + " " + description + " " + dataChatIdsToSendMsg);
+        botService.sendUpdate(linkId, link.getUrl(), description, dataChatIdsToSendMsg);
     }
 }
 

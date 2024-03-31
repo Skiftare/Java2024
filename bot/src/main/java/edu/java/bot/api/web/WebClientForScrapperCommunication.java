@@ -1,11 +1,11 @@
 package edu.java.bot.api.web;
 
-import edu.java.bot.api.exceptions.entities.ApiErrorException;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import edu.java.exceptions.entities.ApiErrorException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

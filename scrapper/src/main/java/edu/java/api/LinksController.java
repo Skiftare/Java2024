@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -76,7 +77,7 @@ public class LinksController {
     @PostMapping("/links")
     public ResponseEntity<LinkResponse> addLink(
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
-        @org.springframework.web.bind.annotation.RequestBody
+        @RequestBody
         AddLinkRequest addLinkRequest
     ) throws RequestProcessingException {
         LoggerFactory.getLogger(LinksController.class)
@@ -91,8 +92,7 @@ public class LinksController {
     @DeleteMapping("/links")
     public ResponseEntity<LinkResponse> removeLink(
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
-        @org.springframework.web.bind.annotation.RequestBody
-        RemoveLinkRequest removeLinkRequest
+        @RequestBody RemoveLinkRequest removeLinkRequest
     ) throws RequestProcessingException {
         LoggerFactory.getLogger(LinksController.class)
             .info("Remove link request: " + removeLinkRequest.link());

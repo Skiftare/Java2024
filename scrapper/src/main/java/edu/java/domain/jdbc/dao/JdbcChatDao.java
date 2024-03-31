@@ -31,11 +31,12 @@ public class JdbcChatDao {
             .query(chatRowMapper)
             .optional();
     }
-    public Optional<Chat> getByDataId(long tgChatId) {
-        logger.info("Getting chat by id: " + tgChatId + " in the ChatDaoJdbc");
+
+    public Optional<Chat> getByDataId(long dataChatId) {
+        logger.info("Getting chat by id: " + dataChatId + " in the ChatDaoJdbc");
         String sql = "SELECT * FROM chat WHERE id = ?";
         return jdbcClient.sql(sql)
-            .param(tgChatId)
+            .param(dataChatId)
             .query(chatRowMapper)
             .optional();
     }

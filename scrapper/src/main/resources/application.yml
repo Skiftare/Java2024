@@ -15,25 +15,28 @@ app:
   api:
     bot-url: http://localhost:8090
   bot:
-    400:
-      type: constant
-      delay: PT1S
-      max-attempts: 3
+    templates:
+      404:
+        type: constant
+        delay: PT1S
+        max-attempts: 3
 
 
 
   stackoverflow:
-    400:
-      type: linear
-      delay: PT1S
-      max-attempts: 3
+    templates:
+      404:
+        type: linear
+        delay: PT1S
+        max-attempts: 3
 
 
   github:
-    400:
-      type: exponential
-      delay: PT1S
-      max-attempts: 3
+    templates:
+      404:
+        type: exponential
+        delay: PT1S
+        max-attempts: 3
 
 spring:
   application:
@@ -60,6 +63,8 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+  level:
+    org.springframework.web: DEBUG
 scrapper:
   baseUrl: http://localhost:8090
 springdoc:
