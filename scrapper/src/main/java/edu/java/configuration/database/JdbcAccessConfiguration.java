@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JdbcAccessConfiguration {
     private final Logger logger = Logger.getLogger(JdbcAccessConfiguration.class.getName());
+
     @Bean
     public LinkService linkService(JdbcLinkDao linkDao, JdbcChatDao chatDao, JdbcLinkChatRelationDao chatLinkDao) {
         logger.info("Creating JdbcLinkService bean");

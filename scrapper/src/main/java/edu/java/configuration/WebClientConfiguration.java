@@ -9,7 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfiguration {
     @Bean
     public WebClientForBotCommunication botWebClient(ApplicationConfig appConfig) {
-        return new WebClientForBotCommunication(WebClient.create(appConfig.api().botUrl()),
-            appConfig.bot());
+        return new WebClientForBotCommunication(
+            WebClient.create(appConfig.api().botUrl()),
+            appConfig.bot()
+        );
     }
 }
