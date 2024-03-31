@@ -2,6 +2,7 @@ package edu.java.scrapper.stackoverflow;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import edu.java.configuration.ApplicationConfig;
 import edu.java.links_clients.stackoverflow.DefaultStackOverflowClient;
 import edu.java.links_clients.stackoverflow.StackOverflowClient;
 import edu.java.links_clients.stackoverflow.StackOverflowResponse;
@@ -20,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class StackOverflowTest {
     private WireMockServer wireMockServer;
@@ -30,7 +32,8 @@ public class StackOverflowTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}", null);
+        stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}", mock(
+            ApplicationConfig.ServiceProperties.class));
     }
 
     @AfterEach

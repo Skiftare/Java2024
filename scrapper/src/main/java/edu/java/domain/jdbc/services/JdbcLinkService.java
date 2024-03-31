@@ -17,6 +17,7 @@ import edu.java.exceptions.entities.LinkNotFoundException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class JdbcLinkService implements LinkService {
     private final JdbcChatDao chatDao;
     private final JdbcLinkDao linkDao;
     private final JdbcLinkChatRelationDao chatLinkDao;
+    private final Logger logger = Logger.getLogger(JdbcLinkService.class.getName());
 
     @Override
     public ListLinksResponse listAll(long tgChatId) {
@@ -54,10 +56,9 @@ public class JdbcLinkService implements LinkService {
             linkDao.save(createLink);
             actualLink = linkDao.findByUrl(url).get();
         } else {
-
             actualLink = linkDao.findByUrl(url).get();
             for (ChatLinkRelation chatLink : chatLinkDao.getByChatId(chatId)) {
-                if (chatLink.getDataLinkId() == chatId) {
+                if (chatLink.getDataChatId() == chatId) {
                     throw new LinkAlreadyExistException(
                         generateExceptionMessage(EXCEPTION_CHAT_MESSAGE_TEMPLATE, String.valueOf(tgChatId))
                             + ", "

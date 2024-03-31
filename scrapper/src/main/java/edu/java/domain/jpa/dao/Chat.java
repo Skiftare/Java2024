@@ -37,7 +37,7 @@ public class Chat {
 
     @ManyToMany(cascade = {
         CascadeType.PERSIST
-    }, fetch = FetchType.LAZY)
+    }, fetch = FetchType.EAGER)
 
     @JoinTable(name = "link_chat_relation",
                joinColumns = @JoinColumn(name = "id_of_chat", referencedColumnName = "chat_id"),

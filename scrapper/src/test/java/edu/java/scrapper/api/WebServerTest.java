@@ -1,9 +1,11 @@
 package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.api.WebClientForBotCommunication;
+import edu.java.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
-import edu.java.exceptions.entities.CustomApiException;
+import edu.java.exceptions.entities.ApiErrorException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -20,6 +22,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
+import static org.mockito.Mockito.mock;
 
 public class WebServerTest {
     private WebClientForBotCommunication client;
@@ -29,7 +32,10 @@ public class WebServerTest {
     void setUpEnvironment() {
         mockedServer.start();
         String baseUrl = "http://localhost:" + mockedServer.port();
-        client = new WebClientForBotCommunication(WebClient.create(baseUrl), null);
+        client = new WebClientForBotCommunication(
+            WebClient.create(baseUrl),
+            mock(ApplicationConfig.ServiceProperties.class)
+        );
     }
 
     @AfterEach
@@ -93,9 +99,9 @@ public class WebServerTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(expectedResponseBody)));
 
-        CustomApiException thrownException = catchThrowableOfType(
-            () -> client.sendUpdate(requestToClient),
-            CustomApiException.class
+        ApiErrorException thrownException = catchThrowableOfType(
+            () -> client.executeRequest(requestToClient),
+            ApiErrorException.class
         );
         ApiErrorResponse actualResponse = thrownException.getErrorResponse();
 
