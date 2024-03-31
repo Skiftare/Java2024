@@ -4,40 +4,56 @@ import edu.java.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.exceptions.entities.CustomApiException;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 public class WebClientForBotCommunication {
     private final WebClient webClient;
     private final Logger logger = LoggerFactory.getLogger(WebClientForBotCommunication.class);
     private final ApplicationConfig.ServiceProperties serviceProperties;
     private final static int BAD_REQUEST_CODE = 400;
-    private Map<Integer, Retry> retryStrategies;
+    private Map<Integer, RetryTemplate> retryStrategies;
 
     public WebClientForBotCommunication(WebClient webClient, ApplicationConfig.ServiceProperties serviceProperties) {
         this.webClient = webClient;
         this.serviceProperties = serviceProperties;
         serviceProperties.templates().forEach((code, template) -> {
+            RetryTemplate retryTemplate = new RetryTemplate();
             switch (template.type()) {
                 case "exponential":
-                    retryStrategies.put(code, Retry.backoff(template.maxAttempts(), template.delay()));
+                    ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
+                    exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
+                    exponentialBackOffPolicy.setMultiplier(2.0);
+                    exponentialBackOffPolicy.setMaxInterval(5000L);
+                    retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
                     break;
                 case "linear":
-                    retryStrategies.put(code, Retry.fixedDelay(template.maxAttempts(), template.delay()));
+                    FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+                    fixedBackOffPolicy.setBackOffPeriod(template.delay().toMillis());
+                    retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
                     break;
                 case "constant":
                 default:
-                    retryStrategies.put(code, Retry.fixedDelay(template.maxAttempts(), template.delay()));
+                    FixedBackOffPolicy constantBackOffPolicy = new FixedBackOffPolicy();
+                    constantBackOffPolicy.setBackOffPeriod(template.delay().toMillis());
+                    retryTemplate.setBackOffPolicy(constantBackOffPolicy);
                     break;
             }
+
+            SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+            retryPolicy.setMaxAttempts(template.maxAttempts());
+
+            retryTemplate.setRetryPolicy(retryPolicy);
+
+            retryStrategies.put(code, retryTemplate);
         });
     }
 
@@ -48,25 +64,41 @@ public class WebClientForBotCommunication {
             logger.info("Chat id: " + request.tgChatIds().get(i));
         }
 
+        try {
+            return executeRequest(request);
+        } catch (CustomApiException ex) {
+            RetryTemplate retryTemplate = retryStrategies.get(ex.getStatusCode());
+            if (retryTemplate != null) {
+                try {
+                    return retryTemplate.execute(context -> executeRequest(request));
+                } catch (Exception retryEx) {
+                    logger.error("All retry attempts failed", retryEx);
+                    return Optional.empty();
+                }
+            } else {
+                logger.error("Unexpected error occurred", ex);
+                return Optional.empty();
+            }
+        }
+
+    }
+
+    private Optional<String> executeRequest(LinkUpdateRequest request) {
         return webClient
             .post()
             .uri("/updates")
             .bodyValue(request)
             .retrieve()
             .onStatus(
-                HttpStatus.BAD_REQUEST::equals,
+                response -> response.isError(),
                 response -> response
                     .bodyToMono(ApiErrorResponse.class)
-                    .flatMap(errorResponse -> Mono.error(new CustomApiException(errorResponse, BAD_REQUEST_CODE)))
+                    .flatMap(errorResponse -> Mono.error(new CustomApiException(
+                        errorResponse,
+                        response.statusCode().value()
+                    )))
             )
             .bodyToMono(String.class)
-            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                .filter(throwable -> throwable instanceof CustomApiException)
-                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                    throw new CustomApiException(
-                        new ApiErrorResponse("Service is unavailable", String.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()),"exception", "exception", new ArrayList<>()),
-                        HttpStatus.SERVICE_UNAVAILABLE.value());
-                }))
             .blockOptional();
     }
 
