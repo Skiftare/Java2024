@@ -14,10 +14,27 @@ app:
 
   api:
     bot-url: http://localhost:8090
+  bot:
+    400:
+      type: constant
+      delay: PT1S
+      max-attempts: 3
 
 
-    #add another Link there as smth-record-class: first-url: value
-    #Then redact ApplicationConfig
+
+  stackoverflow:
+    400:
+      type: linear
+      delay: PT1S
+      max-attempts: 3
+
+
+  github:
+    400:
+      type: exponential
+      delay: PT1S
+      max-attempts: 3
+
 spring:
   application:
     name: scrapper

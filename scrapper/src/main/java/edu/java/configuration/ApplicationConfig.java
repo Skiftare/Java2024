@@ -2,7 +2,9 @@ package edu.java.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,7 +21,13 @@ public record ApplicationConfig(
     ListOfSupportedLinks listOfLinksSupported,
 
     @NotNull
-    Api api
+    Api api,
+
+    ServiceProperties github,
+    ServiceProperties stackoverflow,
+    ServiceProperties bot
+
+
 ) {
 
     public record Scheduler(
@@ -31,5 +39,25 @@ public record ApplicationConfig(
     }
 
     public record Api(String botUrl) {
+    }
+    public record ServiceProperties(
+        Map<Integer, RetryTemplate> templates,
+        RetryPolicy defaultPolicy
+    ) {
+    }
+
+    public record RetryTemplate(
+        int code,
+        String type,
+        Duration delay,
+        int maxAttempts
+    ) {
+    }
+
+    public record RetryPolicy(
+        String type,
+        Duration delay,
+        int maxAttempts
+    ) {
     }
 }

@@ -163,6 +163,11 @@
             <artifactId>jooq-meta</artifactId>
             <version>3.18.9</version>
         </dependency>
+        <dependency>
+            <groupId>io.projectreactor.addons</groupId>
+            <artifactId>reactor-extra</artifactId>
+            <version>3.4.3</version>
+        </dependency>
 
     </dependencies>
 

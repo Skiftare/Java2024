@@ -31,7 +31,7 @@ public class WebServerTest {
     void setUpEnvironment() {
         mockedServer.start();
         String baseUrl = "http://localhost:" + mockedServer.port();
-        client = new WebClientForBotCommunication(WebClient.create(baseUrl));
+        client = new WebClientForBotCommunication(WebClient.create(baseUrl), null);
     }
 
     @AfterEach
