@@ -4,7 +4,6 @@ import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
 import edu.java.database.services.interfaces.LinkService;
 import edu.java.database.services.interfaces.TgChatService;
-import edu.java.exceptions.entities.LinkNotFoundException;
 import edu.java.exceptions.entities.UserAlreadyExistException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;

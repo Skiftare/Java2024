@@ -64,7 +64,8 @@ public class JdbcUpdateScheduler implements LinkUpdater {
                     updateTablesAndSendMsg(
                         link,
                         now,
-                        STR."В github-репозитории были изменения: \{link.getUrl()}\nСкорее проверьте, это наверняка что-то важное!"
+                        "В github-репозитории были изменения: " + link.getUrl()
+                            + "\nСкорее проверьте, это наверняка что-то важное!"
                     );
 
                 } else {

@@ -38,6 +38,7 @@ public class LinkHandler {
         return url.contains(listOfSupprotedLinks.stackoverflow());
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public List<GithubActions> getActionsGitHubInfoByUrl(String url) {
         String[] urlParts = url.split(SPLIT_URL);
         String owner = urlParts[3];

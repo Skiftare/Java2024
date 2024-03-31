@@ -26,7 +26,6 @@ public record ApplicationConfig(
     ServiceProperties stackoverflow,
     ServiceProperties bot
 
-
 ) {
 
     public record Scheduler(
@@ -39,6 +38,7 @@ public record ApplicationConfig(
 
     public record Api(String botUrl) {
     }
+
     public record ServiceProperties(
         Map<Integer, RetryTemplate> templates
     ) {

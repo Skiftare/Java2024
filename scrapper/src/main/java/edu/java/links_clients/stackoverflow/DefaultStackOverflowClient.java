@@ -30,8 +30,10 @@ import org.springframework.web.reactive.function.client.WebClientException;
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
     private final WebClient webClient;
-    private HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
     private final ApplicationConfig.ServiceProperties serviceProperties;
+    private final HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
+    private static final long MAX_INTERVAL = 5000L;
+    private static final long DEFAULT_INCREMENT = 100L;
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
@@ -111,14 +113,14 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                     ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
                     exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
                     exponentialBackOffPolicy.setMultiplier(2.0);
-                    exponentialBackOffPolicy.setMaxInterval(5000L);
+                    exponentialBackOffPolicy.setMaxInterval(MAX_INTERVAL);
                     retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
                     break;
                 case "linear":
                     LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(
                         template.delay().toMillis(),
                         template.maxAttempts(),
-                        100L
+                        DEFAULT_INCREMENT
                     );
                     retryTemplate.setBackOffPolicy(linearBackOffPolicy);
                     break;

@@ -18,11 +18,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class WebClientForBotCommunication {
+    private final static int BAD_REQUEST_CODE = 400;
     private final WebClient webClient;
     private final Logger logger = LoggerFactory.getLogger(WebClientForBotCommunication.class);
     private final ApplicationConfig.ServiceProperties serviceProperties;
-    private final static int BAD_REQUEST_CODE = 400;
-    private HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
+    private final HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
+    private static final long MAX_INTERVAL = 5000L;
+    private static final long DEFAULT_INCREMENT = 100L;
 
     public WebClientForBotCommunication(WebClient webClient, ApplicationConfig.ServiceProperties serviceProperties) {
         this.webClient = webClient;
@@ -44,7 +46,7 @@ public class WebClientForBotCommunication {
             RetryTemplate retryTemplate = retryStrategies.get(Integer.getInteger(ex.getErrorResponse().code()));
             if (retryTemplate != null) {
                 try {
-                    return retryTemplate.execute(_ -> executeRequest(request));
+                    return retryTemplate.execute(resp -> executeRequest(request));
                 } catch (Exception retryEx) {
                     logger.error("All retry attempts failed", retryEx);
                     return Optional.empty();
@@ -84,14 +86,14 @@ public class WebClientForBotCommunication {
                     ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
                     exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
                     exponentialBackOffPolicy.setMultiplier(2.0);
-                    exponentialBackOffPolicy.setMaxInterval(5000L);
+                    exponentialBackOffPolicy.setMaxInterval(MAX_INTERVAL);
                     retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
                     break;
                 case "linear":
                     LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(
                         template.delay().toMillis(),
                         template.maxAttempts(),
-                        100L
+                        DEFAULT_INCREMENT
                     );
                     retryTemplate.setBackOffPolicy(linearBackOffPolicy);
                     break;

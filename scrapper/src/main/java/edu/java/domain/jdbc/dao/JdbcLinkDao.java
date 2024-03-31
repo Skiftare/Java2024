@@ -53,7 +53,6 @@ public class JdbcLinkDao {
             .update();
     }
 
-
     public void updateLastUpdateAtById(long id, OffsetDateTime dateTime) {
         String sql = "UPDATE link SET last_update_at = ? WHERE id = ?";
         logger.info("Updating link with ID: {}", id);

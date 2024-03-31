@@ -4,18 +4,19 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
+import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RateLimitingFilter implements WebFilter {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+    private final static int CAPACITY_OF_REQUESTS = 1000;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -33,7 +34,12 @@ public class RateLimitingFilter implements WebFilter {
 
     private Bucket createNewBucket() {
         return Bucket4j.builder()
-            .addLimit(Bandwidth.classic(1000, Refill.intervally(1000, Duration.ofMinutes(1))))
+            .addLimit(Bandwidth.classic(
+                CAPACITY_OF_REQUESTS,
+                Refill.intervally(CAPACITY_OF_REQUESTS,
+                    Duration.ofMinutes(1)
+                )
+            ))
             .build();
     }
 }

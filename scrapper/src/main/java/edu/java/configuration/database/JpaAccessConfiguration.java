@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JpaAccessConfiguration {
     private final Logger logger = Logger.getLogger(JpaAccessConfiguration.class.getName());
+
     @Bean
     public JpaChatService jpaChatService(JpaChatRepository jpaChatRepository) {
         logger.info("Creating JpaChatService bean");

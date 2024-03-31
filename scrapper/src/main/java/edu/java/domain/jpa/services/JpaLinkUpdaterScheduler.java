@@ -38,7 +38,6 @@ public class JpaLinkUpdaterScheduler implements LinkUpdater {
     private final LinkHandler webResourceHandler;
     private final Logger logger = LoggerFactory.getLogger(JpaLinkUpdaterScheduler.class);
 
-
     public JpaLinkUpdaterScheduler(
         JpaLinkRepository jpaLinkRepository,
         BotServiceForWebClient botService,
@@ -48,7 +47,6 @@ public class JpaLinkUpdaterScheduler implements LinkUpdater {
         this.botService = botService;
         this.webResourceHandler = webResourceHandler;
     }
-
 
     @Override
     @Scheduled(fixedDelayString = "#{@app.scheduler.interval}")

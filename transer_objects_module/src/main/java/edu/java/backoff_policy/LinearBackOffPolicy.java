@@ -38,7 +38,7 @@ public class LinearBackOffPolicy implements BackOffPolicy {
         private final long increment;
         private final long maxInterval;
 
-        public LinearBackOffContext(long initialInterval, long increment, long maxInterval) {
+        LinearBackOffContext(long initialInterval, long increment, long maxInterval) {
             this.nextInterval = initialInterval;
             this.increment = increment;
             this.maxInterval = maxInterval;
