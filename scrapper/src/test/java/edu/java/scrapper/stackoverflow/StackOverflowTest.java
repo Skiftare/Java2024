@@ -30,7 +30,7 @@ public class StackOverflowTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}");
+        stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}", null);
     }
 
     @AfterEach

@@ -29,7 +29,7 @@ public class GitHubTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        gitHubClient = new DefaultGitHubClient(STR."http://localhost:\{wireMockServer.port()}");
+        gitHubClient = new DefaultGitHubClient(STR."http://localhost:\{wireMockServer.port()}", null);
     }
 
     @AfterEach

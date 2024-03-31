@@ -1,15 +1,15 @@
 package edu.java.bot.processor;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.bot.api.exceptions.entities.ApiErrorException;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
 import edu.java.data.request.AddLinkRequest;
 import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListLinksResponse;
+import edu.java.exceptions.entities.ApiErrorException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

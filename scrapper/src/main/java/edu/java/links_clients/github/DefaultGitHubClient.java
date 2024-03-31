@@ -4,13 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import edu.java.backoff_policy.LinearBackOffPolicy;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.links_clients.dto.github.GithubActions;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -19,6 +25,8 @@ import org.springframework.web.reactive.function.client.WebClientException;
 public class DefaultGitHubClient implements GitHubClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubClient.class);
     private final WebClient webClient;
+    private HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
+    private final ApplicationConfig.ServiceProperties serviceProperties;
 
     @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
@@ -26,10 +34,15 @@ public class DefaultGitHubClient implements GitHubClient {
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
+        this.serviceProperties = config.github();
+        initRetryStrategies();
     }
 
-    public DefaultGitHubClient(String baseUrl) {
+    public DefaultGitHubClient(String baseUrl, ApplicationConfig.ServiceProperties serviceProperties) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
+
+        this.serviceProperties = serviceProperties;
+        initRetryStrategies();
     }
 
     @Override
@@ -72,5 +85,41 @@ public class DefaultGitHubClient implements GitHubClient {
             LOGGER.error(e.getMessage());
             return Optional.empty();
         }
+    }
+
+    private void initRetryStrategies() {
+        serviceProperties.templates().forEach((code, template) -> {
+            RetryTemplate retryTemplate = new RetryTemplate();
+            switch (template.type()) {
+                case "exponential":
+                    ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
+                    exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
+                    exponentialBackOffPolicy.setMultiplier(2.0);
+                    exponentialBackOffPolicy.setMaxInterval(5000L);
+                    retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
+                    break;
+                case "linear":
+                    LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(
+                        template.delay().toMillis(),
+                        template.maxAttempts(),
+                        100L
+                    );
+                    retryTemplate.setBackOffPolicy(linearBackOffPolicy);
+                    break;
+                case "constant":
+                default:
+                    FixedBackOffPolicy constantBackOffPolicy = new FixedBackOffPolicy();
+                    constantBackOffPolicy.setBackOffPeriod(template.delay().toMillis());
+                    retryTemplate.setBackOffPolicy(constantBackOffPolicy);
+                    break;
+            }
+
+            SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+            retryPolicy.setMaxAttempts(template.maxAttempts());
+
+            retryTemplate.setRetryPolicy(retryPolicy);
+
+            retryStrategies.put(code, retryTemplate);
+        });
     }
 }

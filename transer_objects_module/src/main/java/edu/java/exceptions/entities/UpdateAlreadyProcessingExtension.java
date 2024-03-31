@@ -1,4 +1,4 @@
-package edu.java.bot.api.exceptions.entities;
+package edu.java.exceptions.entities;
 
 public class UpdateAlreadyProcessingExtension extends RuntimeException {
     public UpdateAlreadyProcessingExtension(String message) {
