@@ -2,6 +2,7 @@ package edu.java.scrapper.github;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import edu.java.configuration.ApplicationConfig;
 import edu.java.links_clients.github.DefaultGitHubClient;
 import edu.java.links_clients.github.GitHubClient;
 import edu.java.links_clients.github.GitHubResponse;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class GitHubTest {
     private WireMockServer wireMockServer;
@@ -29,7 +31,10 @@ public class GitHubTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        gitHubClient = new DefaultGitHubClient(STR."http://localhost:\{wireMockServer.port()}", null);
+        gitHubClient = new DefaultGitHubClient(
+            STR."http://localhost:\{wireMockServer.port()}",
+            mock(ApplicationConfig.ServiceProperties.class)
+        );
     }
 
     @AfterEach

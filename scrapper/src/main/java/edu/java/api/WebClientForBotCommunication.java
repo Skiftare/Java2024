@@ -57,7 +57,7 @@ public class WebClientForBotCommunication {
 
     }
 
-    private Optional<String> executeRequest(LinkUpdateRequest request) {
+    public Optional<String> executeRequest(LinkUpdateRequest request) {
         logger.info("Sending request to server: " + request.toString());
         logger.info(request.description() + "\n" + request.url() + "\n" + request.tgChatIds().size());
         return webClient
