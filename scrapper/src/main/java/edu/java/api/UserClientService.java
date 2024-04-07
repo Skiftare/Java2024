@@ -1,9 +1,12 @@
 package edu.java.api;
 
+import edu.java.data.request.AddLinkRequest;
+import edu.java.data.request.RemoveLinkRequest;
 import edu.java.data.response.LinkResponse;
 import edu.java.data.response.ListOfLinksResponse;
 import edu.java.data.response.ResultOfServiceOperation;
-import edu.java.database.DatabaseOperations;
+import edu.java.database.services.interfaces.LinkService;
+import edu.java.database.services.interfaces.TgChatService;
 import edu.java.exceptions.RequestProcessingException;
 import edu.java.exceptions.entities.LinkAlreadyExistException;
 import edu.java.exceptions.entities.LinkNotFoundException;
@@ -20,18 +23,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserClientService {
     private static final String LOGGING_USER_TEMPLATE = "At least, user {} is registered";
-    private final DatabaseOperations dataService;
+    private final TgChatService tgChatService;
+    private final LinkService linkService;
     private final Logger logger = LoggerFactory.getLogger(UserClientService.class);
 
     private void isChatExist(Long chatId) throws RequestProcessingException {
-        if (!dataService.checkExistingOfChat(chatId)) {
+        if (!tgChatService.isRegistered(chatId)) {
             throw new UserNotFoundException("Пользователь не зарегистрирован");
         }
     }
 
     public ListOfLinksResponse getLinks(Long chatId) throws RequestProcessingException {
         isChatExist(chatId);
-        return new ListOfLinksResponse(chatId, dataService.getLinks(chatId));
+        return new ListOfLinksResponse(chatId, linkService.listAll(chatId).links());
 
     }
 
@@ -40,7 +44,7 @@ public class UserClientService {
 
         logger.info(LOGGING_USER_TEMPLATE, chatId);
         logger.info("Adding link: " + link.toString());
-        List<LinkResponse> linkResponses = dataService.getLinks(chatId);
+        List<LinkResponse> linkResponses = linkService.listAll(chatId).links();
         for (LinkResponse linkResponse : linkResponses) {
             if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
                 throw new LinkAlreadyExistException("Эта ссылка уже отслеживается");
@@ -48,7 +52,7 @@ public class UserClientService {
             }
         }
 
-        dataService.addLink(chatId, link);
+        linkService.add(chatId, new AddLinkRequest(link));
         return new LinkResponse(chatId, link.toString());
     }
 
@@ -56,10 +60,10 @@ public class UserClientService {
         isChatExist(chatId);
         logger.info(LOGGING_USER_TEMPLATE, chatId);
         logger.info("Deleting link: " + link.toString());
-        List<LinkResponse> linkResponses = dataService.getLinks(chatId);
+        List<LinkResponse> linkResponses = linkService.listAll(chatId).links();
         for (LinkResponse linkResponse : linkResponses) {
             if (URI.create(linkResponse.url()).getPath().equals(link.getPath())) {
-                dataService.removeLink(chatId, link);
+                linkService.remove(chatId, new RemoveLinkRequest(link));
                 return new LinkResponse(chatId, link.toString());
             }
 
@@ -68,11 +72,11 @@ public class UserClientService {
 
     }
 
-    ResultOfServiceOperation registerUser(Long id) throws RequestProcessingException {
-        if (!dataService.checkExistingOfChat(id)) {
-            dataService.registerChat(id);
+    ResultOfServiceOperation registerUser(Long chatId) throws RequestProcessingException {
+        if (!tgChatService.isRegistered(chatId)) {
+            tgChatService.register(chatId);
             return new ResultOfServiceOperation(
-                id,
+                chatId,
                 "Чат зарегистрирован"
             );
         }
@@ -83,7 +87,7 @@ public class UserClientService {
     ResultOfServiceOperation deleteUser(Long chatId) throws RequestProcessingException {
         isChatExist(chatId);
 
-        dataService.deleteChat(chatId);
+        tgChatService.unregister(chatId);
         return new ResultOfServiceOperation(chatId, "Чат удален");
 
     }
@@ -91,7 +95,6 @@ public class UserClientService {
     ResultOfServiceOperation checkIsUserRegistered(Long chatId) throws RequestProcessingException {
         isChatExist(chatId);
         return new ResultOfServiceOperation(chatId, "Чат есть");
-
     }
 
 }
