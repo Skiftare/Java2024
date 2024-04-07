@@ -6,7 +6,7 @@ app:
     topic-name: updates
     consumer-group-id: bot
     bootstrap-server: localhost:9092
-    type-mapping: edu.java.scrapper.dto.response.LinkUpdateResponse:edu.java.bot.dto.response.LinkUpdateResponse
+    type-mapping: edu.java.data.request.LinkUpdateRequest:edu.java.data.request.LinkUpdateRequest
     dlq-topic-name: badResponse
 
 spring:
