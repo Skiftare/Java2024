@@ -2,6 +2,7 @@ package edu.java.bot.configuration.kafka;
 
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor

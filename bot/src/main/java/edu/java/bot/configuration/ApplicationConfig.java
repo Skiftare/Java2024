@@ -19,6 +19,7 @@ public record ApplicationConfig(
     public record Api(String scrapperUrl) {
 
     }
+
     public record Kafka(String topicName, String consumerGroupId, String bootstrapServer, String typeMapping,
                          String dlqTopicName) {
     }
