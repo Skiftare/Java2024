@@ -1,5 +1,6 @@
 package edu.java.api;
 
+import edu.java.api.web.UpdateClient;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BotServiceForWebClient {
-    private final WebClientForBotCommunication botClient;
+    private final UpdateClient botClient;
     private final UserClientService chatService;
     Logger logger = Logger.getLogger(BotServiceForWebClient.class.getName());
 

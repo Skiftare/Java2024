@@ -1,8 +1,8 @@
 package edu.java.configuration;
 
-import edu.java.backoff_policy.RetryType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +23,14 @@ public record ApplicationConfig(
 
     @NotNull
     Api api,
-    ServiceProperties bot,
+
     ServiceProperties github,
-    ServiceProperties stackoverflow
+    ServiceProperties stackoverflow,
+    ServiceProperties bot,
+    RateLimitingSettings rateLimitingSettings,
+    Kafka kafka,
+    boolean useQueue
+
 ) {
 
     public record Scheduler(
@@ -45,5 +50,11 @@ public record ApplicationConfig(
         Duration delay,
         Set<HttpStatus> retryCodes
     ) {
+    }
+    public record RateLimitingSettings(int count, int tokens, Duration period) {
+    }
+
+    public record Kafka(String bootstrapServers, String topicName) {
+
     }
 }
