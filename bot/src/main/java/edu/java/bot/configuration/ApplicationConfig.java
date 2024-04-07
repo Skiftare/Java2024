@@ -9,9 +9,13 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-    Api api
+    Api api,
+    Kafka kafka
 ) {
     public record Api(String scrapperUrl) {
 
+    }
+    public record Kafka(String topicName, String consumerGroupId, String bootstrapServer, String typeMapping,
+                        String dlqTopicName) {
     }
 }

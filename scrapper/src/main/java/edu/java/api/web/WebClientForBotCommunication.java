@@ -1,4 +1,4 @@
-package edu.java.api;
+package edu.java.api.web;
 
 import edu.java.backoff_policy.LinearBackOffPolicy;
 import edu.java.configuration.ApplicationConfig;

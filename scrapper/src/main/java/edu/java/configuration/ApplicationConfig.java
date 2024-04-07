@@ -24,7 +24,10 @@ public record ApplicationConfig(
 
     ServiceProperties github,
     ServiceProperties stackoverflow,
-    ServiceProperties bot
+    ServiceProperties bot,
+    RateLimitingSettings rateLimitingSettings,
+    Kafka kafka,
+    boolean useQueue
 
 ) {
 
@@ -50,5 +53,12 @@ public record ApplicationConfig(
         Duration delay,
         int maxAttempts
     ) {
+    }
+
+    public record RateLimitingSettings(int count, int tokens, Duration period) {
+    }
+
+    public record Kafka(String bootstrapServers, String topicName) {
+
     }
 }
