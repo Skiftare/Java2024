@@ -2,10 +2,10 @@ package edu.java.scrapper.github;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.configuration.ApplicationConfig;
 import edu.java.links_clients.github.DefaultGitHubClient;
 import edu.java.links_clients.github.GitHubClient;
 import edu.java.links_clients.github.GitHubResponse;
+import io.github.resilience4j.retry.Retry;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class GitHubTest {
     private WireMockServer wireMockServer;
@@ -30,10 +29,10 @@ public class GitHubTest {
     void setUpMockedServer() {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
+        Retry retry = Retry.ofDefaults("id");
         WireMock.configureFor("localhost", wireMockServer.port());
         gitHubClient = new DefaultGitHubClient(
-            STR."http://localhost:\{wireMockServer.port()}",
-            mock(ApplicationConfig.ServiceProperties.class)
+            STR."http://localhost:\{wireMockServer.port()}"
         );
     }
 

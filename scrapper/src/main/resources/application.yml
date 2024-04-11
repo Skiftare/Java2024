@@ -15,28 +15,27 @@ app:
   api:
     bot-url: http://localhost:8090
   bot:
-    templates:
-      404:
-        type: constant
-        delay: PT1S
-        max-attempts: 3
-
+    retry-type: constant
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
 
 
   stackoverflow:
-    templates:
-      404:
-        type: linear
-        delay: PT1S
-        max-attempts: 3
+    retry-type: linear
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
 
 
   github:
-    templates:
-      404:
-        type: exponential
-        delay: PT1S
-        max-attempts: 3
+    retry-type: exponential
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
+
 
 spring:
   application:
@@ -46,7 +45,7 @@ spring:
 
   datasource:
 
-    url: jdbc:postgresql://localhost:5432/
+    url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

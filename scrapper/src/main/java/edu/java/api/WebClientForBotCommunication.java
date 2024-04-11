@@ -1,35 +1,26 @@
 package edu.java.api;
 
-import edu.java.backoff_policy.LinearBackOffPolicy;
-import edu.java.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.exceptions.entities.ApiErrorException;
-import java.util.HashMap;
+import io.github.resilience4j.reactor.retry.RetryOperator;
+import io.github.resilience4j.retry.Retry;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.retry.backoff.ExponentialBackOffPolicy;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class WebClientForBotCommunication {
-    private final static int BAD_REQUEST_CODE = 400;
     private final WebClient webClient;
     private final Logger logger = LoggerFactory.getLogger(WebClientForBotCommunication.class);
-    private final ApplicationConfig.ServiceProperties serviceProperties;
-    private final HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
-    private static final long MAX_INTERVAL = 5000L;
-    private static final long DEFAULT_INCREMENT = 100L;
 
-    public WebClientForBotCommunication(WebClient webClient, ApplicationConfig.ServiceProperties serviceProperties) {
+    private final Retry retry;
+
+    public WebClientForBotCommunication(WebClient webClient, Retry retry) {
         this.webClient = webClient;
-        this.serviceProperties = serviceProperties;
-        initRetryStrategies();
+        this.retry = retry;
     }
 
     public Optional<String> sendUpdate(LinkUpdateRequest request) {
@@ -38,31 +29,7 @@ public class WebClientForBotCommunication {
         for (int i = 0; i < request.tgChatIds().size(); i++) {
             logger.info("Chat id: " + request.tgChatIds().get(i));
         }
-
-        try {
-            return executeRequest(request);
-        } catch (ApiErrorException ex) {
-            logger.error("Error occurred with code", ex.getErrorResponse().code());
-            RetryTemplate retryTemplate = retryStrategies.get(Integer.getInteger(ex.getErrorResponse().code()));
-            if (retryTemplate != null) {
-                try {
-                    return retryTemplate.execute(resp -> executeRequest(request));
-                } catch (Exception retryEx) {
-                    logger.error("All retry attempts failed", retryEx);
-                    return Optional.empty();
-                }
-            } else {
-                logger.error("Unexpected error occurred", ex);
-                return Optional.empty();
-            }
-        }
-
-    }
-
-    public Optional<String> executeRequest(LinkUpdateRequest request) {
-        logger.info("Sending request to server: " + request.toString());
-        logger.info(request.description() + "\n" + request.url() + "\n" + request.tgChatIds().size());
-        return webClient
+        Mono<String> operation = webClient
             .post()
             .uri("/updates")
             .header("header")
@@ -74,44 +41,14 @@ public class WebClientForBotCommunication {
                     .bodyToMono(ApiErrorResponse.class)
                     .flatMap(errorResponse -> Mono.error(new ApiErrorException(errorResponse)))
             )
-            .bodyToMono(String.class)
-            .blockOptional();
-    }
+            .bodyToMono(String.class);
 
-    private void initRetryStrategies() {
-        serviceProperties.templates().forEach((code, template) -> {
-            RetryTemplate retryTemplate = new RetryTemplate();
-            switch (template.type()) {
-                case "exponential":
-                    ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
-                    exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
-                    exponentialBackOffPolicy.setMultiplier(2.0);
-                    exponentialBackOffPolicy.setMaxInterval(MAX_INTERVAL);
-                    retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
-                    break;
-                case "linear":
-                    LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(
-                        template.delay().toMillis(),
-                        template.maxAttempts(),
-                        DEFAULT_INCREMENT
-                    );
-                    retryTemplate.setBackOffPolicy(linearBackOffPolicy);
-                    break;
-                case "constant":
-                default:
-                    FixedBackOffPolicy constantBackOffPolicy = new FixedBackOffPolicy();
-                    constantBackOffPolicy.setBackOffPeriod(template.delay().toMillis());
-                    retryTemplate.setBackOffPolicy(constantBackOffPolicy);
-                    break;
-            }
+        if (retry != null) {
+            operation = operation.transformDeferred(RetryOperator.of(retry));
+        }
 
-            SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-            retryPolicy.setMaxAttempts(template.maxAttempts());
+        return operation.blockOptional();
 
-            retryTemplate.setRetryPolicy(retryPolicy);
-
-            retryStrategies.put(code, retryTemplate);
-        });
     }
 
 }

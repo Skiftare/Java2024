@@ -2,10 +2,10 @@ package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.api.WebClientForBotCommunication;
-import edu.java.configuration.ApplicationConfig;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.exceptions.entities.ApiErrorException;
+import io.github.resilience4j.retry.Retry;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -22,7 +22,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
-import static org.mockito.Mockito.mock;
 
 public class WebServerTest {
     private WebClientForBotCommunication client;
@@ -32,9 +31,10 @@ public class WebServerTest {
     void setUpEnvironment() {
         mockedServer.start();
         String baseUrl = "http://localhost:" + mockedServer.port();
+        Retry retry = Retry.ofDefaults("id");
         client = new WebClientForBotCommunication(
             WebClient.create(baseUrl),
-            mock(ApplicationConfig.ServiceProperties.class)
+            retry
         );
     }
 
@@ -100,7 +100,7 @@ public class WebServerTest {
                 .withBody(expectedResponseBody)));
 
         ApiErrorException thrownException = catchThrowableOfType(
-            () -> client.executeRequest(requestToClient),
+            () -> client.sendUpdate(requestToClient),
             ApiErrorException.class
         );
         ApiErrorResponse actualResponse = thrownException.getErrorResponse();

@@ -4,36 +4,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import edu.java.backoff_policy.LinearBackOffPolicy;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
 import edu.java.links_clients.dto.stckoverflow.AnswerItems;
 import edu.java.links_clients.dto.stckoverflow.CommentInfo;
 import edu.java.links_clients.dto.stckoverflow.CommentItems;
 import edu.java.utility.EmptyJsonException;
-import java.util.HashMap;
+import io.github.resilience4j.reactor.retry.RetryOperator;
+import io.github.resilience4j.retry.Retry;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.backoff.ExponentialBackOffPolicy;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import reactor.core.publisher.Mono;
 
 @Service
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
     private final WebClient webClient;
-    private final ApplicationConfig.ServiceProperties serviceProperties;
-    private final HashMap<Integer, RetryTemplate> retryStrategies = new HashMap<>();
-    private static final long MAX_INTERVAL = 5000L;
-    private static final long DEFAULT_INCREMENT = 100L;
+
+    @Autowired @Qualifier("stackOverflowRetry")
+    Retry retry;
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
@@ -41,20 +38,17 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
-        serviceProperties = config.stackoverflow();
-        initRetryStrategies();
     }
 
-    public DefaultStackOverflowClient(String baseUrl, ApplicationConfig.ServiceProperties serviceProperties) {
+    public DefaultStackOverflowClient(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
-        this.serviceProperties = serviceProperties;
-        initRetryStrategies();
+
     }
 
     @Override
     public Optional<StackOverflowResponse> processQuestionUpdates(long questionId) {
         try {
-            return webClient.get()
+            Mono<String> operation = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .path("/questions/{id}/answers")
                     .queryParam("order", "desc")
@@ -62,7 +56,11 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                     .queryParam("site", "stackoverflow")
                     .build(questionId))
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(String.class);
+            if (retry != null) {
+                operation.transformDeferred(RetryOperator.of(retry));
+            }
+            return operation
                 .mapNotNull(this::parseJson)
                 .block();
         } catch (WebClientException | NullPointerException e) {
@@ -103,41 +101,5 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                 .bodyToMono(CommentItems.class)
                 .block())
             .getCommentInfo();
-    }
-
-    private void initRetryStrategies() {
-        serviceProperties.templates().forEach((code, template) -> {
-            RetryTemplate retryTemplate = new RetryTemplate();
-            switch (template.type()) {
-                case "exponential":
-                    ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
-                    exponentialBackOffPolicy.setInitialInterval(template.delay().toMillis());
-                    exponentialBackOffPolicy.setMultiplier(2.0);
-                    exponentialBackOffPolicy.setMaxInterval(MAX_INTERVAL);
-                    retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
-                    break;
-                case "linear":
-                    LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(
-                        template.delay().toMillis(),
-                        template.maxAttempts(),
-                        DEFAULT_INCREMENT
-                    );
-                    retryTemplate.setBackOffPolicy(linearBackOffPolicy);
-                    break;
-                case "constant":
-                default:
-                    FixedBackOffPolicy constantBackOffPolicy = new FixedBackOffPolicy();
-                    constantBackOffPolicy.setBackOffPeriod(template.delay().toMillis());
-                    retryTemplate.setBackOffPolicy(constantBackOffPolicy);
-                    break;
-            }
-
-            SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-            retryPolicy.setMaxAttempts(template.maxAttempts());
-
-            retryTemplate.setRetryPolicy(retryPolicy);
-
-            retryStrategies.put(code, retryTemplate);
-        });
     }
 }

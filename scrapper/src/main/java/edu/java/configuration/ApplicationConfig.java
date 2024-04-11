@@ -1,10 +1,12 @@
 package edu.java.configuration;
 
+import edu.java.backoff_policy.RetryType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
-import java.util.Map;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -21,11 +23,9 @@ public record ApplicationConfig(
 
     @NotNull
     Api api,
-
+    ServiceProperties bot,
     ServiceProperties github,
-    ServiceProperties stackoverflow,
-    ServiceProperties bot
-
+    ServiceProperties stackoverflow
 ) {
 
     public record Scheduler(
@@ -40,15 +40,10 @@ public record ApplicationConfig(
     }
 
     public record ServiceProperties(
-        Map<Integer, RetryTemplate> templates
-    ) {
-    }
-
-    public record RetryTemplate(
-        int code,
-        String type,
+        RetryType retryType,
+        int retryCount,
         Duration delay,
-        int maxAttempts
+        Set<HttpStatus> retryCodes
     ) {
     }
 }
