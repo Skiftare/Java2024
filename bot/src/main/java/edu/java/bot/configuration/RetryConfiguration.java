@@ -1,6 +1,6 @@
-package edu.java.configuration;
+package edu.java.bot.configuration;
 
-import edu.java.backoff_policy.CustomRetry;
+import edu.java.bot.api.backoff_policy.CustomRetry;
 import io.github.resilience4j.retry.Retry;
 import java.time.Duration;
 import java.util.List;
@@ -14,22 +14,11 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public class RetryConfiguration {
     private final ApplicationConfig applicationConfig;
-
     private final List<CustomRetry> retries;
 
     @Bean
-    public Retry botRetry() {
-        return createRetry(applicationConfig.bot());
-    }
-
-    @Bean
-    public Retry stackOverflowRetry() {
-        return createRetry(applicationConfig.stackoverflow());
-    }
-
-    @Bean
-    public Retry gitHubRetry() {
-        return createRetry(applicationConfig.github());
+    public Retry scrapperRetry() {
+        return createRetry(applicationConfig.scrapper());
     }
 
     public Retry createRetry(ApplicationConfig.ServiceProperties serviceProperties) {

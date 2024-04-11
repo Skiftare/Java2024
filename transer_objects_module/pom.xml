@@ -7,7 +7,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>transer_objects_module</artifactId>
-    <name>Archetype - transer_objects_module</name>
+    <name>Archetype - transfer_objects_module</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>

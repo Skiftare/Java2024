@@ -25,7 +25,7 @@ public class DefaultGitHubClient implements GitHubClient {
     private final WebClient webClient;
 
     @Autowired @Qualifier("gitHubRetry")
-    Retry retry;
+    private Retry retry;
 
     @Autowired
     public DefaultGitHubClient(ApplicationConfig config) {
