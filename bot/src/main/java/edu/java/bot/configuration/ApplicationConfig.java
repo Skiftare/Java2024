@@ -1,6 +1,6 @@
 package edu.java.bot.configuration;
 
-import edu.java.bot.api.backoff_policy.RetryType;
+import edu.java.backoff_policy.RetryType;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.Duration;
 import java.util.Set;
