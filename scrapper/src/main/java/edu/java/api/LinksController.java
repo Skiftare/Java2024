@@ -8,7 +8,6 @@ import edu.java.data.response.ListOfLinksResponse;
 import edu.java.data.response.ResultOfServiceOperation;
 import edu.java.data.response.TgChatInteractionResponse;
 import edu.java.exceptions.RequestProcessingException;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -76,10 +76,12 @@ public class LinksController {
 
     @PostMapping("/links")
     public ResponseEntity<LinkResponse> addLink(
-        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @RequestBody
-    AddLinkRequest addLinkRequest
+        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
+        @RequestBody
+        AddLinkRequest addLinkRequest
     ) throws RequestProcessingException {
-        LoggerFactory.getLogger(LinksController.class).info("Add link request: " + addLinkRequest.link());
+        LoggerFactory.getLogger(LinksController.class)
+            .info("Add link request: " + addLinkRequest.link());
         LinkResponse result = methodProcessingService.addLink(tgChatId, addLinkRequest.link());
         LinkResponse wrappedResult = new LinkResponse(result.id(), result.url());
 
@@ -89,13 +91,15 @@ public class LinksController {
 
     @DeleteMapping("/links")
     public ResponseEntity<LinkResponse> removeLink(
-        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId, @RequestBody
-    RemoveLinkRequest removeLinkRequest
+        @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
+        @RequestBody RemoveLinkRequest removeLinkRequest
     ) throws RequestProcessingException {
-        LoggerFactory.getLogger(LinksController.class).info("Remove link request: " + removeLinkRequest.link());
+        LoggerFactory.getLogger(LinksController.class)
+            .info("Remove link request: " + removeLinkRequest.link());
         LinkResponse result = methodProcessingService.removeLink(tgChatId, removeLinkRequest.link());
         LinkResponse wrappedResult = new LinkResponse(result.id(), result.url());
-        LoggerFactory.getLogger(LinksController.class).info("Link removed: " + wrappedResult.url());
+        LoggerFactory.getLogger(LinksController.class)
+            .info("Link removed: " + wrappedResult.url());
         return ResponseEntity.ok(wrappedResult);
 
     }

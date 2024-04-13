@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import edu.java.links_clients.github.DefaultGitHubClient;
 import edu.java.links_clients.github.GitHubClient;
 import edu.java.links_clients.github.GitHubResponse;
+import io.github.resilience4j.retry.Retry;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +29,11 @@ public class GitHubTest {
     void setUpMockedServer() {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
+        Retry retry = Retry.ofDefaults("id");
         WireMock.configureFor("localhost", wireMockServer.port());
-        gitHubClient = new DefaultGitHubClient(STR."http://localhost:\{wireMockServer.port()}");
+        gitHubClient = new DefaultGitHubClient(
+            STR."http://localhost:\{wireMockServer.port()}"
+        );
     }
 
     @AfterEach

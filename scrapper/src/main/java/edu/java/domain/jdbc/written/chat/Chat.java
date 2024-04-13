@@ -10,9 +10,9 @@ public class Chat {
     private long tgChatId;
     private OffsetDateTime createdAt;
 
-    public static Chat makeChat(long id, OffsetDateTime time) {
+    public static Chat makeChat(long tgChatId, OffsetDateTime time) {
         Chat chat = new Chat();
-        chat.setTgChatId(id);
+        chat.setTgChatId(tgChatId);
         chat.setCreatedAt(time);
         return chat;
     }

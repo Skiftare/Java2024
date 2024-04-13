@@ -1,12 +1,12 @@
 package edu.java.bot.processor;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.bot.api.entities.exceptions.ApiErrorException;
-import edu.java.bot.api.entities.requests.AddLinkRequest;
-import edu.java.bot.api.entities.requests.RemoveLinkRequest;
-import edu.java.bot.api.entities.responses.LinkResponse;
-import edu.java.bot.api.entities.responses.ListLinksResponse;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
+import edu.java.data.request.AddLinkRequest;
+import edu.java.data.request.RemoveLinkRequest;
+import edu.java.data.response.LinkResponse;
+import edu.java.data.response.ListLinksResponse;
+import edu.java.exceptions.entities.ApiErrorException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -186,7 +186,7 @@ public class ScrapperClientTest {
 
                 assertThat(actualResponse).isPresent();
                 assertThat(actualResponse.get().id()).isEqualTo(1);
-                assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
+                assertThat(actualResponse.get().url()).isEqualTo("123");
             }
 
             @Test
@@ -276,7 +276,7 @@ public class ScrapperClientTest {
                 assertThat(actualResponse.get().size()).isEqualTo(1);
                 assertThat(actualResponse.get().links())
                     .hasSize(1)
-                    .extracting(LinkResponse::id, link -> link.url().getPath())
+                    .extracting(LinkResponse::id, link -> link.url())
                     .containsExactly(tuple(1L, "link"));
             }
 
@@ -338,7 +338,7 @@ public class ScrapperClientTest {
 
                 assertThat(actualResponse).isPresent();
                 assertThat(actualResponse.get().id()).isEqualTo(1);
-                assertThat(actualResponse.get().url().getPath()).isEqualTo("123");
+                assertThat(actualResponse.get().url()).isEqualTo("123");
             }
 
             @Test

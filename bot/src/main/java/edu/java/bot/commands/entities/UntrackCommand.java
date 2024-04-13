@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.memory.DialogManager;
 import edu.java.bot.processor.UserRequest;
-import java.util.Objects;
 import org.springframework.stereotype.Component;
 import static edu.java.bot.memory.WeakLinkChecker.checkLinkWithoutConnecting;
 
@@ -21,7 +20,6 @@ public class UntrackCommand implements Command {
         this.manager = manager;
     }
 
-
     @Override
     public String getCommandName() {
         return UNTRACK_COMMAND_NAME;
@@ -37,19 +35,16 @@ public class UntrackCommand implements Command {
         String textMessage = update.message().text();
         Long chatId = update.message().chat().id();
         String result = UNSUCCESSFUL_UNTRACK_INFO;
-        if (Objects.equals(textMessage, this.getCommandName())) {
-            manager.setWaitForUntrack(chatId);
-            result = WAIT_FOR_URL_UNTRACK_INFO;
-        } else {
-            String[] parts = textMessage.split(" ");
-            if (parts.length > 1) {
-                String link = parts[1];
-                UserRequest request = new UserRequest(chatId, link);
-                if (checkLinkWithoutConnecting(link) && manager.untrackURL(request)) {
-                    result = SUCCESS_UNTRACK_INFO;
-                }
+
+        String[] parts = textMessage.split(" ");
+        if (parts.length > 1) {
+            String link = parts[1];
+            UserRequest request = new UserRequest(chatId, link);
+            if (checkLinkWithoutConnecting(link) && manager.untrackURL(request)) {
+                result = SUCCESS_UNTRACK_INFO;
             }
         }
+
         return new SendMessage(update.message().chat().id(), result);
     }
 

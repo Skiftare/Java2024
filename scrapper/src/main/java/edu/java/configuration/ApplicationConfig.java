@@ -1,28 +1,31 @@
 package edu.java.configuration;
 
-import jakarta.validation.constraints.NotBlank;
+import edu.java.backoff_policy.RetryType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
-    /*@Bean
+
     AccessType databaseAccessType,
-*/
+
     @Bean
     @NotNull
     Scheduler scheduler,
 
-    @NotNull
-    StackOverflow stackOverflow,
+    ListOfSupportedLinks listOfLinksSupported,
 
     @NotNull
-    GitHub gitHub
-
+    Api api,
+    ServiceProperties bot,
+    ServiceProperties github,
+    ServiceProperties stackoverflow
 ) {
 
     public record Scheduler(
@@ -30,9 +33,17 @@ public record ApplicationConfig(
     ) {
     }
 
-    public record StackOverflow(@NotBlank String defaultUrl, String configUrl) {
+    public record ListOfSupportedLinks(String stackoverflow, String github) {
     }
 
-    public record GitHub(@NotBlank String defaultUrl, String configUrl) {
+    public record Api(String botUrl) {
+    }
+
+    public record ServiceProperties(
+        RetryType retryType,
+        int retryCount,
+        Duration delay,
+        Set<HttpStatus> retryCodes
+    ) {
     }
 }

@@ -9,23 +9,21 @@ import edu.java.exceptions.entities.LinkNotFoundException;
 import edu.java.exceptions.entities.UserAlreadyExistException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import edu.java.scrapper.database.IntegrationTest;
+import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Rollback
 public class JdbcServiceTest extends IntegrationTest {
     private static final String TEST_LINK = "https://github.com/zed-industries/zed";
 
-
     @Autowired
     private JdbcChatService jdbcChatService;
-
 
     @Autowired
     private JdbcLinkService jdbcLinkService;
@@ -38,6 +36,7 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testRegisterFail() {
             long tgChatId = 123456L;
             jdbcChatService.register(tgChatId);
+            assertTrue(jdbcChatService.isRegistered(tgChatId));
             assertThrows(UserAlreadyExistException.class, () -> jdbcChatService.register(tgChatId));
         }
 
@@ -83,7 +82,7 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testLinkRegisterError() {
             long id = 1235L;
             AddLinkRequest request = new AddLinkRequest(URI.create(TEST_LINK));
-            assertThrows(UserNotFoundException.class,()->jdbcLinkService.add(id, request));
+            assertThrows(UserNotFoundException.class, () -> jdbcLinkService.add(id, request));
         }
 
         @Test
@@ -91,13 +90,12 @@ public class JdbcServiceTest extends IntegrationTest {
         public void testLinkDeleteError() {
             long id = 1237L;
             jdbcChatService.register(id);
-            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK));
-            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK));
+            AddLinkRequest addRequest = new AddLinkRequest(URI.create(TEST_LINK + "5"));
+            RemoveLinkRequest removeRequest = new RemoveLinkRequest(URI.create(TEST_LINK + "5"));
             jdbcLinkService.add(id, addRequest);
-            jdbcLinkService.remove(id, new RemoveLinkRequest(URI.create(TEST_LINK)));
-            assertThrows(LinkNotFoundException.class,()->jdbcLinkService.remove(id, removeRequest));
+            jdbcLinkService.remove(id, removeRequest);
+            assertThrows(LinkNotFoundException.class, () -> jdbcLinkService.remove(id, removeRequest));
         }
     }
-
 
 }

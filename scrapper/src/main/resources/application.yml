@@ -1,35 +1,69 @@
 app:
+  database-access-type:
+    jdbc
   scheduler:
     enable: true
-    interval: 10s
+    interval: 100s
     force-check-delay: 10s
     parser-delay: 600s
 
-  stack-overflow:
-    default-url: https://api.stackexchange.com/2.3/
+  list-of-links-supported:
+    stackoverflow: stackoverflow.com
+    github: github.com
+
+
+  api:
+    bot-url: http://localhost:8090
+  bot:
+    retry-type: constant
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
+
+  stackoverflow:
+    retry-type: linear
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
+
 
   github:
-    default-url: https://api.github.com/
+    retry-type: exponential
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
 
 
-    #add another Link there as smth-record-class: first-url: value
-    #Then redact ApplicationConfig
+
 spring:
   application:
     name: scrapper
   liquibase:
     enabled: false
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/
+
+    url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
 
 server:
   port: 8080
 
 logging:
   config: classpath:log4j2-plain.xml
+  level:
+    org.springframework.web: DEBUG
 scrapper:
   baseUrl: http://localhost:8090
 springdoc:

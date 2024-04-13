@@ -5,6 +5,8 @@ import edu.java.domain.jdbc.written.chat.ChatRowMapper;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class JdbcChatDao {
     private final JdbcClient jdbcClient;
+    private final Logger logger = LoggerFactory.getLogger(JdbcChatDao.class);
     private final ChatRowMapper chatRowMapper;
 
     public List<Chat> getAll() {
@@ -21,9 +24,19 @@ public class JdbcChatDao {
     }
 
     public Optional<Chat> getByTgChatId(long tgChatId) {
+        logger.info("Getting jdbc chat by chat_id: " + tgChatId);
         String sql = "SELECT * FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)
+            .query(chatRowMapper)
+            .optional();
+    }
+
+    public Optional<Chat> getByDataId(long dataChatId) {
+        logger.info("Getting jdbc chat by id: " + dataChatId);
+        String sql = "SELECT * FROM chat WHERE id = ?";
+        return jdbcClient.sql(sql)
+            .param(dataChatId)
             .query(chatRowMapper)
             .optional();
     }

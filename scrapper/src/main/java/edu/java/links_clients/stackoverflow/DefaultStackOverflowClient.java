@@ -5,23 +5,36 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.configuration.ApplicationConfig;
+import edu.java.links_clients.dto.stckoverflow.AnswerInfo;
+import edu.java.links_clients.dto.stckoverflow.AnswerItems;
+import edu.java.links_clients.dto.stckoverflow.CommentInfo;
+import edu.java.links_clients.dto.stckoverflow.CommentItems;
 import edu.java.utility.EmptyJsonException;
+import io.github.resilience4j.reactor.retry.RetryOperator;
+import io.github.resilience4j.retry.Retry;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import reactor.core.publisher.Mono;
 
 @Service
 public class DefaultStackOverflowClient implements StackOverflowClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
     private final WebClient webClient;
 
+    @Autowired @Qualifier("stackOverflowRetry")
+    Retry retry;
+
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
-        String defaultUrl = config.stackOverflow().defaultUrl();
+        String defaultUrl = config.listOfLinksSupported().stackoverflow();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
@@ -29,12 +42,13 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
 
     public DefaultStackOverflowClient(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
+
     }
 
     @Override
     public Optional<StackOverflowResponse> processQuestionUpdates(long questionId) {
         try {
-            return webClient.get()
+            Mono<String> operation = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .path("/questions/{id}/answers")
                     .queryParam("order", "desc")
@@ -42,7 +56,11 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                     .queryParam("site", "stackoverflow")
                     .build(questionId))
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(String.class);
+            if (retry != null) {
+                operation.transformDeferred(RetryOperator.of(retry));
+            }
+            return operation
                 .mapNotNull(this::parseJson)
                 .block();
         } catch (WebClientException | NullPointerException e) {
@@ -65,5 +83,23 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
             LOGGER.error(e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public List<AnswerInfo> getAnswerInfoByQuestion(Long question) {
+        return Objects.requireNonNull(webClient.get()
+                .uri("/questions/{question}/answers?order=desc&site=stackoverflow", question)
+                .retrieve()
+                .bodyToMono(AnswerItems.class)
+                .block())
+            .getAnswerInfo();
+    }
+
+    public List<CommentInfo> getCommentInfoByQuestion(Long question) {
+        return Objects.requireNonNull(webClient.get()
+                .uri("/questions/{question}/comments?order=desc&sort=creation&site=stackoverflow", question)
+                .retrieve()
+                .bodyToMono(CommentItems.class)
+                .block())
+            .getCommentInfo();
     }
 }
