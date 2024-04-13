@@ -25,11 +25,11 @@ public class BotQueueConsumerTest {
     private static final ApplicationConfig applicationConfig = new ApplicationConfig(
         null,
         null,
+        null,
         new ApplicationConfig.Kafka(
             "updates",
             "bot",
             "localhost:9092",
-            "edu.java.scrapper.dto.response.LinkUpdateResponse:edu.java.bot.dto.response.LinkUpdateResponse",
             "badResponse"
         )
     );

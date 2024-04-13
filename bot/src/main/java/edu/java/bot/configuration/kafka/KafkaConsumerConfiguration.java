@@ -30,8 +30,7 @@ public class KafkaConsumerConfiguration {
             Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.bootstrapServer(),
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
-                JsonDeserializer.TYPE_MAPPINGS, kafka.typeMapping()
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class
             ))
         );
 
