@@ -1,5 +1,4 @@
 --liquibase formatted sql
-
 --comment: initializing tables
 CREATE TABLE IF NOT EXISTS chat (
     id      BIGINT GENERATED ALWAYS AS IDENTITY,

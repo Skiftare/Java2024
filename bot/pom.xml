@@ -150,6 +150,7 @@
         <dependency>
             <groupId>edu.java</groupId>
             <artifactId>transer_objects_module</artifactId>
+            <version>0.1</version>
         </dependency>
     </dependencies>
 

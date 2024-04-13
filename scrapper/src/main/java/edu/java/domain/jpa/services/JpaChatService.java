@@ -7,10 +7,12 @@ import edu.java.exceptions.entities.UserAlreadyExistException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import static java.time.OffsetDateTime.now;
 
 @RequiredArgsConstructor
 @Transactional
+@EnableTransactionManagement
 public class JpaChatService implements TgChatService {
 
     private final JpaChatRepository chatRepository;
@@ -33,9 +35,11 @@ public class JpaChatService implements TgChatService {
                 () -> new UserNotFoundException(generateExceptionMessageForChatId(tgChatId))
             );
         chatRepository.deleteByTgChatId(tgChatId);
+
     }
 
     @Override
+    @Transactional
     public boolean isRegistered(long tgChatId) {
         return chatRepository.findChatByTgChatId(tgChatId).isPresent();
     }

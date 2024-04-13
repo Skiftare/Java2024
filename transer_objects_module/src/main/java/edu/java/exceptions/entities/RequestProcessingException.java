@@ -1,4 +1,4 @@
-package edu.java.bot.api.exceptions.entities;
+package edu.java.exceptions.entities;
 
 public class RequestProcessingException extends Exception {
     public RequestProcessingException(String message) {

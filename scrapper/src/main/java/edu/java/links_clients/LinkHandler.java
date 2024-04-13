@@ -7,6 +7,8 @@ import edu.java.links_clients.dto.stckoverflow.CommentInfo;
 import edu.java.links_clients.github.DefaultGitHubClient;
 import edu.java.links_clients.stackoverflow.DefaultStackOverflowClient;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +18,7 @@ public class LinkHandler {
     private final ApplicationConfig.ListOfSupportedLinks listOfSupprotedLinks;
     private final DefaultStackOverflowClient stackOverflowClient;
     private final DefaultGitHubClient gitHubService;
+    private final Logger logger = LoggerFactory.getLogger(LinkHandler.class);
 
     public LinkHandler(
         ApplicationConfig appConf,
@@ -35,10 +38,12 @@ public class LinkHandler {
         return url.contains(listOfSupprotedLinks.stackoverflow());
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public List<GithubActions> getActionsGitHubInfoByUrl(String url) {
         String[] urlParts = url.split(SPLIT_URL);
-        String owner = urlParts[urlParts.length - 2];
-        String repo = urlParts[urlParts.length - 1];
+        String owner = urlParts[3];
+        String repo = urlParts[4];
+        logger.info(URL + url);
         return gitHubService.getActionsInfo(owner, repo);
     }
 

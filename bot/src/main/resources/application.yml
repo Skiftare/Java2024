@@ -2,6 +2,11 @@ app:
   telegram-token: ${TELEGRAM_TOKEN}
   api:
     scrapper-url: http://localhost:8080
+  scrapper:
+    retry-type: linear
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
 
 spring:
   application:

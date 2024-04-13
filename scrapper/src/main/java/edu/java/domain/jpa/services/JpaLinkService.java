@@ -26,6 +26,7 @@ public class JpaLinkService implements LinkService {
     private final JpaLinkRepository linkRepository;
 
     @Override
+    @Transactional
     public ListLinksResponse listAll(long tgChatId) {
         Chat chat = getChatByTgChatId(tgChatId);
 
@@ -67,6 +68,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public LinkResponse remove(long tgChatId, RemoveLinkRequest linkRequest) {
         Chat chat = getChatByTgChatId(tgChatId);
         URI url = linkRequest.link();
@@ -76,14 +78,16 @@ public class JpaLinkService implements LinkService {
         return new LinkResponse(actualLink.getId(), actualLink.getUrl());
     }
 
-    private Chat getChatByTgChatId(long tgChatId) {
+    @Transactional
+    protected Chat getChatByTgChatId(long tgChatId) {
         return chatRepository.findChatWithLinkByTgChatId(tgChatId)
             .orElseThrow(
                 () -> new UserNotFoundException(generateExceptionMessageForChatId(tgChatId))
             );
     }
 
-    private Link getLinkByUrl(String url) {
+    @Transactional
+    protected Link getLinkByUrl(String url) {
         return linkRepository.findLinkWithChatByUrl(url)
             .orElseThrow(
                 () -> new LinkNotFoundException(generateExceptionMessageForLinkUrl(url))

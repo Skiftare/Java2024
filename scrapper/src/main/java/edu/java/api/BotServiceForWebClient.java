@@ -18,10 +18,13 @@ public class BotServiceForWebClient {
 
     public void sendUpdate(long id, String url, String description, List<Long> tgChatIds) {
         try {
-            botClient.sendUpdate(new LinkUpdateRequest(id, URI.create(url), description, tgChatIds));
+            logger.info("Sending update to bot");
+            logger.info("Amount of intrested users: " + tgChatIds.size());
+            botClient.sendUpdate(new LinkUpdateRequest(URI.create(url), description, tgChatIds));
         } catch (UserNotFoundException ex) {
             deleteNonExtentIds(ex.getMessage());
         } catch (IllegalArgumentException ignore) {
+            logger.info("IllegalArgumentException");
         }
     }
 

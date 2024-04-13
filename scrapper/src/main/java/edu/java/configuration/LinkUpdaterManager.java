@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(value = "api.scheduler.enable", havingValue = "true")
+@ConditionalOnProperty(value = "app.scheduler.enable", havingValue = "true")
 public class LinkUpdaterManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(LinkUpdaterManager.class);
 

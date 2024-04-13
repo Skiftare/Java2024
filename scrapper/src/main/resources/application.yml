@@ -14,10 +14,29 @@ app:
 
   api:
     bot-url: http://localhost:8090
+  bot:
+    retry-type: constant
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
 
 
-    #add another Link there as smth-record-class: first-url: value
-    #Then redact ApplicationConfig
+  stackoverflow:
+    retry-type: linear
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
+
+
+  github:
+    retry-type: exponential
+    retry-count: 3
+    delay: 4s
+    retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
+
+
+
 spring:
   application:
     name: scrapper
@@ -25,7 +44,8 @@ spring:
     enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/
+
+    url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -42,6 +62,8 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+  level:
+    org.springframework.web: DEBUG
 scrapper:
   baseUrl: http://localhost:8090
 springdoc:

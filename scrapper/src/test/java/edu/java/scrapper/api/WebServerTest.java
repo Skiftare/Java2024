@@ -2,13 +2,14 @@ package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.api.WebClientForBotCommunication;
+import edu.java.data.request.LinkUpdateRequest;
+import edu.java.data.response.ApiErrorResponse;
+import edu.java.exceptions.entities.ApiErrorException;
+import io.github.resilience4j.retry.Retry;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import edu.java.data.request.LinkUpdateRequest;
-import edu.java.data.response.ApiErrorResponse;
-import edu.java.exceptions.entities.CustomApiException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -31,21 +31,23 @@ public class WebServerTest {
     void setUpEnvironment() {
         mockedServer.start();
         String baseUrl = "http://localhost:" + mockedServer.port();
-        client = new WebClientForBotCommunication(WebClient.create(baseUrl));
+        Retry retry = Retry.ofDefaults("id");
+        client = new WebClientForBotCommunication(
+            WebClient.create(baseUrl),
+            retry
+        );
     }
 
     @AfterEach
-    void resetEnvironment(){
+    void resetEnvironment() {
         mockedServer.stop();
     }
-
 
     @Test
     @DisplayName("/updates: POST; Correct result")
     public void testThatPostCorrectUpdatesResponseAndReturnedExpectedSuccessResult() throws URISyntaxException {
         String expectedResponseBody = "Обновление обработано";
         LinkUpdateRequest requestToClient = new LinkUpdateRequest(
-            1L,
             new URI("1"),
             "1",
             List.of(1L)
@@ -81,7 +83,6 @@ public class WebServerTest {
             """;
 
         LinkUpdateRequest requestToClient = new LinkUpdateRequest(
-            -1453L,
             new URI("1"),
             "1",
             List.of(1L)
@@ -98,9 +99,9 @@ public class WebServerTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(expectedResponseBody)));
 
-        CustomApiException thrownException = catchThrowableOfType(
+        ApiErrorException thrownException = catchThrowableOfType(
             () -> client.sendUpdate(requestToClient),
-            CustomApiException.class
+            ApiErrorException.class
         );
         ApiErrorResponse actualResponse = thrownException.getErrorResponse();
 
@@ -111,7 +112,5 @@ public class WebServerTest {
         assertThat(actualResponse.exceptionMessage()).isEqualTo(expectedMessage);
 
     }
-
-
 
 }

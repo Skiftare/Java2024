@@ -28,7 +28,11 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        return new SendMessage(chatId, manager.getListOfTracked(new UserRequest(chatId, update.message().text())));
+        var list = manager.getListOfTracked(new UserRequest(chatId, update.message().text()));
+        if (list.isEmpty()) {
+            return new SendMessage(chatId, "Список пуст");
+        }
+        return new SendMessage(chatId, list);
     }
 
     @Override

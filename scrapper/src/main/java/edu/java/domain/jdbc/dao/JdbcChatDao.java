@@ -24,10 +24,19 @@ public class JdbcChatDao {
     }
 
     public Optional<Chat> getByTgChatId(long tgChatId) {
-        logger.info("Getting chat by chat_id: " + tgChatId + " in the ChatDaoJdbc");
+        logger.info("Getting jdbc chat by chat_id: " + tgChatId);
         String sql = "SELECT * FROM chat WHERE chat_id = ?";
         return jdbcClient.sql(sql)
             .param(tgChatId)
+            .query(chatRowMapper)
+            .optional();
+    }
+
+    public Optional<Chat> getByDataId(long dataChatId) {
+        logger.info("Getting jdbc chat by id: " + dataChatId);
+        String sql = "SELECT * FROM chat WHERE id = ?";
+        return jdbcClient.sql(sql)
+            .param(dataChatId)
             .query(chatRowMapper)
             .optional();
     }

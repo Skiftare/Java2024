@@ -1,7 +1,11 @@
 package edu.java.bot.configuration;
 
+import edu.java.backoff_policy.RetryType;
 import jakarta.validation.constraints.NotEmpty;
+import java.time.Duration;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -9,9 +13,18 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-    Api api
+    Api api,
+    ServiceProperties scrapper
 ) {
     public record Api(String scrapperUrl) {
 
+    }
+
+    public record ServiceProperties(
+        RetryType retryType,
+        int retryCount,
+        Duration delay,
+        Set<HttpStatus> retryCodes
+    ) {
     }
 }

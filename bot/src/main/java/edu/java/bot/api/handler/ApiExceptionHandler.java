@@ -1,7 +1,7 @@
 package edu.java.bot.api.handler;
 
-import edu.java.bot.api.exceptions.entities.UpdateAlreadyProcessingExtension;
 import edu.java.data.response.ApiErrorResponse;
+import edu.java.exceptions.entities.UpdateAlreadyProcessingExtension;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
