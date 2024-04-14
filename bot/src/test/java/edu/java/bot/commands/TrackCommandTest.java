@@ -8,18 +8,17 @@ import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
+import java.security.SecureRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.security.SecureRandom;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TrackCommandTest {
     private TrackCommand testingCommand;
-    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
+    private final DialogManager manager =
+        new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     @BeforeEach
     public void setUp() {
@@ -35,7 +34,6 @@ public class TrackCommandTest {
     public void testThatGetCommandDescriptionAndReturnedThatThisIsTrackCommand() {
         assertEquals("Начать отслеживание ссылки", testingCommand.description());
     }
-
 
     @Test
     public void testThatGetInvalidCommandAndReturnedErrorMessage() {

@@ -16,12 +16,10 @@ import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.commands.loaders.CommandsLoader;
 import edu.java.bot.memory.DataManager;
 import edu.java.bot.memory.DialogManager;
+import java.security.SecureRandom;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.security.SecureRandom;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BotProcessorTest {
@@ -35,7 +33,6 @@ public class BotProcessorTest {
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
 
-
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(chatId);
@@ -43,7 +40,7 @@ public class BotProcessorTest {
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
         DialogManager dialogManager = new DialogManager(new DataManager(server));
-        CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
+        CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
             new TrackCommand(dialogManager),
@@ -54,7 +51,6 @@ public class BotProcessorTest {
             new HelpCommand(helper), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
-
 
         BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
 
@@ -83,7 +79,7 @@ public class BotProcessorTest {
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
         DialogManager dialogManager = new DialogManager(new DataManager(server));
-        CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
+        CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
             new TrackCommand(dialogManager),
@@ -97,15 +93,13 @@ public class BotProcessorTest {
 
         BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
 
-
-
-
         // When
         SendMessage response = bot.recognizeCommand(update);
 
         // Then
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
-        assertThat(response.getParameters().get("text").toString()).isEqualTo("Вы уже зарегистрированы, повторная регистрация не нужна");
+        assertThat(response.getParameters().get("text").toString()).isEqualTo(
+            "Вы уже зарегистрированы, повторная регистрация не нужна");
     }
 
 }

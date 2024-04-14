@@ -20,7 +20,7 @@ public class UpdateQueueConsumer {
             updateManager.addRequest(update);
         } catch (Exception e) {
             var kafka = applicationConfig.kafka();
-            kafkaDlqTemplate.send(kafka.dlqTopicName(), update);
+            kafkaDlqTemplate.send(kafka.topicName(), update);
         }
     }
 }

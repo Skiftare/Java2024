@@ -36,7 +36,8 @@ public class RateLimitingFilter implements WebFilter {
         return Bucket4j.builder()
             .addLimit(Bandwidth.classic(
                 CAPACITY_OF_REQUESTS,
-                Refill.intervally(CAPACITY_OF_REQUESTS,
+                Refill.intervally(
+                    CAPACITY_OF_REQUESTS,
                     Duration.ofMinutes(1)
                 )
             ))
