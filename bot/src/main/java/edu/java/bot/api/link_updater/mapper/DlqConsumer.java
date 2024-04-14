@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Log4j2
 public class DlqConsumer {
-    @KafkaListener(topics = "${app.kafka.dlq-topic-name}", groupId = "${app.kafka.consumer-group-id}")
+    @KafkaListener(topics = "${app.kafka.topic-name}", groupId = "${app.kafka.consumer-group-id}")
     public void listen(LinkUpdateRequest update) {
         log.info(update.toString());
     }

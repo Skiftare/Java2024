@@ -2,13 +2,13 @@ package edu.java.scrapper.api;
 
 import edu.java.api.web.ScrapperQueueProducer;
 import edu.java.data.request.LinkUpdateRequest;
+import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
-import java.net.URI;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +21,6 @@ public class ScrapperQueueProducerTest {
     private ScrapperQueueProducer scrapperQueueProducer;
     private static final String TOPIC = "zed-industries";
     private static final URI DEFAULT_URI = URI.create("https://github.com/zed-industries/zed");
-
 
     @BeforeEach
     public void setUp() {

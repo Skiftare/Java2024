@@ -7,17 +7,19 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.memory.DataManager;
-import java.security.SecureRandom;
+import edu.java.bot.memory.DialogManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.security.SecureRandom;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TrackCommandTest {
     private TrackCommand testingCommand;
-    private final DataManager manager =
-        (new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
+    private final DialogManager manager = new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     @BeforeEach
     public void setUp() {
