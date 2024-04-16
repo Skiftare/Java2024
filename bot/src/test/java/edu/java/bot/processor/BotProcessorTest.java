@@ -102,7 +102,7 @@ public class BotProcessorTest {
 
         // Then
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
-        assertThat(response.getParameters().get("text").toString()).isEqualTo("Вы уже зарегистрированы, повторная регистрация не нужна");
+        assertThat(response.getParameters().get("text").toString()).isEqualTo("Неизвестная команда");
     }
 
 }

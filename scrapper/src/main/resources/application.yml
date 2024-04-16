@@ -14,6 +14,9 @@ app:
 
   api:
     bot-url: http://localhost:8090
+    github-token: ${GITHUB_TOKEN}
+    stackoverflow-key: ${STACKOVERFLOW_KEY}
+    stackoverflow-access-token: ${STACKOVERFLOW_ACCESS_TOKEN}
   bot:
     retry-type: constant
     retry-count: 3

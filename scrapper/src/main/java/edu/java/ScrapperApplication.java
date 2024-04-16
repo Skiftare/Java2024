@@ -1,9 +1,13 @@
 package edu.java;
 
 import edu.java.configuration.ApplicationConfig;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
@@ -12,8 +16,22 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ScrapperApplication {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ScrapperApplication.class);
+        application.addInitializers(new EnvConfig());
+
         application.run(args);
 
+    }
+
+    static class EnvConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
+            Dotenv dotenv = Dotenv.configure().load();
+            dotenv.entries().forEach(entry -> {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                applicationContext.getEnvironment().getSystemProperties().put(key, value);
+            });
+        }
     }
 
 }

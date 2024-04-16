@@ -40,7 +40,7 @@ public record ApplicationConfig(
     public record ListOfSupportedLinks(String stackoverflow, String github) {
     }
 
-    public record Api(String botUrl) {
+    public record Api(String botUrl, String githubToken, String stackoverflowKey, String stackoverflowAccessToken) {
     }
 
     public record ServiceProperties(

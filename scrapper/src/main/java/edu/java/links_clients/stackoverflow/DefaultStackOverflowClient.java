@@ -37,6 +37,8 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         String defaultUrl = config.listOfLinksSupported().stackoverflow();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
+            .defaultHeader("X-API-Access-Token", config.api().stackoverflowAccessToken())
+            .defaultHeader("X-API-Key", config.api().stackoverflowKey())
             .build();
     }
 
