@@ -15,13 +15,10 @@ import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.commands.loaders.CommandsLoader;
 import edu.java.bot.memory.DataManager;
-import edu.java.bot.memory.DialogManager;
+import java.security.SecureRandom;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.security.SecureRandom;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BotProcessorTest {
@@ -42,7 +39,7 @@ public class BotProcessorTest {
         Mockito.when(message.text()).thenReturn("unknown");
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
-        DialogManager dialogManager = new DialogManager(new DataManager(server));
+        DataManager dialogManager = (new DataManager(server));
         CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
@@ -82,7 +79,7 @@ public class BotProcessorTest {
         Mockito.when(update.message()).thenReturn(message);
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
-        DialogManager dialogManager = new DialogManager(new DataManager(server));
+        DataManager dialogManager = (new DataManager(server));
         CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
