@@ -32,7 +32,6 @@ public class BotProcessorTest {
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
 
-
         Mockito.when(update.message()).thenReturn(message);
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(chatId);
@@ -40,7 +39,7 @@ public class BotProcessorTest {
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
         DataManager dialogManager = (new DataManager(server));
-        CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
+        CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
             new TrackCommand(dialogManager),
@@ -51,7 +50,6 @@ public class BotProcessorTest {
             new HelpCommand(helper), helper
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
-
 
         BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
 
@@ -80,7 +78,7 @@ public class BotProcessorTest {
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
         DataManager dialogManager = (new DataManager(server));
-        CommandLoaderForHelpMessage helper =  new CommandLoaderForHelpMessage(
+        CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
             new TrackCommand(dialogManager),
@@ -93,9 +91,6 @@ public class BotProcessorTest {
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
         BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
-
-
-
 
         // When
         SendMessage response = bot.recognizeCommand(update);

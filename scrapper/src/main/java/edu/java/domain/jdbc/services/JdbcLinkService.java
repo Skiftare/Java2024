@@ -19,6 +19,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import static edu.java.exceptions.ExceptionMessagesUtilityClass.EXCEPTION_CHAT_MESSAGE_TEMPLATE;
@@ -27,6 +28,8 @@ import static edu.java.exceptions.ExceptionMessagesUtilityClass.EXCEPTION_LINK_M
 @Service
 @RequiredArgsConstructor
 @Transactional
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
+
 public class JdbcLinkService implements LinkService {
     private final JdbcChatDao chatDao;
     private final JdbcLinkDao linkDao;
