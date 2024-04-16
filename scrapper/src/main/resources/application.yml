@@ -1,6 +1,4 @@
 app:
-  database-access-type:
-    jpa
   scheduler:
     enable: true
     interval: 100s
@@ -59,7 +57,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
+  profiles:
+    active: jdbc
 
 server:
   port: 8080
