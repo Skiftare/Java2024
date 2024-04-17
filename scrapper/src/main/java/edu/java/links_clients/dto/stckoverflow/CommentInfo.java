@@ -13,4 +13,5 @@ public class CommentInfo {
     @JsonProperty("creation_date")
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private OffsetDateTime creationDate;
+
 }

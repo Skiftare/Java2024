@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -29,34 +30,47 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultStackOverflowClient.class);
     private final WebClient webClient;
 
-    @Autowired @Qualifier("stackOverflowRetry")
+    @Autowired
+    @Qualifier("stackOverflowRetry")
     Retry retry;
+
+    private final String authParam;
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
-        String defaultUrl = config.listOfLinksSupported().stackoverflow();
+        String defaultUrl = "https://api.stackexchange.com/2.3";
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
-            .defaultHeader("X-API-Access-Token", config.api().stackoverflowAccessToken())
-            .defaultHeader("X-API-Key", config.api().stackoverflowKey())
             .build();
+        authParam =
+            "&access_token=" + config.api().stackoverflowAccessToken() + "&" + "key=" + config.api().stackoverflowKey();
     }
 
     public DefaultStackOverflowClient(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+
+        webClient = WebClient.builder()
+            .baseUrl(baseUrl)
+            .build();
+        authParam = "";
 
     }
 
     @Override
     public Optional<StackOverflowResponse> processQuestionUpdates(long questionId) {
+
         try {
+
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/questions/{id}/" + authParam)
+                .queryParam("site", "stackoverflow")
+                .queryParam("order", "desc")
+                .queryParam("sort", "activity");
+            String uriString = uriBuilder.buildAndExpand(questionId).toUriString();
+
+
             Mono<String> operation = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                    .path("/questions/{id}/answers")
-                    .queryParam("order", "desc")
-                    .queryParam("sort", "activity")
-                    .queryParam("site", "stackoverflow")
-                    .build(questionId))
+                .uri(
+                    uriString
+                )
                 .retrieve()
                 .bodyToMono(String.class);
             if (retry != null) {
@@ -72,6 +86,8 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
     }
 
     public Optional<StackOverflowResponse> parseJson(String json) {
+        LOGGER.info("Parsing JSON");
+        LOGGER.info(json);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
@@ -80,6 +96,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                 .filter(items -> items.isArray() && !items.isEmpty())
                 .map(items -> items.get(0))
                 .orElseThrow(() -> new EmptyJsonException("No items in JSON"));
+
             return Optional.ofNullable(objectMapper.treeToValue(lastJsonAnswer, StackOverflowResponse.class));
         } catch (JsonProcessingException | EmptyJsonException e) {
             LOGGER.error(e.getMessage());
@@ -87,18 +104,21 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         }
     }
 
+    @Override
     public List<AnswerInfo> getAnswerInfoByQuestion(Long question) {
         return Objects.requireNonNull(webClient.get()
-                .uri("/questions/{question}/answers?order=desc&site=stackoverflow", question)
+                .uri("/questions/{question}/answers?site=stackoverflow&order=desc" + authParam, question)
                 .retrieve()
                 .bodyToMono(AnswerItems.class)
-                .block())
+                .block()
+            )
             .getAnswerInfo();
     }
 
+    @Override
     public List<CommentInfo> getCommentInfoByQuestion(Long question) {
         return Objects.requireNonNull(webClient.get()
-                .uri("/questions/{question}/comments?order=desc&sort=creation&site=stackoverflow", question)
+                .uri("/questions/{question}/comments?order=desc&sort=creation&site=stackoverflow" + authParam, question)
                 .retrieve()
                 .bodyToMono(CommentItems.class)
                 .block())
