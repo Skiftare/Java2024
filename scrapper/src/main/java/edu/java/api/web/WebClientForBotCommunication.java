@@ -1,4 +1,4 @@
-package edu.java.api;
+package edu.java.api.web;
 
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;

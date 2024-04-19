@@ -15,7 +15,7 @@ public class UpdateManager {
     private final TelegramBot bot;
     private final Logger logger = LoggerFactory.getLogger(UpdateManager.class);
 
-    boolean addRequest(@NotNull LinkUpdateRequest req) {
+    public boolean addRequest(@NotNull LinkUpdateRequest req) {
         for (long id : req.tgChatIds()) {
             try {
                 bot.execute(

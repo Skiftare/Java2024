@@ -1,6 +1,6 @@
 package edu.java.configuration;
 
-import edu.java.api.WebClientForBotCommunication;
+import edu.java.api.web.WebClientForBotCommunication;
 import io.github.resilience4j.retry.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

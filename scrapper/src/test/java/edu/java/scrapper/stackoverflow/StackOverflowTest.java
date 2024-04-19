@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ public class StackOverflowTest {
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
         stackOverflowClient = new DefaultStackOverflowClient(STR."http://localhost:\{wireMockServer.port()}");
+
     }
 
     @AfterEach
@@ -50,11 +52,13 @@ public class StackOverflowTest {
         Long expectedAnswerId = 0L;
         String expectedOwnerName = "khw";
         var uri = UriComponentsBuilder
-            .fromPath("/questions/{id}/answers")
+            .fromPath("/questions/{id}/")
+            .queryParam("site", "stackoverflow")
             .queryParam("order", "desc")
             .queryParam("sort", "activity")
-            .queryParam("site", "stackoverflow")
+
             .uriVariables(Map.of("id", questionId));
+        Logger.getAnonymousLogger().info(uri.toUriString());
         wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo(uri.toUriString()))
             .willReturn(WireMock.aResponse()
                 .withStatus(200)
@@ -62,6 +66,7 @@ public class StackOverflowTest {
                 .withBody(responseBody)
             )
         );
+        // http://localhost:8080/questions/78056645%3Fsite=stackoverflow
 
         //When: we process this data by StackOverflow client
         StackOverflowResponse response = stackOverflowClient.processQuestionUpdates(questionId).orElse(null);

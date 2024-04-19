@@ -1,5 +1,6 @@
 package edu.java.api;
 
+import edu.java.api.web.WebClientForBotCommunication;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.exceptions.entities.UserNotFoundException;
 import java.net.URI;

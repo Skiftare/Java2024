@@ -43,6 +43,7 @@ public class WebClientForScrapperCommunication {
                     .bodyToMono(ApiErrorResponse.class)
                     .flatMap(errorResponse -> Mono.error(new ApiErrorException(errorResponse)))
             )
+
             .bodyToMono(String.class);
         if (retry != null) {
             operation.transformDeferred(RetryOperator.of(retry));

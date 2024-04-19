@@ -2,6 +2,11 @@ app:
   telegram-token: ${TELEGRAM_TOKEN}
   api:
     scrapper-url: http://localhost:8080
+  kafka:
+    topic-name: updates
+    consumer-group-id: bot
+    bootstrap-server: localhost:9092
+    dlq-topic-name: badResponse
   scrapper:
     retry-type: linear
     retry-count: 3

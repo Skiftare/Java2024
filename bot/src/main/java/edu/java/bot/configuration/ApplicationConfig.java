@@ -14,7 +14,9 @@ public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
     Api api,
-    ServiceProperties scrapper
+    ServiceProperties scrapper,
+    Kafka kafka
+
 ) {
     public record Api(String scrapperUrl) {
 
@@ -26,5 +28,9 @@ public record ApplicationConfig(
         Duration delay,
         Set<HttpStatus> retryCodes
     ) {
+    }
+
+    public record Kafka(String topicName, String consumerGroupId, String bootstrapServer,
+                        String dlqTopicName) {
     }
 }

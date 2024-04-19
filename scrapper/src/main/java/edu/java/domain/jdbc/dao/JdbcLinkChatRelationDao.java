@@ -6,11 +6,14 @@ import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrl;
 import edu.java.domain.jdbc.written.chat_link_relation.ChatLinkWithUrlRowMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
+
 public class JdbcLinkChatRelationDao {
 
     private final JdbcClient jdbcClient;

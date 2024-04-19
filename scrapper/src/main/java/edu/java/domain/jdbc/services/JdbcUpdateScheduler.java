@@ -61,15 +61,21 @@ public class JdbcUpdateScheduler implements LinkUpdater {
             try {
                 if (webResourceHandler.isGitHubUrl(link.getUrl())) {
                     gitHubProcess(link, now);
-                    updateTablesAndSendMsg(
+                    /*updateTablesAndSendMsg(
                         link,
                         now,
                         "В github-репозитории были изменения: " + link.getUrl()
                             + "\nСкорее проверьте, это наверняка что-то важное!"
-                    );
+                    );*/
 
                 } else {
                     stackOverflowProcess(link, now);
+                    /*updateTablesAndSendMsg(
+                        link,
+                        now,
+                        "На stackoverflow-странице были изменения: " + link.getUrl()
+                            + "\nСкорее проверьте, это наверняка что-то важное!"
+                    );*/
                 }
                 linkDao.updateLastUpdateAtById(link.getDataLinkId(), now);
             } catch (Exception e) {
@@ -107,8 +113,15 @@ public class JdbcUpdateScheduler implements LinkUpdater {
             .stream()
             .filter(comment -> comment.getCreationDate().isAfter(link.getLastUpdateAt()))
             .toList();
+        logger.info(
+            "StackOverflow link: {} processing, new answers: {}, new comments: {}",
+            link.getUrl(),
+            newAnswers,
+            newComments
+        );
 
         if (!newAnswers.isEmpty() || !newComments.isEmpty()) {
+            logger.info("StackOverflow link: {} processing, some changes detected", link.getUrl());
             StringBuilder description =
                 new StringBuilder(format(SOF_HEAD, link.getUrl()));
             newAnswers.forEach(answer -> description.append(format(

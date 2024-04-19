@@ -1,6 +1,4 @@
 app:
-  database-access-type:
-    jdbc
   scheduler:
     enable: true
     interval: 100s
@@ -14,6 +12,9 @@ app:
 
   api:
     bot-url: http://localhost:8090
+    github-token: ${GITHUB_TOKEN}
+    stackoverflow-key: ${STACKOVERFLOW_KEY}
+    stackoverflow-access-token: ${STACKOVERFLOW_ACCESS_TOKEN}
   bot:
     retry-type: constant
     retry-count: 3
@@ -34,9 +35,10 @@ app:
     retry-count: 3
     delay: 4s
     retry-codes: INTERNAL_SERVER_ERROR, BAD_GATEWAY, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT, TOO_MANY_REQUESTS
-
-
-
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic-name: updates
+  use-queue: true
 spring:
   application:
     name: scrapper
@@ -55,7 +57,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
+  profiles:
+    active: jdbc
 
 server:
   port: 8080
@@ -65,7 +68,7 @@ logging:
   level:
     org.springframework.web: DEBUG
 scrapper:
-  baseUrl: http://localhost:8090
+  base-url: http://localhost:8090
 springdoc:
   swagger-ui:
     path: /swagger-ui

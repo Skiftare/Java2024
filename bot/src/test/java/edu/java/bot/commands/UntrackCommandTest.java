@@ -1,13 +1,11 @@
 package edu.java.bot.commands;
 
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.web.WebClientForScrapperCommunication;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.memory.DataManager;
-import edu.java.bot.memory.DialogManager;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,8 @@ import static org.mockito.Mockito.when;
 public class UntrackCommandTest {
 
     private UntrackCommand testingCommand;
-    private final DialogManager manager =
-        new DialogManager(new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
+    private final DataManager manager =
+        (new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     @BeforeEach
     public void setUp() {

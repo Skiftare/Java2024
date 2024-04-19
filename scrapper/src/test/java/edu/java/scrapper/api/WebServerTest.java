@@ -1,7 +1,7 @@
 package edu.java.scrapper.api;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.api.WebClientForBotCommunication;
+import edu.java.api.web.WebClientForBotCommunication;
 import edu.java.data.request.LinkUpdateRequest;
 import edu.java.data.response.ApiErrorResponse;
 import edu.java.exceptions.entities.ApiErrorException;

@@ -13,7 +13,6 @@ import edu.java.bot.commands.entities.TrackCommand;
 import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.memory.DataManager;
-import edu.java.bot.memory.DialogManager;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +24,8 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class HelpCommandTest {
-    private final DialogManager manager = new DialogManager(
-        new DataManager(new WebClientForScrapperCommunication("http://localhost:8080"))
-    );
+    private final DataManager manager =
+        new DataManager(new WebClientForScrapperCommunication("http://localhost:8080"));
 
     private final Command helpCommand = new HelpCommand(new CommandLoaderForHelpMessage(
         new StartCommand(manager),
@@ -35,7 +33,6 @@ public class HelpCommandTest {
         new TrackCommand(manager),
         new UntrackCommand(manager)
     ));
-
 
     @Test
     public void testThatGetCommandCommandAndReturnedThatThisIsHelpCommand() {
@@ -46,7 +43,6 @@ public class HelpCommandTest {
     public void testThatGetCommandDescriptionAndReturnedThatThisIsHelpCommand() {
         assertEquals("Вывести окно с командами", helpCommand.description());
     }
-
 
     @Test
     @Rollback
@@ -63,10 +59,8 @@ public class HelpCommandTest {
         when(chat.id()).thenReturn(chatId);
         when(update.message()).thenReturn(message);
 
-
         //When: we execute update with this Command
         SendMessage sendMessage = helpCommand.handle(update);
-
 
         // Then help message go to right user and contain all commands
         assertEquals(sendMessage.getParameters().get("chat_id"), chatId);

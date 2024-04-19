@@ -2,8 +2,7 @@ package edu.java.bot.commands.entities;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.memory.DialogManager;
-import edu.java.bot.processor.UserRequest;
+import edu.java.bot.memory.DataManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ public class ListCommand implements Command {
     private static final String LIST_COMMAND_NAME = "/list";
     private static final String LIST_COMMAND_DESCRIPTION = "Показать список отслеживаемых ссылок";
 
-    private final DialogManager manager;
+    private final DataManager manager;
 
     @Override
     public String getCommandName() {
@@ -28,7 +27,7 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        var list = manager.getListOfTracked(new UserRequest(chatId, update.message().text()));
+        var list = manager.getListOFTrackedCommands(chatId);
         if (list.isEmpty()) {
             return new SendMessage(chatId, "Список пуст");
         }

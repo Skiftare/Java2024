@@ -23,9 +23,13 @@ public record ApplicationConfig(
 
     @NotNull
     Api api,
+
     ServiceProperties bot,
+    ServiceProperties stackoverflow,
     ServiceProperties github,
-    ServiceProperties stackoverflow
+    RateLimitingSettings rateLimitingSettings,
+    Kafka kafka,
+    boolean useQueue
 ) {
 
     public record Scheduler(
@@ -36,7 +40,7 @@ public record ApplicationConfig(
     public record ListOfSupportedLinks(String stackoverflow, String github) {
     }
 
-    public record Api(String botUrl) {
+    public record Api(String botUrl, String githubToken, String stackoverflowKey, String stackoverflowAccessToken) {
     }
 
     public record ServiceProperties(
@@ -45,5 +49,12 @@ public record ApplicationConfig(
         Duration delay,
         Set<HttpStatus> retryCodes
     ) {
+    }
+
+    public record RateLimitingSettings(int count, int tokens, Duration period) {
+    }
+
+    public record Kafka(String bootstrapServers, String topicName) {
+
     }
 }
