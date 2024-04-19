@@ -15,6 +15,7 @@ import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.commands.loaders.CommandsLoader;
 import edu.java.bot.memory.DataManager;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,9 @@ public class BotProcessorTest {
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,
+            Mockito.mock(MeterRegistry.class)
+        );
 
         //When
         SendMessage response = bot.recognizeCommand(update);
@@ -68,7 +71,7 @@ public class BotProcessorTest {
         // Given
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
-        Mockito.when(message.text()).thenReturn("/start");
+        Mockito.when(message.text()).thenReturn("/help");
         Chat chat = Mockito.mock(Chat.class);
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
@@ -90,14 +93,21 @@ public class BotProcessorTest {
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,
+            Mockito.mock(MeterRegistry.class)
+        );
 
         // When
         SendMessage response = bot.recognizeCommand(update);
 
         // Then
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
-        assertThat(response.getParameters().get("text").toString()).isEqualTo("Неизвестная команда");
+        assertThat(response.getParameters().get("text").toString()).isEqualTo(
+            "/start :\tЗарегистрировать пользователя\n" +
+                "/untrack :\tПрекратить отслеживание ссылки\n" +
+                "/list :\tПоказать список отслеживаемых ссылок\n" +
+                "/track :\tНачать отслеживание ссылки\n" +
+                "/help :\tВывести окно с командами\n");
     }
 
 }

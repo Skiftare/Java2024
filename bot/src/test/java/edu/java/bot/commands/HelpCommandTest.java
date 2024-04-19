@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class HelpCommandTest {
     private final DataManager manager =
-        new DataManager(new WebClientForScrapperCommunication("http://localhost:8080"));
+        (new DataManager(new WebClientForScrapperCommunication("http://localhost:8080")));
 
     private final Command helpCommand = new HelpCommand(new CommandLoaderForHelpMessage(
         new StartCommand(manager),

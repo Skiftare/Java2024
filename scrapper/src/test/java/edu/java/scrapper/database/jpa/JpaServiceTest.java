@@ -44,7 +44,6 @@ public class JpaServiceTest extends IntegrationTest {
         );
     }
 
-
     @org.junit.jupiter.api.Nested
     class JpaChatServiceTest {
 
@@ -56,8 +55,6 @@ public class JpaServiceTest extends IntegrationTest {
             assertTrue(jpaChatService.isRegistered(tgChatId));
             assertThrows(UserAlreadyExistException.class, () -> jpaChatService.register(tgChatId));
         }
-
-
 
         @Test
         @Rollback

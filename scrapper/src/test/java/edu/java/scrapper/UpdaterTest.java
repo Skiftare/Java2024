@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class UpdaterTest {
-        @Test
-        public void testThatGetLinkUpdaterAndReturnedException() {
-            var linkUpdaterScheduler = Mockito.mock(LinkUpdaterManager.class);
-            Mockito.doThrow(new RuntimeException()).when(linkUpdaterScheduler).update();
+    @Test
+    public void testThatGetLinkUpdaterAndReturnedException() {
+        var linkUpdaterScheduler = Mockito.mock(LinkUpdaterManager.class);
+        Mockito.doThrow(new RuntimeException()).when(linkUpdaterScheduler).update();
 
-            Assertions.assertThrows(RuntimeException.class, linkUpdaterScheduler::update);
-        }
+        Assertions.assertThrows(RuntimeException.class, linkUpdaterScheduler::update);
+    }
 
 }

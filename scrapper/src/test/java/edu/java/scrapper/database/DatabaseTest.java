@@ -1,16 +1,15 @@
 package edu.java.scrapper.database;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DatabaseTest extends IntegrationTest {
 
@@ -24,7 +23,7 @@ public class DatabaseTest extends IntegrationTest {
             .password(POSTGRES.getPassword())
             .build();
     }
-  
+
     @Test
     @Rollback
     public void testThatGetEmptyDatabaseAndReturnedCorrectInsertsAndSelectsResults() {
@@ -45,7 +44,8 @@ public class DatabaseTest extends IntegrationTest {
         String queryToSelectFromLinkDatabase = "SELECT last_update_at FROM link WHERE url = ?";
 
         Integer realChatId = jdbcTemplate.queryForObject(queryToSelectFromChatDatabase, Integer.class, givenChatId);
-        OffsetDateTime realTime = jdbcTemplate.queryForObject(queryToSelectFromLinkDatabase, OffsetDateTime.class, givenUrl);
+        OffsetDateTime realTime =
+            jdbcTemplate.queryForObject(queryToSelectFromLinkDatabase, OffsetDateTime.class, givenUrl);
 
         assertThat(realChatId).isEqualTo(givenChatId);
         assertThat(realTime).isCloseTo(time, within(1, ChronoUnit.SECONDS));

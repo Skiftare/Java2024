@@ -25,11 +25,12 @@ public class UpdateManager {
                     )
                 );
             } catch (Exception e) {
-                logger.info("Ошибка при отправке сообщения: " + e.getMessage());
+                logger.info("Ошибка при отправке сообщения: {}", e.getMessage());
             }
         }
         return true;
     }
+
 }
 
 

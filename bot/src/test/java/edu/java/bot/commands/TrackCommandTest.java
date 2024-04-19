@@ -34,7 +34,6 @@ public class TrackCommandTest {
         assertEquals("Начать отслеживание ссылки", testingCommand.description());
     }
 
-
     @Test
     public void testThatGetInvalidCommandAndReturnedErrorMessage() {
         //Given: setup
