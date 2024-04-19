@@ -7,7 +7,10 @@ import edu.java.data.response.ListLinksResponse;
 import edu.java.data.response.ListOfLinksResponse;
 import edu.java.data.response.ResultOfServiceOperation;
 import edu.java.data.response.TgChatInteractionResponse;
-import edu.java.exceptions.RequestProcessingException;
+import edu.java.exceptions.entities.LinkAlreadyExistException;
+import edu.java.exceptions.entities.LinkNotFoundException;
+import edu.java.exceptions.entities.UserAlreadyExistException;
+import edu.java.exceptions.entities.UserNotFoundException;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,7 @@ public class LinksController {
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<TgChatInteractionResponse> registerChat(
         @PathVariable("id") @Positive(message = INVALID_ID) Long id
-    ) throws RequestProcessingException {
+    ) throws UserAlreadyExistException {
         ResultOfServiceOperation result = methodProcessingService.registerUser(id);
         TgChatInteractionResponse wrappedResult = new TgChatInteractionResponse(result.chatId(), result.message());
         return ResponseEntity.ok(wrappedResult);
@@ -39,7 +42,7 @@ public class LinksController {
     @DeleteMapping("/tg-chat/{id}")
     public ResponseEntity<TgChatInteractionResponse> deleteChat(
         @PathVariable("id") @Positive(message = INVALID_ID) Long id
-    ) throws RequestProcessingException {
+    ) throws UserNotFoundException {
         ResultOfServiceOperation result = methodProcessingService.deleteUser(id);
         TgChatInteractionResponse wrappedResult = new TgChatInteractionResponse(result.chatId(), result.message());
 
@@ -50,7 +53,7 @@ public class LinksController {
     @GetMapping("/tg-chat/{id}")
     public ResponseEntity<TgChatInteractionResponse> isChatRegistered(
         @PathVariable("id") @Positive(message = INVALID_ID) Long id
-    ) throws RequestProcessingException {
+    ) throws UserNotFoundException {
         ResultOfServiceOperation result = methodProcessingService.checkIsUserRegistered(id);
         TgChatInteractionResponse wrappedResult = new TgChatInteractionResponse(
             result.chatId(),
@@ -64,7 +67,7 @@ public class LinksController {
     @GetMapping("/links")
     public ResponseEntity<ListLinksResponse> getAllLinks(
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId
-    ) throws RequestProcessingException {
+    ) throws UserNotFoundException {
         LoggerFactory.getLogger(LinksController.class).info("Get links request for chat with id: " + tgChatId);
         ListOfLinksResponse result = methodProcessingService.getLinks(tgChatId); // Получение списка ссылок
         ListLinksResponse wrappedResult = new ListLinksResponse(
@@ -79,7 +82,7 @@ public class LinksController {
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
         @RequestBody
         AddLinkRequest addLinkRequest
-    ) throws RequestProcessingException {
+    ) throws UserNotFoundException, LinkAlreadyExistException {
         LoggerFactory.getLogger(LinksController.class)
             .info("Add link request: " + addLinkRequest.link());
         LinkResponse result = methodProcessingService.addLink(tgChatId, addLinkRequest.link());
@@ -93,7 +96,7 @@ public class LinksController {
     public ResponseEntity<LinkResponse> removeLink(
         @RequestHeader("Tg-Chat-Id") @Positive(message = INVALID_ID) Long tgChatId,
         @RequestBody RemoveLinkRequest removeLinkRequest
-    ) throws RequestProcessingException {
+    ) throws UserNotFoundException, LinkNotFoundException {
         LoggerFactory.getLogger(LinksController.class)
             .info("Remove link request: " + removeLinkRequest.link());
         LinkResponse result = methodProcessingService.removeLink(tgChatId, removeLinkRequest.link());
@@ -101,7 +104,6 @@ public class LinksController {
         LoggerFactory.getLogger(LinksController.class)
             .info("Link removed: " + wrappedResult.url());
         return ResponseEntity.ok(wrappedResult);
-
     }
 
 }

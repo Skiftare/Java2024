@@ -49,7 +49,7 @@ public class JpaLinkUpdaterScheduler implements LinkUpdater {
     }
 
     @Override
-    @Scheduled(fixedDelayString = "#{@app.scheduler.interval}")
+    @Scheduled(fixedDelayString = "#{@scheduler.interval}")
     @Transactional
     public void checkForUpdates() {
         linkRepository.deleteUnnecessary();

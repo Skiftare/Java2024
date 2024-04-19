@@ -32,6 +32,13 @@ public class DefaultGitHubClient implements GitHubClient {
         String defaultUrl = "https://api." + config.listOfLinksSupported().github();
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
+            .defaultHeaders(headers -> {
+                LOGGER.info("Setting headers");
+                if (config.api().githubToken() != null) {
+                    headers.set("Authorization", "Bearer " + config.api().githubToken());
+                    LOGGER.info("Headers set");
+                }
+            })
             .build();
     }
 

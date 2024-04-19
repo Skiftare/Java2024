@@ -17,9 +17,11 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @RequiredArgsConstructor
 @Transactional
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JpaLinkService implements LinkService {
 
     private final JpaChatRepository chatRepository;

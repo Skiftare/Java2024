@@ -7,12 +7,14 @@ import edu.java.exceptions.entities.UserAlreadyExistException;
 import edu.java.exceptions.entities.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import static java.time.OffsetDateTime.now;
 
 @RequiredArgsConstructor
 @Transactional
 @EnableTransactionManagement
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JpaChatService implements TgChatService {
 
     private final JpaChatRepository chatRepository;

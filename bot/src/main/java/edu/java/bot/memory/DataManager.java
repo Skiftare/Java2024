@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("HideUtilityClassConstructor")
 public class DataManager {
     static final String NO_LINKS_NOT_TRACKED = "Никаких ссылок не отслеживается";
+    private static final String USER_DOES_NOT_EXISTS = "Пользователь не зарегистрирован";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
     private static final String ENDL_CHAR = "\n";
     private final WebClientForScrapperCommunication webClient;
@@ -26,7 +27,7 @@ public class DataManager {
         this.webClient = webClient;
     }
 
-    boolean addURl(UserRequest update) {
+    public boolean addURl(UserRequest update) {
         Long id = update.id();
 
         String url = update.message();
@@ -41,12 +42,14 @@ public class DataManager {
         }
     }
 
-    boolean registerUser(Long id) {
+    public String registerUser(Long id) {
+        LOGGER.info("Registering user with id: {}", id);
         Optional<String> serverAnswer = webClient.registerChat(id);
-        return serverAnswer.isPresent();
+        LOGGER.info("Server answer: {}", serverAnswer.orElse("No answer"));
+        return serverAnswer.get();
     }
 
-    boolean deleteURl(UserRequest update) {
+    public boolean deleteURl(UserRequest update) {
         Long id = update.id();
         String url = update.message();
 
@@ -65,7 +68,7 @@ public class DataManager {
         return result;
     }
 
-    String getListOFTrackedCommands(Long id) {
+    public String getListOFTrackedCommands(Long id) {
         String result = NO_LINKS_NOT_TRACKED;
         try {
             Optional<ListLinksResponse> linksResponse = webClient.getLinks(id);
@@ -78,7 +81,7 @@ public class DataManager {
             }
         } catch (UserNotFoundException e) {
             LOGGER.error("Пользователь не найден: {}", e.getMessage());
-            return "Пользователь не зарегистрирован";
+            return USER_DOES_NOT_EXISTS;
         }
         return result;
     }

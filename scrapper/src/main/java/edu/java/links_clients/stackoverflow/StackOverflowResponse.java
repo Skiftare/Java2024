@@ -12,7 +12,9 @@ public record StackOverflowResponse(
     @JsonProperty("answer_id")
     long answerId,
     @JsonProperty("question_id")
-    long questionId
+    long questionId,
+    @JsonProperty("answer_count")
+    int answersCount
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Owner(

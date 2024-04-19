@@ -28,7 +28,6 @@ public class CommandLoaderForHelpMessage implements Loader {
         commandList.add(untrackCommand);
         commandList.add(listCommand);
         commandList.add(trackCommand);
-
     }
 
     @Override
