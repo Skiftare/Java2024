@@ -7,6 +7,9 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.entities.Command;
 import edu.java.bot.commands.loaders.CommandsLoader;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +22,20 @@ public class BotProcessor {
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final CommandsLoader loader;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(BotProcessor.class);
+    @Autowired
+    private final MeterRegistry meterRegistry;
+    private Counter userMessagesCounter;
 
     @Autowired BotProcessor(
         TelegramBot bot,
         CommandsLoader loader,
-        ReplyKeyboardMarkup keyboard
+        ReplyKeyboardMarkup keyboard, MeterRegistry meterRegistry
     ) {
         this.bot = bot;
         this.bot.setUpdatesListener(this::createUpdatesManager);
         this.loader = loader;
         this.replyKeyboardMarkup = keyboard;
+        this.meterRegistry = meterRegistry;
     }
 
     private int createUpdatesManager(List<Update> updates) {
@@ -46,6 +53,7 @@ public class BotProcessor {
             if (command.supportsMessageProcessing(update)) {
                 try {
                     msg = command.handle(update);
+                    userMessagesCounter.increment();
                     break;
                 } catch (Exception e) {
                     logger.error("Error while handling command", e);
@@ -53,6 +61,13 @@ public class BotProcessor {
             }
         }
         return msg;
+    }
+
+    @PostConstruct
+    public void initMetrics() {
+        userMessagesCounter = Counter.builder("user_messages")
+            .description("Count of processed user messages")
+            .register(meterRegistry);
     }
 
 }

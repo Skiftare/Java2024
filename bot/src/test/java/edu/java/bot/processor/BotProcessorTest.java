@@ -15,7 +15,7 @@ import edu.java.bot.commands.entities.UntrackCommand;
 import edu.java.bot.commands.loaders.CommandLoaderForHelpMessage;
 import edu.java.bot.commands.loaders.CommandsLoader;
 import edu.java.bot.memory.DataManager;
-import edu.java.bot.memory.DialogManager;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class BotProcessorTest {
         Mockito.when(message.text()).thenReturn("unknown");
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
-        DialogManager dialogManager = new DialogManager(new DataManager(server));
+        DataManager dialogManager = (new DataManager(server));
         CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
@@ -52,7 +52,9 @@ public class BotProcessorTest {
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,
+            Mockito.mock(MeterRegistry.class)
+        );
 
         //When
         SendMessage response = bot.recognizeCommand(update);
@@ -69,7 +71,7 @@ public class BotProcessorTest {
         // Given
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
-        Mockito.when(message.text()).thenReturn("/start");
+        Mockito.when(message.text()).thenReturn("/help");
         Chat chat = Mockito.mock(Chat.class);
         SecureRandom secureRandom = new SecureRandom();
         Long chatId = secureRandom.nextLong(0, Long.MAX_VALUE);
@@ -78,7 +80,7 @@ public class BotProcessorTest {
         Mockito.when(update.message()).thenReturn(message);
         TelegramBot mockBot = Mockito.mock(TelegramBot.class);
         WebClientForScrapperCommunication server = Mockito.mock(WebClientForScrapperCommunication.class);
-        DialogManager dialogManager = new DialogManager(new DataManager(server));
+        DataManager dialogManager = (new DataManager(server));
         CommandLoaderForHelpMessage helper = new CommandLoaderForHelpMessage(
             new StartCommand(dialogManager),
             new ListCommand(dialogManager),
@@ -91,7 +93,9 @@ public class BotProcessorTest {
         );
         ReplyKeyboardMarkup mockKeyboard = Mockito.mock(ReplyKeyboardMarkup.class);
 
-        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard);
+        BotProcessor bot = new BotProcessor(mockBot, loader, mockKeyboard,
+            Mockito.mock(MeterRegistry.class)
+        );
 
         // When
         SendMessage response = bot.recognizeCommand(update);
@@ -99,7 +103,11 @@ public class BotProcessorTest {
         // Then
         assertThat(response.getParameters().get("chat_id")).isEqualTo(chat.id());
         assertThat(response.getParameters().get("text").toString()).isEqualTo(
-            "Вы уже зарегистрированы, повторная регистрация не нужна");
+            "/start :\tЗарегистрировать пользователя\n" +
+                "/untrack :\tПрекратить отслеживание ссылки\n" +
+                "/list :\tПоказать список отслеживаемых ссылок\n" +
+                "/track :\tНачать отслеживание ссылки\n" +
+                "/help :\tВывести окно с командами\n");
     }
 
 }

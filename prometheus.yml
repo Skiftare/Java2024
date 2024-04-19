@@ -7,7 +7,7 @@ scrape_configs:
       - targets: [ 'host.docker.internal:9090' ]
   - job_name: 'bot'
     static_configs:
-      - targets: [ 'host.docker.internal:8080' ]
+      - targets: [ 'host.docker.internal:8094' ]
   - job_name: 'scrapper'
     static_configs:
-      - targets: [ 'host.docker.internal:8090' ]
+      - targets: [ 'host.docker.internal:8084' ]

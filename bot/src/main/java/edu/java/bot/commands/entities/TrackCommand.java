@@ -19,8 +19,6 @@ public class TrackCommand implements Command {
     private final DataManager manager;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(TrackCommand.class);
 
-
-
     @Override
     public String getCommandName() {
         return TRACK_COMMAND_NAME;

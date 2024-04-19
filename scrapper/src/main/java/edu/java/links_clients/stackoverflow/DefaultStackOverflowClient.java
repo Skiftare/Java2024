@@ -34,7 +34,7 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
     @Qualifier("stackOverflowRetry")
     Retry retry;
 
-    private final String authParam;
+    private final String authParam = "";
 
     @Autowired
     public DefaultStackOverflowClient(ApplicationConfig config) {
@@ -42,8 +42,9 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
-        authParam =
-            "&access_token=" + config.api().stackoverflowAccessToken() + "&" + "key=" + config.api().stackoverflowKey();
+        /*authParam =
+            "&access_token=" + config.api().stackoverflowAccessToken() + "&" + "key=" + config.api().stackoverflowKey();*/
+
     }
 
     public DefaultStackOverflowClient(String baseUrl) {
@@ -51,7 +52,6 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         webClient = WebClient.builder()
             .baseUrl(baseUrl)
             .build();
-        authParam = "";
 
     }
 
@@ -65,7 +65,6 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
                 .queryParam("order", "desc")
                 .queryParam("sort", "activity");
             String uriString = uriBuilder.buildAndExpand(questionId).toUriString();
-
 
             Mono<String> operation = webClient.get()
                 .uri(

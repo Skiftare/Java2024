@@ -27,7 +27,7 @@ management:
       application: ${spring.application.name}
 
   server:
-    port: 8001
+    port: 8094
   endpoints:
     web:
       exposure:
