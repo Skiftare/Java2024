@@ -42,9 +42,6 @@ public class DefaultStackOverflowClient implements StackOverflowClient {
         webClient = WebClient.builder()
             .baseUrl(defaultUrl)
             .build();
-        /*authParam =
-            "&access_token=" + config.api().stackoverflowAccessToken() + "&" + "key=" + config.api().stackoverflowKey();*/
-
     }
 
     public DefaultStackOverflowClient(String baseUrl) {
