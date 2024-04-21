@@ -8,7 +8,7 @@ on:
       - scrapper/**
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: Skiftare/Java2024/scrapper
+  IMAGE_NAME: skiftare/java2024/scrapper
 jobs:
   build:
     runs-on: ubuntu-latest

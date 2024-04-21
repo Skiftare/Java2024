@@ -8,7 +8,7 @@ on:
       - bot/**
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: Skiftare/Java2024/bot
+  IMAGE_NAME: skiftare/java2024/bot
 jobs:
   build:
     runs-on: ubuntu-latest
