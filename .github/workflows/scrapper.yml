@@ -6,7 +6,9 @@ on:
     paths:
       - .github/workflows/scrapper.yml
       - scrapper/**
-
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: skiftare/java2024/scrapper
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,9 +25,25 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: maven build
+      - name: maven build-package
         run: mvn -pl scrapper -am package
 
+      - name: maven build-install
+        run: mvn -pl scrapper -am install
+
+      - name: build scrapper image
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} -f scrapper.Dockerfile .
+        working-directory: ${{ github.workspace }}/scrapper
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: push image
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
         if: ( github.event_name != 'workflow_dispatch' )
